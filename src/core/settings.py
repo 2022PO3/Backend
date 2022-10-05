@@ -80,13 +80,13 @@ WSGI_APPLICATION = "src.core.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'po3_database',
-        'USER': 'root',
-        'PASSWORD': getenv('DATABASE_PASSWORD'),
-        'HOST':'localhost',
-        'PORT':'3306',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "po3_database",
+        "USER": "root",
+        "PASSWORD": getenv("DATABASE_PASSWORD"),
+        "HOST": "localhost",
+        "PORT": "3306",
     }
 }
 
