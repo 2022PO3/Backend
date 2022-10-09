@@ -85,7 +85,7 @@ DATABASES = {
         "NAME": "po3_database",
         "USER": "root",
         "PASSWORD": getenv("DATABASE_PASSWORD"),
-        "HOST": "localhost",
+        "HOST": "db",
         "PORT": "3306",
     }
 }
