@@ -82,7 +82,7 @@ WSGI_APPLICATION = "src.core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "po3_database",
+        "NAME": "backend_database",
         "USER": "root",
         "PASSWORD": getenv("DATABASE_PASSWORD"),
         "HOST": "db",
