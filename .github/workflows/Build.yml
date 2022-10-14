@@ -15,6 +15,7 @@ jobs:
 
       - name: Create config.ovpn and certificate
         run: |
+          mkdir .github/workflows/vpn
           echo -e "remote $VPN_URL\ncomp-lzo\nnobind\ndev tun\nproto udp\nport $VPN_PORT\nauth-nocache\npersist-key\npersist-tun\nclient\nauth-user-pass $VPN_PW_PATH\n$VPN_CA_CRT" > .github/workflows/vpn/config.ovpn
         env:
           VPN_CA_CRT: ${{ secrets.VPN_CA_CRT }}
