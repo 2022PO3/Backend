@@ -12,7 +12,7 @@ jobs:
         run: sudo apt-get install openvpn
       - name: Create config.ovpn
         run: |
-          touch .github/vpn/config.ovpn
+          mkdir .github && mkdir .github.vpn && touch .github/vpn/config.ovpn
           echo -e "remote ${{ secrets.VPN_URL }}\ncomp-lzo\nobind\ndev tun\nproto udp\nport ${{ secrets.VPN_PORT }}\nauth-nocache\npersist-key\npersist-tun\nclient\nca ca.crt" > .github/vpn/config.ovpn
       - name: Connect VPN
         uses: golfzaptw/action-connect-ovpn@master
