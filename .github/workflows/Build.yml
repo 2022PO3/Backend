@@ -27,8 +27,8 @@ jobs:
           echo "${{ secrets.VPN_USERNAME }}" > .github/vpn/dnetcloud.pw
           echo "${{ secrets.VPN_PASSWORD }}" >> .github/vpn/dnetcloud.pw
         env:
-          VPN_USERNAME: ${{ VPN_USERNAME }}
-          VPN_PASSWORD: ${{ VPN_PASSWORD }}
+          VPN_USERNAME: ${{ secrets.VPN_USERNAME }}
+          VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
       - name: Connect VPN
         run: openvpn --config .github/vpn/config.ovpn --ca .github/vpn/dnetcloudssh.crt --auth-user-pass .github/vpn/dnetcloud.pw
       - name: Check Connect VPN
