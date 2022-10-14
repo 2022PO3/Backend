@@ -30,7 +30,7 @@ jobs:
           VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
 
       - name: Connect VPN
-        run: sudo openvpn --config .github/workflows/vpn/config.ovpn --ca .github/workflows/vpn/dnetcloudssh.crt --auth-user-pass .github/workflows/vpn/dnetcloud.pw
+        run: sudo openvpn --config .github/workflows/vpn/config.ovpn --auth-user-pass .github/workflows/vpn/dnetcloud.pw
 
       - name: Check Connect VPN
         run: echo ${{ steps.connect_vpn.outputs.STATUS }}
