@@ -43,7 +43,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSWORD }}
-          script: whoami
+          script: |
+            touch it_worked.txt
 
       - name: kill vpn
         if: always()
