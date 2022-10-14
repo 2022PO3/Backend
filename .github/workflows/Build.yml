@@ -21,6 +21,7 @@ jobs:
       - name: Create password file
         run: |
           echo "${{ secrets.VPN_USERNAME }}" > .github/vpn/dnetcloud.pw
+          cat .github/vpn/dnetcloud.pw
           echo "${{ secrets.VPN_PASSWORD }}" >> .github/vpn/dnetcloud.pw
       - name: Connect VPN
         run: openvpn --config .github/vpn/config.ovpn --ca .github/vpn/dnetcloudssh.crt --auth-user-pass .github/vpn/dnetcloud.pw
