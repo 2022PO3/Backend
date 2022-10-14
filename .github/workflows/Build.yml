@@ -8,13 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Install Open VPN 3
+      - name: Install Open VPN
         run: |
-          sudo apt install apt-transport-https
-          sudo wget https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub
-          sudo wget -O /etc/apt/sources.list.d/openvpn3.list https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-jammy.list
-          sudo apt update
-          sudo apt install openvpn3
+          sudo apt-get update
+          sudo apt-get --assume-yes --no-install-recommends install openvpn
       - name: Create config.ovpn and certificate
         run: |
           mkdir .github/vpn && touch .github/vpn/config.ovpn
@@ -25,7 +22,7 @@ jobs:
           echo "${{ secrets.VPN_USERNAME }}" > .github/vpn/dnetcloud.pw
           echo "${{ secrets.VPN_PASSWORD }}" >> .github/vpn/dnetcloud.pw
       - name: Connect VPN
-        run: openvpn3 --config .github/vpn/config.ovpn --ca .github/vpn/dnetcloudssh.crt  
+        run: openvpn3 --config .github/vpn/config.ovpn --ca .github/vpn/dnetcloudssh.crt
       - name: Check Connect VPN
         run: echo ${{ steps.connect_vpn.outputs.STATUS }}
       - name: Executing remote ssh commands using password
