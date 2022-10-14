@@ -1,0 +1,15 @@
+requirements-dev.txt
+pyproject.toml
+README.md
+*.egg_info
+__pycache__
+.tox
+.git
+.github
+.env.*
+.gitignore
+*DockerFile
+setup.py
+tox.ini
+docker-compose.yml
+.dockerignore
