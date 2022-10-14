@@ -13,7 +13,7 @@ jobs:
           sudo apt-get update
           sudo apt-get --assume-yes --no-install-recommends install openvpn
 
-      - name: Create config.ovpn and certificate
+      - name: Create config.ovpn
         run: |
           mkdir .github/workflows/vpn
           echo -e "remote $VPN_URL\ncomp-lzo\nnobind\ndev tun\nproto udp\nport $VPN_PORT\nauth-nocache\npersist-key\npersist-tun\nclient\nauth-user-pass $VPN_PW_PATH\n$VPN_CA_CRT" > .github/workflows/vpn/config.ovpn
