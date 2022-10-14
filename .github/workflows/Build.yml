@@ -43,8 +43,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            touch it_worked.txt
+          script: bash .github/workflows/rebuild.sh
 
       - name: kill vpn
         if: always()
