@@ -43,7 +43,19 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSWORD }}
-          script: bash .github/workflows/rebuild.sh
+          script: |
+            cd ~/Backend
+            echo "Stopping all containers"
+            sudo docker stop $(sudo docker ps -aq)
+            echo "Checkout master and pull changes"
+            git checkout master
+            git pull
+            git status
+            echo "Rebuild Docker images"
+            sudo docker compose build
+            echo "Restart Docker images"
+            sudo docker compose up -d=true
+            echo "All done"
 
       - name: kill vpn
         if: always()
