@@ -22,7 +22,7 @@ jobs:
           echo "${{ secrets.VPN_USERNAME }}" > .github/vpn/dnetcloud.pw
           echo "${{ secrets.VPN_PASSWORD }}" >> .github/vpn/dnetcloud.pw
       - name: Connect VPN
-        run: openvpn3 --config .github/vpn/config.ovpn --ca .github/vpn/dnetcloudssh.crt
+        run: openvpn --config .github/vpn/config.ovpn --ca .github/vpn/dnetcloudssh.crt --auth-user-pass .github/vpn/dnetcloud.pw
       - name: Check Connect VPN
         run: echo ${{ steps.connect_vpn.outputs.STATUS }}
       - name: Executing remote ssh commands using password
