@@ -57,6 +57,6 @@ jobs:
             sudo docker compose up -d=true
             echo "All done"
 
-      - name: kill vpn
+      - name: Kill vpn
         if: always()
         run: sudo killall openvpn
