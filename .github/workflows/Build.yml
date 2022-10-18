@@ -12,29 +12,51 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get --assume-yes --no-install-recommends install openvpn
-      - name: Create config.ovpn and certificate
+
+      - name: Create config.ovpn
         run: |
-          mkdir .github/vpn && touch .github/vpn/config.ovpn
-          echo -e "remote ${{ secrets.VPN_URL }}\ncomp-lzo\nobind\ndev tun\nproto udp\nport ${{ secrets.VPN_PORT }}\nauth-nocache\npersist-key\npersist-tun\nclient\nca dnetcloudssh.crt" > .github/vpn/config.ovpn
-          cat .github/vpn/config.ovpn
-          echo "${{ secrets.VPN_CA_CRT }}" > .github/vpn/dnetcloudssh.crt
+          mkdir .github/workflows/vpn
+          echo -e "remote $VPN_URL\ncomp-lzo\nnobind\ndev tun\nproto udp\nport $VPN_PORT\nauth-nocache\npersist-key\npersist-tun\nclient\nauth-user-pass $VPN_PW_PATH\n$VPN_CA_CRT" > .github/workflows/vpn/config.ovpn
+        env:
+          VPN_CA_CRT: ${{ secrets.VPN_CA_CRT }}
+          VPN_PORT: ${{ secrets.VPN_PORT }}
+          VPN_URL: ${{ secrets.VPN_URL }}
+
       - name: Create password file
         run: |
-          echo "${{ secrets.VPN_USERNAME }}" > .github/vpn/dnetcloud.pw
-          echo "${{ secrets.VPN_PASSWORD }}" >> .github/vpn/dnetcloud.pw
+          echo -e "$VPN_USERNAME\n$VPN_PASSWORD" > .github/workflows/vpn/dnetcloud.pw
+        env:
+          VPN_USERNAME: ${{ secrets.VPN_USERNAME }}
+          VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
+
       - name: Connect VPN
-        run: openvpn --config .github/vpn/config.ovpn --ca .github/vpn/dnetcloudssh.crt --auth-user-pass .github/vpn/dnetcloud.pw
+        run: sudo openvpn --config .github/workflows/vpn/config.ovpn --auth-user-pass .github/workflows/vpn/dnetcloud.pw --daemon
+
       - name: Check Connect VPN
         run: echo ${{ steps.connect_vpn.outputs.STATUS }}
+
       - name: Executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
-          script: whoami
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd ~/Backend
+            echo "Stopping all containers"
+            sudo docker stop $(sudo docker ps -aq)
+            echo "Checkout master and pull changes"
+            git checkout master
+            git pull
+            git status
+            echo "Rebuild Docker images"
+            sudo docker compose build
+            echo "Restart Docker images"
+            sudo docker compose up -d=true
+            echo "All done"
 
-      - name: kill vpn
+      - name: Kill vpn
         if: always()
         run: sudo killall openvpn

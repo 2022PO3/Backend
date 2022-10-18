@@ -30,7 +30,7 @@ SECRET_KEY = getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS = [getenv("CLOUD_INSTANCE_IP")]
 
 
 # Application definition
@@ -84,10 +84,10 @@ WSGI_APPLICATION = "src.core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "po3_database",
+        "NAME": "backend_database",
         "USER": "root",
         "PASSWORD": getenv("DATABASE_PASSWORD"),
-        "HOST": "localhost",
+        "HOST": "db",
         "PORT": "3306",
     }
 }
