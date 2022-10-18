@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from src.api.models.parking_lots import ParkingLot
+from src.api.models.parking_lots import ParkingLots
 
 
-class ParkingLotSerializer(serializers.ModelSerializer):
+class ParkingLotsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ParkingLot
+        model = ParkingLots
         fields = ["id", "garage_id", "floor_number", "occupied"]

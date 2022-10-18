@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from src.api.models.garages import Garage
+from src.api.models.garages import Garages
 
 
-class GarageSerializer(serializers.ModelSerializer):
+class GaragesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Garage
-        fields = ["id", "owner_id"]
+        model = Garages
+        fields = ["id", "owner_id", "is_full", "unoccupied_lots"]

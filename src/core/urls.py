@@ -19,6 +19,6 @@ from src.api.views import garage_view, parking_lot_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("garages/", garage_view.garages),
-    path("parking_lots/", parking_lot_view.parking_lots),
+    path("api/garages/", garage_view.garages),
+    path("api/parking_lots/", parking_lot_view.parking_lots),
 ]

@@ -1,2 +1,0 @@
-from .garages_serializer import GarageSerializer
-from .parking_lots_serializer import ParkingLotSerializer
