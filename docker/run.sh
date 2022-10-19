@@ -4,4 +4,4 @@ sleep 30s
 echo "Migrating database..."
 python manage.py migrate
 echo "Migrations completed. Starting up server..."
-python manage.py runserver 0.0.0.0:8000
+gunicorn src.core.wsgi:application -b 0.0.0.0:8000

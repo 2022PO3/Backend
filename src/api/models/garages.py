@@ -1,8 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from src.users.models import User
+from src.core.models import TimeStampMixin
 
 
-class Garages(models.Model):
+class Garages(TimeStampMixin, models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
 
     @property
