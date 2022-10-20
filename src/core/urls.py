@@ -16,9 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from src.api.views import garage_view, parking_lot_view
+from knox import views as knox_views
+from src.api.views.login_view import LoginView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/garages/", garage_view.garages),
     path("api/parking_lots/", parking_lot_view.parking_lots),
+    path("login/", LoginView.as_view(), name="knox_login"),
+    path("logout/", knox_views.LogoutView.as_view(), name="knox_logout"),
+    path("logoutall/", knox_views.LogoutAllView.as_view(), name="knox_logoutall"),
 ]

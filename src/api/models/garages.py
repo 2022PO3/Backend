@@ -5,6 +5,7 @@ from src.core.models import TimeStampMixin
 
 class Garages(TimeStampMixin, models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    name = models.CharField(max_length=192)
 
     @property
     def is_full(self) -> bool:

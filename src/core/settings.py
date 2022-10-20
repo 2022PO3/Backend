@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_seed",
     "src.users",
+    "knox",
 ]
 
 MIDDLEWARE = [
@@ -93,6 +94,9 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("knox.auth.TokenAuthentication",),
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
