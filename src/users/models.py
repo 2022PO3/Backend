@@ -13,12 +13,12 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         GARAGE_OWNER = 2
         ADMIN = 3
 
-    first_name: str = models.CharField(max_length=192)
-    last_name: str = models.CharField(max_length=192)
-    email: str = models.EmailField(unique=True)
-    role: int = models.IntegerField(choices=Roles.choices)
-    is_active: bool = models.BooleanField(default=True)
-    license_plate: str = models.CharField(max_length=192)
+    first_name = models.CharField(max_length=192)
+    last_name = models.CharField(max_length=192)
+    email = models.EmailField(unique=True)
+    role = models.IntegerField(choices=Roles.choices)
+    is_active = models.BooleanField(default=True)
+    license_plate = models.CharField(max_length=192)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["licence_plate"]
