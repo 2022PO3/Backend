@@ -1,5 +1,4 @@
 from django.contrib.auth.base_user import BaseUserManager
-from src.users.models import User
 
 
 class UserManager(BaseUserManager):
@@ -8,7 +7,7 @@ class UserManager(BaseUserManager):
     for authentication instead of usernames.
     """
 
-    def create_user(self, email, password, **extra_fields) -> User:
+    def create_user(self, email, password, **extra_fields):
         """
         Create and save a User with the given email and password.
         """
@@ -20,7 +19,7 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, email, password, **extra_fields) -> User:
+    def create_superuser(self, email, password, **extra_fields):
         """
         Create and save a SuperUser with the given email and password.
         """

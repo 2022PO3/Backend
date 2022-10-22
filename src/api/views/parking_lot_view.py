@@ -1,14 +1,17 @@
+from urllib.request import Request
 from django.http import HttpResponse, JsonResponse
+from rest_framework.response import Response
+
 from src.api.models.parking_lots import ParkingLots
 from src.api.serializers.parking_lots_serializer import ParkingLotsSerializer
+from rest_framework.decorators import api_view
 
 
-def parking_lots(request):
+@api_view(["GET"])
+def get_parking_lots(request: Request) -> Response:
     """
     List all code snippets, or create a new snippet.
     """
-    if request.method == "GET":
-        parking_lots = ParkingLots.objects.all()
-        serializer = ParkingLotsSerializer(parking_lots, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    return HttpResponse(400)
+    parking_lots = ParkingLots.objects.all()
+    serializer = ParkingLotsSerializer(parking_lots, many=True)
+    return Response({"data": serializer.data}, status=200)
