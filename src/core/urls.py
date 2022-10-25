@@ -21,8 +21,5 @@ from knox import views as knox_views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/garages/", garage_view.get_garages),
-    path("api/parking_lots/", parking_lot_view.parking_lots),
-    path("login/", knox_views.LoginView.as_view(), name="knox_login"),
-    path("logout/", knox_views.LogoutView.as_view(), name="knox_logout"),
-    path("logoutall/", knox_views.LogoutAllView.as_view(), name="knox_logoutall"),
+    path("api/parking-lots/", parking_lot_view.get_parking_lots),
 ]

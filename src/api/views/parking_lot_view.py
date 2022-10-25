@@ -1,4 +1,5 @@
 from urllib.request import Request
+from rest_framework import status
 from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
 
@@ -14,4 +15,4 @@ def get_parking_lots(request: Request) -> Response:
     """
     parking_lots = ParkingLots.objects.all()
     serializer = ParkingLotsSerializer(parking_lots, many=True)
-    return Response({"data": serializer.data}, status=200)
+    return Response({"data": serializer.data}, status=status.HTTP_200_OK)
