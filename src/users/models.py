@@ -21,7 +21,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     license_plate = models.CharField(max_length=192)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["licence_plate"]
+    REQUIRED_FIELDS = ["licence_plate", "role"]
 
     objects = UserManager()
 

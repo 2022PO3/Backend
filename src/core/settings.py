@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "src.core.apps.ApiConfig",
     "rest_framework",
-    "django_seed",
     "src.users",
     "knox",
 ]

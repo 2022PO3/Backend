@@ -20,6 +20,6 @@ from knox import views as knox_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/garages/", garage_view.get_garages),
+    path("api/garages/", garage_view.GaragesList.as_view()),  # type: ignore
     path("api/parking-lots/", parking_lot_view.get_parking_lots),
 ]

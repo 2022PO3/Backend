@@ -4,7 +4,6 @@ from src.api.models.parking_lots import ParkingLots
 
 
 class GaragesSerializer(serializers.ModelSerializer):
-    ownerId = serializers.IntegerField(source="owner_id")
     isFull = serializers.BooleanField(source="is_full")
     unoccupiedLots = serializers.IntegerField(source="unoccupied_lots")
     parkingLots = serializers.IntegerField(source="parking_lots")
@@ -13,9 +12,13 @@ class GaragesSerializer(serializers.ModelSerializer):
         model = Garages
         fields = [
             "id",
-            "ownerId",
+            "owner",
             "name",
             "isFull",
             "unoccupiedLots",
             "parkingLots",
         ]
+
+    def to_representation(self, instance) -> Any:
+        self.fields["owner"] = UserSerializer(read_only=True)
+        return super().to_representation(instance)

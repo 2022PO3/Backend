@@ -1,0 +1,77 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "email": "john.doe@po.be",
+      "first_name": "John",
+      "last_name": "Doe",
+      "password": "password",
+      "license_plate": "1-ABC-123",
+      "is_active": true,
+      "role": 2,
+      "created_at": "2022-10-25T14:41:15.240541",
+      "updated_at": "2022-10-25T14:41:15.240541"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "email": "albert.einstein@po.be",
+      "first_name": "Albert",
+      "last_name": "Einstein",
+      "password": "password",
+      "license_plate": "1-ZZZ-456",
+      "is_active": true,
+      "role": 3,
+      "created_at": "2022-10-25T14:41:15.240541",
+      "updated_at": "2022-10-25T14:41:15.240541"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "email": "developer@po.be",
+      "first_name": "Grace",
+      "last_name": "Hopper",
+      "password": "password",
+      "license_plate": "1-HUI-635",
+      "is_active": true,
+      "role": 3,
+      "created_at": "2022-10-25T14:41:15.240541",
+      "updated_at": "2022-10-25T14:41:15.240541"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+      "email": "ernest.Hemmingway@po.be",
+      "first_name": "Ernest",
+      "last_name": "Hemmingway",
+      "password": "password",
+      "license_plate": "1-POL-319",
+      "is_active": true,
+      "role": 2,
+      "created_at": "2022-10-25T14:41:15.240541",
+      "updated_at": "2022-10-25T14:41:15.240541"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 5,
+    "fields": {
+      "email": "isaak.newton@po.be",
+      "first_name": "Isaak",
+      "last_name": "Newton",
+      "password": "password",
+      "license_plate": "1-FKJ-123",
+      "is_active": true,
+      "role": 1,
+      "created_at": "2022-10-25T14:41:15.240541",
+      "updated_at": "2022-10-25T14:41:15.240541"
+    }
+  }
+]
