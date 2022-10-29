@@ -13,7 +13,6 @@ services:
   backend:
     build:
       context: .
-    restart: always
     volumes:
       - .:/backend
     ports:

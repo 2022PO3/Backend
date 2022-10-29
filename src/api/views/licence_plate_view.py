@@ -1,5 +1,8 @@
-from rest_framework.request import Request
+from django.http import Http404
+
 from rest_framework import status
+from rest_framework.request import Request
+
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -30,3 +33,27 @@ class LicencePlateList(APIView):
             {"errors": licence_plate_serializer.errors},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+class LicencePlateDetail(APIView):
+    """
+    Update a `LicencePlate` with the given `pk`.
+    """
+
+    def get_object(self, pk: int) -> LicencePlates:
+        """
+        Retrieves the `LicencePlates`-object with the given `pk` from the database.
+        """
+        try:
+            return LicencePlates.objects.get(pk=pk)
+        except LicencePlates.DoesNotExist:
+            raise Http404
+
+    def put(self, request: Request, pk: int, format=None) -> Response:
+        licence_plate_data = JSONParser().parse(request)
+        licence_plate = self.get_object(pk)
+        serializer = LicencePlatesSerializer(licence_plate, data=licence_plate_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "Starting up Django and waiting 30s"
-sleep 30s
+echo "Starting up Django and waiting 10s"
+sleep 10s
 echo "Migrating database..."
 python manage.py migrate
 echo "Seeding database..."
