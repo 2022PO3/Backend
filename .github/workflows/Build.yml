@@ -1,7 +1,8 @@
 name: Backend Build
 on:
   push:
-    branch: [master]
+    branches:
+      - master
 jobs:
   build:
     name: Build

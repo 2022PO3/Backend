@@ -1,4 +1,3 @@
-requirements-dev.txt
 pyproject.toml
 README.md
 *.egg_info

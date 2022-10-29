@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from src.api.views import garage_view, parking_lot_view, user_view, licence_plate_view
+from knox import views as knox_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
