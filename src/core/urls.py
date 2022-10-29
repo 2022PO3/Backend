@@ -25,5 +25,4 @@ urlpatterns = [
     path("api/parking-lots/", parking_lot_view.ParkingLotList.as_view()),  # type: ignore
     path("api/users/", user_view.UserList.as_view()),  # type: ignore
     path("api/licence-plates/", licence_plate_view.LicencePlateList.as_view()),  # type: ignore
-    path("api/licence-plate/<int:pk>", licence_plate_view.LicencePlateDetail.as_view()),
 ]
