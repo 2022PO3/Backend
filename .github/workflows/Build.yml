@@ -32,3 +32,4 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSWORD }}
           script: |
             bash ~/restart_backend.sh
+            
