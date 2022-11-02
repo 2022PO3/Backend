@@ -83,3 +83,4 @@ python manage.py runserver
 ```
 
 To check if everything is set up correctly, go to http://127.0.0.1:8000/. Normally, you shouldn't see any errors.
+
