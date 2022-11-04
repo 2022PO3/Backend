@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from src.api.views import garage_view, parking_lot_view, user_view, licence_plate_view
+from src.api.views import garage_view, parking_lot_view, user_view, licence_plate_view, login_view, sign_up_view, logout_view
 from knox import views as knox_views
 
 urlpatterns = [
@@ -25,5 +25,9 @@ urlpatterns = [
     path("api/parking-lots/", parking_lot_view.ParkingLotList.as_view()),  # type: ignore
     path("api/users/", user_view.UserList.as_view()),  # type: ignore
     path("api/licence-plates/", licence_plate_view.LicencePlateList.as_view()),  # type: ignore
-    path("api/licence-plate/<int:pk>", licence_plate_view.LicencePlateDetail.as_view()),
+    path("api/licence-plate/<int:pk>", licence_plate_view.LicencePlateDetail.as_view()), # type: ignore
+    # Authentication
+    path("api/login", login_view.LoginView.as_view()) # type: ignore
+    path("api/logout", logout_view.LogoutView.as_view()) # type: ignore
+    path("api/sign_up", sign_up_view.SignupView.as_view()) # type: ignore
 ]
