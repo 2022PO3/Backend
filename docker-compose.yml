@@ -38,12 +38,12 @@ services:
     networks:
       - docker-network
   #certbot:
-  #image: certbot/certbot
-  #container_name: certbot
-  #volumes:
-  #  - ./certbot/conf:/etc/letsencrypt
-  #  - ./certbot/www:/var/www/certbot
-  #command: certonly --webroot -w /var/www/certbot --email robin.martens1@student.kuleuven.be -d po3backend.ddns.net --agree-tos --non-interactive
+    #image: certbot/certbot
+    #container_name: certbot
+    #volumes:
+    #  - ./certbot/conf:/etc/letsencrypt
+    #  - ./certbot/www:/var/www/certbot
+    #command: certonly --webroot -w /var/www/certbot --email robin.martens1@student.kuleuven.be -d po3backend.ddns.net --agree-tos --non-interactive
 networks:
   docker-network:
     driver: bridge
