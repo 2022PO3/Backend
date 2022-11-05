@@ -3,7 +3,7 @@ services:
   db:
     image: mysql:8.0.30
     volumes:
-      - /var/lib/po3_backend_data2/db:/var/lib/mysql
+      - /var/lib/po3_backend_data/db:/var/lib/mysql
     ports:
       - 3306:3306
     environment:
