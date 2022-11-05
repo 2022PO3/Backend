@@ -31,5 +31,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSWORD }}
           script: |
-            bash ~/restart_backend.sh
-            
+            bash ~/Backend/docker/restart_backend.sh
