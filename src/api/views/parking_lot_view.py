@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.api.models.parking_lots import ParkingLots
-from src.api.serializers.parking_lots_serializer import ParkingLotsSerializer
+from src.api.models import ParkingLots
+from src.api.serializers import ParkingLotsSerializer
 
 
 class ParkingLotList(APIView):

@@ -6,8 +6,8 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from src.api.models.licence_plates import LicencePlates
-from src.api.serializers.licence_plates_serializer import LicencePlatesSerializer
+from src.api.models import LicencePlates
+from src.api.serializers import LicencePlatesSerializer
 
 
 class LicencePlateList(APIView):

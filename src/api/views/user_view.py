@@ -2,7 +2,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from rest_framework import status, permissions
-from src.api.serializers.users_serializer import UsersSerializer
+from src.api.serializers import UsersSerializer
 from rest_framework.views import APIView
 from src.users.models import User
 

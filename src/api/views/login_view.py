@@ -9,7 +9,7 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
-from src.api.serializers.users_serializer import LoginSerializer, UsersSerializer
+from src.api.serializers import LoginSerializer, UsersSerializer
 from src.users.models import User
 
 

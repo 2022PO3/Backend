@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from src.api.models.garages import Garages
+from src.api.models import Garages
 
 
 class GaragesSerializer(serializers.ModelSerializer):

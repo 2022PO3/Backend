@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 
-from src.api.models.garages import Garages
-from src.api.serializers.garages_serializer import GaragesSerializer
+from src.api.models import Garages
+from src.api.serializers import GaragesSerializer
 
 
 class GarageDetail(APIView):

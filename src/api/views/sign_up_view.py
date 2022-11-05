@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.request import Request
 
-from src.api.serializers.users_serializer import SignUpSerializer
+from src.api.serializers import SignUpSerializer
 from src.users.models import User
 
 
