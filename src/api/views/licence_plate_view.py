@@ -2,7 +2,6 @@ from django.http import Http404
 
 from rest_framework import status
 from rest_framework.request import Request
-
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -51,9 +50,17 @@ class LicencePlateDetail(APIView):
 
     def put(self, request: Request, pk: int, format=None) -> Response:
         licence_plate_data = JSONParser().parse(request)
-        licence_plate = self.get_object(pk)
+        try:
+            licence_plate = self.get_object(pk)
+        except Http404:
+            return Response(
+                {"errors": f"The given licence plate with id {pk} does not exist,"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         serializer = LicencePlatesSerializer(licence_plate, data=licence_plate_data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )

@@ -1,14 +1,18 @@
+from django.http import Http404
+
+from rest_framework import status, permissions
 from rest_framework.request import Request
-from rest_framework import status
-from src.api.models.garages import Garages
-from src.api.serializers.garages_serializer import GaragesSerializer
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
-from django.http import Http404
+
+from src.api.models.garages import Garages
+from src.api.serializers.garages_serializer import GaragesSerializer
 
 
 class GarageDetail(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     """
     A view class which incorporates the views regarding single instances of the `Garage`-model:
     - get a single garage by `id`;
@@ -23,6 +27,8 @@ class GarageDetail(APIView):
 
 
 class GarageList(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     """
     A view class to get all the garages.
     """

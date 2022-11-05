@@ -14,6 +14,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from os import path, getenv
 
+from datetime import timedelta
+from rest_framework.settings import api_settings
+
 # Load the `.env`-file.
 dotenv_path = path.abspath(".env")
 load_dotenv(dotenv_path)
@@ -103,7 +106,6 @@ PASSWORD_HASHERS = [
 ]
 
 
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("knox.auth.TokenAuthentication",),
 }
@@ -127,6 +129,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = "users.User"
+
+AUTHENTICATION_BACKENDS = ["src.users.backends.EmailAuthBackend"]
+
+REST_KNOX = {
+    "TOKEN_TTL": timedelta(days=7),
+    "TOKEN_LIMIT_PER_USER": 1,
+    "AUTO_REFRESH": True,
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

@@ -11,17 +11,17 @@ class Garages(TimeStampMixin, models.Model):
     def is_full(self) -> bool:
         from src.api.models.parking_lots import ParkingLots
 
-        parking_lots = ParkingLots.objects.filter(garage_id=self.id)
+        parking_lots = ParkingLots.objects.filter(garage_id=self.pk)
         return len(parking_lots.filter(occupied=True)) == len(parking_lots)
 
     @property
     def unoccupied_lots(self) -> int:
         from src.api.models.parking_lots import ParkingLots
 
-        return len(ParkingLots.objects.filter(garage_id=self.id).filter(occupied=True))
+        return len(ParkingLots.objects.filter(garage_id=self.pk).filter(occupied=True))
 
     @property
     def parking_lots(self) -> int:
         from src.api.models.parking_lots import ParkingLots
 
-        return len(ParkingLots.objects.filter(garage_id=self.id))
+        return len(ParkingLots.objects.filter(garage_id=self.pk))
