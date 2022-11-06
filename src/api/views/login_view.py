@@ -8,12 +8,19 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from src.api.serializers import LoginSerializer, UsersSerializer
 from src.users.models import User
 
 
 class LoginView(APIView):
+    """
+    A view to log in a user.
+    """
+
+    permission_classes = [AllowAny]
+
     def get_token_limit_per_user(self):
         return knox_settings.TOKEN_LIMIT_PER_USER
 

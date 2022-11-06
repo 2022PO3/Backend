@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from src.api.views import (
     garage_view,
-    parking_lot_view,
     user_view,
     licence_plate_view,
     login_view,
@@ -26,11 +25,10 @@ from src.api.views import (
 )
 
 urlpatterns = [
-    path("api/garage/<int:pk>/", garage_view.GarageDetail.as_view()),  # type: ignore
-    path("api/garages/", garage_view.GarageList.as_view()),  # type: ignore
-    path("api/parking-lots/", parking_lot_view.ParkingLotList.as_view()),  # type: ignore
-    path("api/users/", user_view.UserList.as_view()),  # type: ignore
-    path("api/licence-plates/", licence_plate_view.LicencePlateList.as_view()),  # type: ignore
+    path("api/garage/<int:pk>", garage_view.GarageDetail.as_view()),  # type: ignore
+    path("api/garages", garage_view.GarageList.as_view()),  # type: ignore
+    path("api/licence-plates", licence_plate_view.LicencePlateList.as_view()),  # type: ignore
+    path("api/user", user_view.UserDetail.as_view()),  # type: ignore
     path("api/licence-plate/<int:pk>", licence_plate_view.LicencePlateDetail.as_view()),  # type: ignore
 ]
 
