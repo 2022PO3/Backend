@@ -19,7 +19,7 @@ class SignUpView(APIView):
         if user_serializer.is_valid():
             User.objects.create_user(
                 user_serializer.data["email"],
-                user_serializer.data["password"],
+                user_data["password"],
                 user_serializer.data["role"],
             )
             return Response(

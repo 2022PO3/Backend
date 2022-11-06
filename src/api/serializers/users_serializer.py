@@ -1,3 +1,5 @@
+from typing import Any
+
 from rest_framework import serializers
 from src.users.models import User
 from django.contrib.auth import authenticate
@@ -14,12 +16,19 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    firstName = serializers.CharField(source="first_name")
-    lastName = serializers.CharField(source="last_name")
+    firstName = serializers.CharField(source="first_name", allow_null=True)
+    lastName = serializers.CharField(source="last_name", allow_null=True)
+
+    def is_valid(self, raise_exception: bool = False) -> bool:
+        if "firstName" not in self.initial_data:
+            self.initial_data |= {"firstName": None}
+        if "lastName" not in self.initial_data:
+            self.initial_data |= {"lastName": None}
+        return super().is_valid()
 
     class Meta:
         model = User
-        field = ["id", "email", "password", "role", "firstName", "lastName"]
+        fields = ["id", "email", "password", "role", "firstName", "lastName"]
         extra_kwargs = {"password": {"write_only": True}}
 
 

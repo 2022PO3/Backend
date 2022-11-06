@@ -26,15 +26,17 @@ from src.api.views import (
 )
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("api/garage/<int:pk>/", garage_view.GarageDetail.as_view()),  # type: ignore
     path("api/garages/", garage_view.GarageList.as_view()),  # type: ignore
     path("api/parking-lots/", parking_lot_view.ParkingLotList.as_view()),  # type: ignore
     path("api/users/", user_view.UserList.as_view()),  # type: ignore
     path("api/licence-plates/", licence_plate_view.LicencePlateList.as_view()),  # type: ignore
     path("api/licence-plate/<int:pk>", licence_plate_view.LicencePlateDetail.as_view()),  # type: ignore
-    # Authentication
+]
+
+# User authentication
+urlpatterns += [
     path("auth/login", login_view.LoginView.as_view()),  # type: ignore
     path("auth/logout", logout_view.LogoutView.as_view()),  # type: ignore
-    path("auth/sign_up", sign_up_view.SignUpView.as_view()),  # type: ignore
+    path("auth/sign-up", sign_up_view.SignUpView.as_view()),  # type: ignore
 ]
