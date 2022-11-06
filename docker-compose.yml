@@ -3,11 +3,11 @@ services:
   db:
     image: mysql:8.0.30
     volumes:
-      - /var/lib/po3_backend_data/db:/var/lib/mysql
+      - /var/lib/${DATABASE_VOLUME}/db:/var/lib/mysql
     ports:
       - 3306:3306
     environment:
-      MYSQL_DATABASE: "backend_database"
+      MYSQL_DATABASE: "${DATABASE_NAME}"
       MYSQL_ROOT_PASSWORD: "${DATABASE_PASSWORD}"
     container_name: mysql_db_container
   backend:
@@ -27,7 +27,8 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-      - ./nginx/http.conf:/etc/nginx/conf.d/default.conf # Local development
+      - ${NGINX_CONFIG_PATH}:${NGINX_SERVER_CONFIG_PATH}
+      # - ./nginx/http.conf:/etc/nginx/conf.d/default.conf # Local development
       # - ./nginx/https.conf:/etc/nginx/nginx.conf # Production
     ports:
       - 80:80
@@ -38,12 +39,12 @@ services:
     networks:
       - docker-network
   #certbot:
-    #image: certbot/certbot
-    #container_name: certbot
-    #volumes:
-    #  - ./certbot/conf:/etc/letsencrypt
-    #  - ./certbot/www:/var/www/certbot
-    #command: certonly --webroot -w /var/www/certbot --email robin.martens1@student.kuleuven.be -d po3backend.ddns.net --agree-tos --non-interactive
+  #image: certbot/certbot
+  #container_name: certbot
+  #volumes:
+  #  - ./certbot/conf:/etc/letsencrypt
+  #  - ./certbot/www:/var/www/certbot
+  #command: certonly --webroot -w /var/www/certbot --email robin.martens1@student.kuleuven.be -d po3backend.ddns.net --agree-tos --non-interactive
 networks:
   docker-network:
     driver: bridge
