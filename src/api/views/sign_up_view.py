@@ -10,7 +10,7 @@ from src.users.models import User
 
 class SignUpView(APIView):
     """
-    General sign up view for new users. An `email`, `password` and `role` have to be provided to create a user.
+    General sign up view for new users. An `email`, `password` and `role` have to be provided to create a user. The `first_name` and `last_name` fields are optional.
     """
 
     def post(self, request: Request, format=None) -> Response:
@@ -21,6 +21,8 @@ class SignUpView(APIView):
                 user_serializer.data["email"],
                 user_data["password"],
                 user_serializer.data["role"],
+                first_name=user_serializer.data["firstName"],
+                last_name=user_serializer.data["lastName"],
             )
             return Response(
                 {"data": user_serializer.data},
