@@ -28,8 +28,6 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
       - ${NGINX_CONFIG_PATH}:${NGINX_SERVER_CONFIG_PATH}
-      # - ./nginx/http.conf:/etc/nginx/conf.d/default.conf # Local development
-      # - ./nginx/https.conf:/etc/nginx/nginx.conf # Production
     ports:
       - 80:80
       - 443:443
