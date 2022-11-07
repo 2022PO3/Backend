@@ -2,3 +2,4 @@ __pycache__
 .env
 .tox
 *.egg-info
+certbot/
