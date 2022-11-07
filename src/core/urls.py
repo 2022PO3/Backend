@@ -34,7 +34,7 @@ urlpatterns = [
 
 # User authentication
 urlpatterns += [
-    path("auth/login", login_view.LoginView.as_view()),  # type: ignore
-    path("auth/logout", logout_view.LogoutView.as_view()),  # type: ignore
-    path("auth/sign-up", sign_up_view.SignUpView.as_view()),  # type: ignore
+    path("api/auth/login", login_view.LoginView.as_view()),  # type: ignore
+    path("api/auth/logout", logout_view.LogoutView.as_view()),  # type: ignore
+    path("api/auth/sign-up", sign_up_view.SignUpView.as_view()),  # type: ignore
 ]
