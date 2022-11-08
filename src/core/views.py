@@ -2,7 +2,7 @@ from django.http import Http404
 
 from rest_framework.response import Response
 
-from typing import TypeVar
+from typing import TypeVar, Any
 
 T = TypeVar("T")
 
@@ -25,7 +25,7 @@ class BackendResponse(Response):
 
     def __init__(
         self,
-        data=None,
+        data: str | list[str] | dict[str, Any] | None = None,
         status=None,
         template_name=None,
         headers=None,
@@ -43,7 +43,7 @@ class BackendResponse(Response):
 
     @staticmethod
     def __assign_top_level_key(
-        data: str | list | None, status: int | None
+        data: str | list[str] | dict[str, Any] | None, status: int | None
     ) -> dict | None:
         if data is None or status is None:
             return None

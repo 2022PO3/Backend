@@ -1,15 +1,14 @@
 from django.core.exceptions import ValidationError
 
 from rest_framework import status
-from rest_framework.parsers import JSONParser
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.request import Request
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
-from src.api.serializers import SignUpSerializer
-from src.users.models import User
 from src.core.views import BackendResponse
+from src.users.models import User
+from src.api.serializers import SignUpSerializer
 
 
 class SignUpView(APIView):
@@ -37,7 +36,7 @@ class SignUpView(APIView):
                     user_serializer.data, status=status.HTTP_201_CREATED
                 )
             except ValidationError as e:
-                return BackendResponse(e, status=status.HTTP_400_BAD_REQUEST)
+                return BackendResponse(e.error_list, status=status.HTTP_400_BAD_REQUEST)
         return BackendResponse(
             user_serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )
