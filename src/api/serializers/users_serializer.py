@@ -1,7 +1,5 @@
-from typing import Any
-
 from rest_framework import serializers
-from rest_framework.exceptions import ErrorDetail, ValidationError
+from rest_framework.exceptions import ValidationError
 from src.users.models import User
 from django.contrib.auth import authenticate
 
