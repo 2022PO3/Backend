@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.password_validation import validate_password
 
 if TYPE_CHECKING:
     from src.users.models import User
@@ -20,6 +21,7 @@ class UserManager(BaseUserManager):
             raise ValueError("The Email must be set")
         email = self.normalize_email(email)
         user = self.model(email=email, role=role, **extra_fields)
+        validate_password(password)
         user.set_password(password)
         user.save()
         return user

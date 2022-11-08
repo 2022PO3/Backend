@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 from os import path, getenv
 
 from datetime import timedelta
-from rest_framework.settings import api_settings
+
 
 # Load the `.env`-file.
 dotenv_path = path.abspath(".env")
@@ -122,12 +122,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 10,
+        },
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+    {
+        "NAME": "src.core.password_validators.SpecialCharacterValidation",
+    },
+    {
+        "NAME": "src.core.password_validators.MinimumNumberValidation",
     },
 ]
 
