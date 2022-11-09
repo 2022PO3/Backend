@@ -111,6 +111,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "EXCEPTION_HANDLER": "src.core.utils.exception_handler.custom_exception_handler",
 }
 
 # Password validation
@@ -133,10 +134,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
     {
-        "NAME": "src.core.password_validators.SpecialCharacterValidation",
+        "NAME": "src.core.utils.password_validators.SpecialCharacterValidation",
     },
     {
-        "NAME": "src.core.password_validators.MinimumNumberValidation",
+        "NAME": "src.core.utils.password_validators.MinimumNumberValidation",
     },
 ]
 
