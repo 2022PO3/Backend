@@ -25,3 +25,4 @@ class Garages(TimeStampMixin, models.Model):
         from src.api.models.parking_lots import ParkingLots
 
         return len(ParkingLots.objects.filter(garage_id=self.pk))
+

@@ -1,5 +1,3 @@
-from django.http import Http404
-
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
@@ -8,6 +6,7 @@ from rest_framework.views import APIView
 from src.core.views import BackendResponse, GetObjectMixin
 from src.api.models import LicencePlates
 from src.api.serializers import LicencePlatesSerializer
+
 
 
 class LicencePlateList(APIView):
@@ -22,18 +21,20 @@ class LicencePlateList(APIView):
 
     def post(self, request: Request, format=None) -> BackendResponse:
         licence_plate_data = JSONParser().parse(request)
-        licence_plate_serializer = LicencePlatesSerializer(data=licence_plate_data)
+        licence_plate_serializer = PostLicencePlateSerializer(data=licence_plate_data)
         if licence_plate_serializer.is_valid():
-            licence_plate_serializer.save()
+        LicencePlates.handle_licence_plate(
+                licence_plate_serializer.data,
+            )
             return BackendResponse(
                 licence_plate_serializer.data, status=status.HTTP_201_CREATED
+            
             )
         return BackendResponse(
             licence_plate_serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
-
-
+        
 class LicencePlateDetail(APIView, GetObjectMixin):
     """
     Update a `LicencePlate` with the given `pk`.

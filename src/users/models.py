@@ -1,4 +1,5 @@
-from typing import Any
+from secrets import token_hex
+from random import choices
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
@@ -9,6 +10,7 @@ from src.core.models import TimeStampMixin
 
 class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     class Roles(models.IntegerChoices):
+        GENERATED_USER = 0
         NORMAL_USER = 1
         GARAGE_OWNER = 2
         ADMIN = 3
@@ -37,5 +39,16 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         return self.role == 1
 
     @property
+    def is_generated_user(self) -> bool:
+        return self.role == 0
+
+    @property
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
+
+    @staticmethod
+    def email_generator() -> str:
+        """
+        Generates a random email address.
+        """
+        return f"{token_hex(8)}@generated.com"
