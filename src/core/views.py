@@ -1,8 +1,11 @@
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
+from rest_framework import status
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from typing import TypeVar, Any
+
 
 T = TypeVar("T")
 
@@ -26,7 +29,7 @@ class BackendResponse(Response):
     def __init__(
         self,
         data: str | list[str] | dict[str, Any] | None = None,
-        status=None,
+        status=int | None,
         template_name=None,
         headers=None,
         exception=False,
@@ -34,10 +37,10 @@ class BackendResponse(Response):
     ):
         super().__init__(
             data=BackendResponse.__assign_top_level_key(data, status),
-            status=None,
-            template_name=None,
-            headers=None,
-            exception=False,
+            status=status,
+            template_name=template_name,
+            headers=headers,
+            exception=exception,
             content_type=BackendResponse.__set_content_type(content_type),
         )
 
@@ -54,3 +57,15 @@ class BackendResponse(Response):
         return "application/json" if content_type is None else content_type
 
     # TODO Add default headers for the Backend.
+
+
+def server_error(request: Request, *args, **kwargs):
+    """
+    Generic 500 error handler.
+    """
+    data = {
+        "errors": [
+            "There happened an exception on the server, which caused the request to fail."
+        ]
+    }
+    return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

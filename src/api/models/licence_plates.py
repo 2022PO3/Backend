@@ -1,11 +1,12 @@
 import datetime
-import stat
 from typing import Any
 from django.db import models
 
 from src.users.models import User
-from src.api.models.garages import Garages
+from src.api.models import Garages
 from src.core.models import TimeStampMixin
+
+from django.views.decorators.http import require_http_methods
 
 
 class LicencePlates(TimeStampMixin, models.Model):
@@ -43,7 +44,10 @@ class LicencePlates(TimeStampMixin, models.Model):
         queryset = LicencePlates.objects.filter(licence_plate=licence_plate)
         if not queryset:
             email = User.email_generator()
-            password = User.objects.make_random_password(length=20)
+            password = User.objects.make_random_password(
+                length=20,
+                allowed_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*();,./<>",
+            )
             generated_user = User.objects.create_user(
                 email=email,
                 password=password,

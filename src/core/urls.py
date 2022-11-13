@@ -13,7 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path
 from src.api.views import (
     garage_view,
@@ -23,6 +22,8 @@ from src.api.views import (
     sign_up_view,
     logout_view,
 )
+
+handler500 = "src.core.views.server_error"
 
 urlpatterns = [
     path("api/garage/<int:pk>", garage_view.GarageDetail.as_view()),  # type: ignore

@@ -1,18 +1,24 @@
+from django.http import Http404
+
 from rest_framework import status
-from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
+from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
-from src.core.views import BackendResponse, GetObjectMixin
 from src.api.models import LicencePlates
-from src.api.serializers import LicencePlatesSerializer
+from src.api.serializers import LicencePlatesSerializer, PostLicencePlateSerializer
+from src.core.views import BackendResponse, GetObjectMixin
+from src.core.utils.origin_validation import OriginAPIView
 
 
-
-class LicencePlateList(APIView):
+class LicencePlateList(OriginAPIView):
     """
     A view class to get all the licence plates.
     """
+
+    permission_classes = [AllowAny]
+    origins = ["rpi"]
 
     def get(self, request: Request, format=None) -> BackendResponse:
         licence_plates = LicencePlates.objects.all()
@@ -20,21 +26,23 @@ class LicencePlateList(APIView):
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request, format=None) -> BackendResponse:
+        if (resp := super().post(request, format)) is not None:
+            return resp
         licence_plate_data = JSONParser().parse(request)
         licence_plate_serializer = PostLicencePlateSerializer(data=licence_plate_data)
         if licence_plate_serializer.is_valid():
-        LicencePlates.handle_licence_plate(
+            LicencePlates.handle_licence_plate(
                 licence_plate_serializer.data,
             )
             return BackendResponse(
                 licence_plate_serializer.data, status=status.HTTP_201_CREATED
-            
             )
         return BackendResponse(
             licence_plate_serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
-        
+
+
 class LicencePlateDetail(APIView, GetObjectMixin):
     """
     Update a `LicencePlate` with the given `pk`.
