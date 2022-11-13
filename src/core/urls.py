@@ -15,27 +15,29 @@ Including another URLconf
 """
 from django.urls import path
 from src.api.views import (
-    garage_view,
-    user_view,
-    licence_plate_view,
-    login_view,
-    sign_up_view,
-    logout_view,
+    GarageDetail,
+    GarageList,
+    LicencePlateList,
+    LicencePlateDetail,
+    UserDetail,
+    LoginView,
+    LogoutView,
+    SignUpView,
 )
 
 handler500 = "src.core.views.server_error"
 
 urlpatterns = [
-    path("api/garage/<int:pk>", garage_view.GarageDetail.as_view()),  # type: ignore
-    path("api/garages", garage_view.GarageList.as_view()),  # type: ignore
-    path("api/licence-plates", licence_plate_view.LicencePlateList.as_view()),  # type: ignore
-    path("api/user", user_view.UserDetail.as_view()),  # type: ignore
-    path("api/licence-plate/<int:pk>", licence_plate_view.LicencePlateDetail.as_view()),  # type: ignore
+    path("api/garage/<int:pk>", GarageDetail.as_view()),  # type: ignore
+    path("api/garages", GarageList.as_view()),  # type: ignore
+    path("api/licence-plates", LicencePlateList.as_view()),  # type: ignore
+    path("api/user", UserDetail.as_view()),  # type: ignore
+    path("api/licence-plate/<int:pk>", LicencePlateDetail.as_view()),  # type: ignore
 ]
 
 # User authentication
 urlpatterns += [
-    path("api/auth/login", login_view.LoginView.as_view()),  # type: ignore
-    path("api/auth/logout", logout_view.LogoutView.as_view()),  # type: ignore
-    path("api/auth/sign-up", sign_up_view.SignUpView.as_view()),  # type: ignore
+    path("api/auth/login", LoginView.as_view()),  # type: ignore
+    path("api/auth/logout", LogoutView.as_view()),  # type: ignore
+    path("api/auth/sign-up", SignUpView.as_view()),  # type: ignore
 ]
