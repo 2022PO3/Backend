@@ -29,7 +29,7 @@ class BackendResponse(Response):
     def __init__(
         self,
         data: str | list[str] | dict[str, Any] | None = None,
-        status=int | None,
+        status: int | None = None,
         template_name=None,
         headers=None,
         exception=False,
