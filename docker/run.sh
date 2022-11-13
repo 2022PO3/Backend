@@ -3,7 +3,9 @@ echo "Starting up Django and waiting 10s"
 sleep 10s
 
 echo "Migrating database..."
-python manage.py makemigrations
+python manage.py makemigrations api
+python manage.py makemigrations users
+python manage.py makemigrations core
 python manage.py migrate
 
 echo "Seeding database..."

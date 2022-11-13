@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.urls import path
 from src.api.views import (
-    GarageDetail,
-    GarageList,
-    LicencePlateList,
-    LicencePlateDetail,
-    UserDetail,
+    GarageDetailView,
+    GarageListView,
+    RPiLicencePlateView,
+    LicencePlateDetailView,
+    UserDetailView,
     LoginView,
     LogoutView,
     SignUpView,
@@ -28,11 +28,11 @@ from src.api.views import (
 handler500 = "src.core.views.server_error"
 
 urlpatterns = [
-    path("api/garage/<int:pk>", GarageDetail.as_view()),  # type: ignore
-    path("api/garages", GarageList.as_view()),  # type: ignore
-    path("api/licence-plates", LicencePlateList.as_view()),  # type: ignore
-    path("api/user", UserDetail.as_view()),  # type: ignore
-    path("api/licence-plate/<int:pk>", LicencePlateDetail.as_view()),  # type: ignore
+    path("api/garage/<int:pk>", GarageDetailView.as_view()),  # type: ignore
+    path("api/garages", GarageListView.as_view()),  # type: ignore
+    path("api/licence-plates", RPiLicencePlateView.as_view()),  # type: ignore
+    path("api/user", UserDetailView.as_view()),  # type: ignore
+    path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),  # type: ignore
 ]
 
 # User authentication

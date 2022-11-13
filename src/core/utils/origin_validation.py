@@ -30,7 +30,12 @@ class ValidateOrigin:
                 "The PO3-ORIGIN-header contains a wrong value. It can only be `rpi`, `app` or `web`.",
                 status.HTTP_400_BAD_REQUEST,
             )
-        elif origin in self.origins and origin == "rpi":
+        elif origin not in self.origins:
+            raise OriginValidationException(
+                f"The origin `{origin}` is not allowed on this view.",
+                status.HTTP_403_FORBIDDEN,
+            )
+        elif origin == "rpi":
             try:
                 sent_key: str = request.headers["RPI-SECRET_KEY"]
             except KeyError:
