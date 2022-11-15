@@ -10,4 +10,11 @@ class GarageSettingsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GarageSettings
-        fields = ["id", "garageId", "maxHeight", "maxWidth", "maxHandicappedLots"]
+        fields = [
+            "id",
+            "garageId",
+            "location",
+            "maxHeight",
+            "maxWidth",
+            "maxHandicappedLots",
+        ]

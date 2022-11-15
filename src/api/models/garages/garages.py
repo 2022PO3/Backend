@@ -1,10 +1,11 @@
 from django.db import models
-from src.users.models import User
 from src.core.models import TimeStampMixin
+
+import src.users.models as user_model
 
 
 class Garages(TimeStampMixin, models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey("users.User", on_delete=models.CASCADE)
     name = models.CharField(max_length=192)
 
     @property

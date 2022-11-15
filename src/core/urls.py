@@ -29,11 +29,11 @@ from src.api.views import (
 handler500 = "src.core.views.server_error"
 
 urlpatterns = [
-    path("api/garage/<int:pk>", GarageDetailView.as_view()),  # type: ignore
-    path("api/garages", GarageListView.as_view()),  # type: ignore
-    path("api/licence-plates", RPiLicencePlateView.as_view()),  # type: ignore
-    path("api/user", UserDetailView.as_view()),  # type: ignore
-    path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),  # type: ignore
+    path("api/garage/<int:pk>", GarageDetailView.as_view()),
+    path("api/garages", GarageListView.as_view()),
+    path("api/licence-plates", RPiLicencePlateView.as_view()),
+    path("api/user", UserDetailView.as_view()),
+    path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/garage-settings/<int:pk>", GarageSettingsView.as_view()),
 ]
 
