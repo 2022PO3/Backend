@@ -32,7 +32,8 @@ def create_fixtures(
                 "fields": {field: values[field][i] for field in fields},
             }
             for i in range(values_len)
-        ]
+        ],
+        indent=4,
     )
     model_name_snake = model_to_snake_case(model_name).replace("api.", "")
     with open(
