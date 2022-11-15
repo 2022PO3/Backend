@@ -5,7 +5,6 @@ from src.core.models import TimeStampMixin
 
 
 class Locations(TimeStampMixin, models.Model):
-    garage = models.ForeignKey("api.Garages", on_delete=models.CASCADE)
     country = models.CharField(max_length=192)
     province = models.CharField(max_length=3, choices=ProvincesEnum.choices)
     municipality = models.CharField(max_length=192)
