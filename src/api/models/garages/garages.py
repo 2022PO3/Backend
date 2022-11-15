@@ -4,7 +4,7 @@ from src.core.models import TimeStampMixin
 
 
 class Garages(TimeStampMixin, models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=192)
 
     @property
