@@ -20,13 +20,13 @@ class SignUpSerializer(serializers.ModelSerializer):
     passwordConfirmation = serializers.CharField(max_length=192, write_only=True)
 
     def is_valid(self, raise_exception: bool = False) -> bool:
-        if "firstName" not in self.initial_data:
+        if "firstName" not in self.initial_data:  # type: ignore
             self.initial_data |= {"firstName": None}
-        if "lastName" not in self.initial_data:
+        if "lastName" not in self.initial_data:  # type: ignore
             self.initial_data |= {"lastName": None}
         if not super().is_valid():
             return False
-        if self.initial_data["password"] != self.initial_data["passwordConfirmation"]:
+        if self.initial_data["password"] != self.initial_data["passwordConfirmation"]:  # type: ignore
             raise ValidationError(
                 {"errors": ["Password and passwordConfirmation do not match."]}
             )
