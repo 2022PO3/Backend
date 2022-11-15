@@ -8,4 +8,4 @@ class ParkingLotsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ParkingLots
-        fields = ["id", "garageId", "floorNumber", "occupied"]
+        fields = ["id", "garageId", "floorNumber", "occupied", "disabled"]
