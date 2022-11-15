@@ -1,13 +1,14 @@
 import json
 import datetime
-from random import randint
+from faker import Faker
+from random import randint, uniform, choice
 from functools import reduce
 
 
 def create_fixtures(
     model_name: str,
     fields: list[str],
-    values: dict[str, list[str | int | float | None]],
+    values: dict[str, list],
     number: int,
 ) -> None:
     if not len(set(map(len, values.values()))) == 1:
@@ -50,25 +51,60 @@ def model_to_snake_case(model_name: str) -> str:
 
 
 if __name__ == "__main__":
+    faker = Faker(["nl-BE"])
+    cities = [faker.city() for _ in range(10)]
     create_fixtures(
-        "api.garages",
-        ["owner", "name", "updated_at", "created_at"],
+        "api.locations",
+        [
+            "country",
+            "province",
+            "municipality",
+            "post_code",
+            "street",
+            "number",
+            "updated_at",
+            "created_at",
+        ],
         {
-            "owner": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
-            "name": [
-                "QPark Hasselt",
-                "QPark Leuven",
-                "QPark Aalter",
-                "QPark Brugge",
-                "QPark Herstappe",
-                "QPark Oostduinkerke",
-                "QPark Antwerpen",
-                "QPark Oostende",
-                "QPark Mariakerke",
-                "QPark Geel",
+            "country": ["België"] * 10,
+            "province": [
+                choice(["LIM", "ANT", "WVL", "OVL", "VBR"] for _ in range(10))  # type: ignore
             ],
+            "municipality": cities,
+            "post_code": [randint(2000, 4000) for _ in range(10)],
+            "street": [faker.street_name() for _ in range(10)],
+            "number": [randint(2, 200) for _ in range(10)],
         },
         2,
+    )
+    create_fixtures(
+        "api.garageSettings",
+        [
+            "max_height",
+            "location",
+            "max_width",
+            "max_handicapped_lots",
+            "created_at",
+            "updated_at",
+        ],
+        {
+            "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
+            "location": [i for i in range(10)],
+            "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
+            "max_handicapped_lots": [randint(2, 10) for _ in range(10)],
+        },
+        3,
+    )
+
+    create_fixtures(
+        "api.garages",
+        ["owner", "name", "garage_settings", "updated_at", "created_at"],
+        {
+            "owner": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
+            "name": list(map(lambda city: f"QPark {city}", cities)),
+            "garage_settings": [i for i in range(10)],
+        },
+        4,
     )
     create_fixtures(
         "api.parkingLots",
@@ -78,7 +114,7 @@ if __name__ == "__main__":
             "floor_number": [randint(-2, 2) for _ in range(100)],
             "occupied": [randint(0, 1) for _ in range(100)],
         },
-        3,
+        5,
     )
     create_fixtures(
         "api.licencePlates",
@@ -96,49 +132,70 @@ if __name__ == "__main__":
             ],
             "garage": [1, None, 3, 4, 5, None, None],
         },
-        4,
-    )
-    create_fixtures(
-        "api.locations",
-        [
-            "garage_id",
-            "country",
-            "province",
-            "municipality",
-            "post_code",
-            "street",
-            "number",
-            "updated_at",
-            "created_at",
-        ],
-        {
-            "garage_id": [1, 2],
-            "country": ["België"] * 2,
-            "province": ["LIM"] * 2,
-            "municipality": ["Hasselt", "Lummen"],
-            "post_code": [3500, 3000],
-            "street": ["Toekomststraat", "Sint-Annastraat"],
-            "number": [43, 590],
-        },
-        5,
-    )
-    create_fixtures(
-        "api.garageSettings",
-        [
-            "garage_id",
-            "max_height",
-            "location",
-            "max_width",
-            "max_handicapped_lots",
-            "created_at",
-            "updated_at",
-        ],
-        {
-            "garage_id": [1, 2],
-            "max_height": [1.9, 2.1],
-            "location": [1, 2],
-            "max_width": [1.8, 1.95],
-            "max_handicapped_lots": [10, 12],
-        },
         6,
+    )
+
+    create_fixtures(
+        "api.prices",
+        [
+            "garage",
+            "price_string",
+            "price",
+            "valuta",
+            "created_at",
+            "updated_at",
+        ],
+        {
+            "garage": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+            "price_string": [f"{randint(1, 10)} uur parkeren" for _ in range(20)],
+            "price": [round(uniform(4.0, 15.0), 1) for _ in range(20)],
+            "valuta": ["EUR"] * 20,
+        },
+        7,
+    )
+    create_fixtures(
+        "api.openingHours",
+        [
+            "garage",
+            "from_day",
+            "to_day",
+            "from_hour",
+            "to_hour",
+            "updated_at",
+            "created_at",
+        ],
+        {
+            "garage": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+            "from_day": [0, 6] * 10,
+            "to_day": [5, 6] * 10,
+            "from_hour": [datetime.time(0, 0, 0), datetime.time(5, 0, 0)] * 20,
+            "to_hour": [datetime.time(23, 59, 0), datetime.time(22, 0, 0)] * 10,
+        },
+        8,
+    )
+    create_fixtures(
+        "api.reservations",
+        [
+            "garage",
+            "user",
+            "parking_lot",
+            "from_date",
+            "to_date",
+            "updated_at",
+            "created_at",
+        ],
+        {
+            "garage": [randint(1, 10) for _ in range(10)],
+            "user": [randint(1, 5) for _ in range(10)],
+            "parking_lot": [randint(1, 100) for _ in range(10)],
+            "from_date": [
+                datetime.datetime(2022, 12, randint(20, 21), randint(0, 12))
+                for _ in range(10)
+            ],
+            "to_date": [
+                datetime.datetime(2022, 12, randint(21, 22), randint(13, 23))
+                for _ in range(10)
+            ],
+        },
+        9,
     )
