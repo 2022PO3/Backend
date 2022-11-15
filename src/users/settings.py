@@ -5,8 +5,8 @@ from src.api.models import ProvincesEnum
 
 
 class Settings(TimeStampMixin, models.Model):
-    user_id = models.ForeignKey("users.User", on_delete=models.CASCADE)
-    fav_garage_id = models.ForeignKey("api.Garages", on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE, related_name="+")
+    fav_garage = models.ForeignKey("api.Garages", on_delete=models.CASCADE)
     location = models.CharField(
         max_length=3,
         choices=ProvincesEnum.choices,

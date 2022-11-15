@@ -18,7 +18,6 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     email = models.EmailField(unique=True)
     role = models.IntegerField(choices=Roles.choices)
     is_active = models.BooleanField(default=True)
-    settings_id = models.ForeignKey("api.Settings", on_delete=models.CASCADE)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["role"]
