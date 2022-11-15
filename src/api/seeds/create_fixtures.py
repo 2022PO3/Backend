@@ -53,7 +53,7 @@ if __name__ == "__main__":
         "api.garages",
         ["owner", "name", "updated_at", "created_at"],
         {
-            "owner": [1, 2, 3, 4, 5],
+            "owner": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
             "name": [
                 "QPark Hasselt",
                 "QPark Leuven",

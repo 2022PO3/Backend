@@ -8,7 +8,7 @@ python manage.py migrate
 
 echo "Seeding database..."
 python src/api/seeds/create_fixtures.py
-bash docker/run.sh
+/bin/bash docker/seeds.sh
 
 echo "Migrations and seeding completed. Starting up server..."
 gunicorn src.core.wsgi:application -b 0.0.0.0:8000 --reload
