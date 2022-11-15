@@ -20,6 +20,15 @@ class GetObjectMixin:
         except cls.DoesNotExist:  # type: ignore
             raise Http404
 
+    def get_object_on_field(self, cls: T, field_name: str, field_value: str | int) -> T:
+        """
+        Retrieves the `T`-object with the given `field_value` for `field_name` from the database.
+        """
+        try:
+            return cls.objects.get(field_name=field_value)  # type: ignore
+        except cls.DoesNotExist:  # type: ignore
+            raise Http404
+
 
 class BackendResponse(Response):
     """

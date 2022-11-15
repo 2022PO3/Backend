@@ -20,6 +20,7 @@ from src.api.views import (
     RPiLicencePlateView,
     LicencePlateDetailView,
     UserDetailView,
+    GarageSettingsView,
     LoginView,
     LogoutView,
     SignUpView,
@@ -33,6 +34,7 @@ urlpatterns = [
     path("api/licence-plates", RPiLicencePlateView.as_view()),  # type: ignore
     path("api/user", UserDetailView.as_view()),  # type: ignore
     path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),  # type: ignore
+    path("api/garage-settings/<int:pk>", GarageSettingsView.as_view()),
 ]
 
 # User authentication
