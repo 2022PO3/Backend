@@ -6,28 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0004_parkinglots_disabled_settings_prices_openinghours_and_more'),
+        ("api", "0004_parkinglots_disabled_settings_prices_openinghours_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='garagesettings',
-            old_name='garage_id',
-            new_name='garage',
+            model_name="garagesettings",
+            old_name="garage_id",
+            new_name="garage",
         ),
         migrations.RenameField(
-            model_name='locations',
-            old_name='garage_id',
-            new_name='garage',
+            model_name="locations",
+            old_name="garage_id",
+            new_name="garage",
         ),
         migrations.RenameField(
-            model_name='openinghours',
-            old_name='garage_id',
-            new_name='garage',
+            model_name="openinghours",
+            old_name="garage_id",
+            new_name="garage",
         ),
         migrations.RenameField(
-            model_name='prices',
-            old_name='garage_id',
-            new_name='garage',
+            model_name="prices",
+            old_name="garage_id",
+            new_name="garage",
         ),
     ]

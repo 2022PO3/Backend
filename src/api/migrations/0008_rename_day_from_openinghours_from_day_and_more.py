@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0007_remove_locations_garage_remove_settings_user"),
+        ("api", "0005_rename_garage_id_garagesettings_garage_and_more"),
     ]
 
     operations = [
