@@ -4,13 +4,13 @@
         "pk": 1,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "OVL",
-            "municipality": "Membruggen",
-            "post_code": 3376,
-            "street": "Rebeccastraat",
-            "number": 114,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "ANT",
+            "municipality": "Wuustwezel",
+            "post_code": 3501,
+            "street": "Robertlaan",
+            "number": 83,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -18,13 +18,13 @@
         "pk": 2,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "ANT",
-            "municipality": "Soiron",
-            "post_code": 2065,
-            "street": "Jessepad",
-            "number": 147,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "VBR",
+            "municipality": "Houffalize",
+            "post_code": 3464,
+            "street": "Jaypad",
+            "number": 9,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -32,13 +32,13 @@
         "pk": 3,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "LIM",
-            "municipality": "Joncret",
-            "post_code": 2486,
-            "street": "Amysingel",
-            "number": 109,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "VBR",
+            "municipality": "Sclayn",
+            "post_code": 2341,
+            "street": "Amypad",
+            "number": 150,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -46,13 +46,13 @@
         "pk": 4,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "LIM",
-            "municipality": "Seilles",
-            "post_code": 3299,
-            "street": "Staceystraat",
-            "number": 67,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "VBR",
+            "municipality": "Esen",
+            "post_code": 2195,
+            "street": "Jamesbaan",
+            "number": 7,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -60,13 +60,13 @@
         "pk": 5,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "ANT",
-            "municipality": "Moorsele",
-            "post_code": 3804,
-            "street": "Tinasteeg",
-            "number": 160,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "WVL",
+            "municipality": "Custinne",
+            "post_code": 3097,
+            "street": "Conniedreef",
+            "number": 4,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -74,13 +74,13 @@
         "pk": 6,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "OVL",
-            "municipality": "Keumi\u00e9e",
-            "post_code": 3438,
-            "street": "Brianbaan",
-            "number": 154,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "WVL",
+            "municipality": "Mont-Saint-Andr\u00e9",
+            "post_code": 3929,
+            "street": "Johnboulevard",
+            "number": 193,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -88,13 +88,13 @@
         "pk": 7,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "ANT",
-            "municipality": "Sint-Lambrechts-Herk",
-            "post_code": 2001,
-            "street": "Herbertring",
-            "number": 91,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "VBR",
+            "municipality": "Wanlin",
+            "post_code": 3549,
+            "street": "Cindydreef",
+            "number": 185,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -102,13 +102,13 @@
         "pk": 8,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "OVL",
-            "municipality": "Ouwegem",
-            "post_code": 3630,
-            "street": "Edwardstraat",
-            "number": 7,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "VBR",
+            "municipality": "Hoboken",
+            "post_code": 2439,
+            "street": "Mikesteeg",
+            "number": 93,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -116,13 +116,13 @@
         "pk": 9,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "OVL",
-            "municipality": "Tienen",
-            "post_code": 2703,
-            "street": "Katherinelei",
-            "number": 55,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "VBR",
+            "municipality": "Baisy-Thy",
+            "post_code": 2158,
+            "street": "Justinbaan",
+            "number": 172,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     },
     {
@@ -130,13 +130,13 @@
         "pk": 10,
         "fields": {
             "country": "Belgi\u00eb",
-            "province": "LIM",
-            "municipality": "Sainte-Ode",
-            "post_code": 2264,
-            "street": "Crystallei",
-            "number": 173,
-            "updated_at": "2022-11-16T05:11:57.520272+00:00",
-            "created_at": "2022-11-16T05:11:57.520290+00:00"
+            "province": "VBR",
+            "municipality": "Relegem",
+            "post_code": 3811,
+            "street": "Lisasingel",
+            "number": 142,
+            "updated_at": "2022-11-16T07:16:05.874647+00:00",
+            "created_at": "2022-11-16T07:16:05.874667+00:00"
         }
     }
 ]

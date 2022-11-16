@@ -3,99 +3,99 @@
         "model": "api.parkingLots",
         "pk": 1,
         "fields": {
-            "garage": 1,
-            "floor_number": 1,
+            "garage": 7,
+            "floor_number": -1,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 2,
         "fields": {
-            "garage": 7,
-            "floor_number": 2,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 10,
+            "floor_number": 1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 3,
         "fields": {
-            "garage": 10,
-            "floor_number": 1,
+            "garage": 3,
+            "floor_number": 0,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 4,
         "fields": {
-            "garage": 10,
+            "garage": 1,
             "floor_number": 2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 5,
         "fields": {
-            "garage": 6,
-            "floor_number": -2,
+            "garage": 9,
+            "floor_number": 0,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 6,
         "fields": {
-            "garage": 6,
+            "garage": 5,
             "floor_number": 0,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 7,
         "fields": {
-            "garage": 8,
+            "garage": 4,
             "floor_number": 2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 8,
         "fields": {
-            "garage": 6,
-            "floor_number": 0,
+            "garage": 1,
+            "floor_number": -1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 9,
         "fields": {
-            "garage": 1,
-            "floor_number": -2,
+            "garage": 10,
+            "floor_number": 2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
@@ -103,54 +103,54 @@
         "pk": 10,
         "fields": {
             "garage": 7,
-            "floor_number": -1,
+            "floor_number": -2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 11,
         "fields": {
-            "garage": 3,
+            "garage": 1,
             "floor_number": 1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 12,
         "fields": {
-            "garage": 1,
+            "garage": 3,
             "floor_number": -1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 13,
         "fields": {
-            "garage": 7,
-            "floor_number": 1,
+            "garage": 1,
+            "floor_number": -1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 14,
         "fields": {
-            "garage": 10,
+            "garage": 7,
             "floor_number": 0,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
@@ -159,284 +159,284 @@
         "fields": {
             "garage": 8,
             "floor_number": 0,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 16,
         "fields": {
-            "garage": 10,
-            "floor_number": 2,
+            "garage": 5,
+            "floor_number": 0,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 17,
         "fields": {
-            "garage": 5,
-            "floor_number": 0,
+            "garage": 7,
+            "floor_number": 2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 18,
         "fields": {
-            "garage": 2,
-            "floor_number": 0,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 10,
+            "floor_number": 2,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 19,
         "fields": {
-            "garage": 1,
-            "floor_number": 0,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 4,
+            "floor_number": 1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 20,
         "fields": {
-            "garage": 9,
-            "floor_number": 0,
+            "garage": 4,
+            "floor_number": -2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 21,
         "fields": {
-            "garage": 4,
-            "floor_number": 1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 10,
+            "floor_number": 0,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 22,
         "fields": {
-            "garage": 1,
-            "floor_number": -2,
+            "garage": 8,
+            "floor_number": 1,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 23,
         "fields": {
-            "garage": 4,
+            "garage": 1,
             "floor_number": 1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 24,
         "fields": {
-            "garage": 5,
-            "floor_number": 1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 6,
+            "floor_number": -1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 25,
         "fields": {
-            "garage": 5,
-            "floor_number": 0,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 8,
+            "floor_number": 2,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 26,
         "fields": {
-            "garage": 5,
+            "garage": 8,
             "floor_number": 0,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 27,
         "fields": {
-            "garage": 8,
-            "floor_number": 1,
+            "garage": 1,
+            "floor_number": -1,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 28,
         "fields": {
-            "garage": 9,
-            "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 4,
+            "floor_number": -1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 29,
         "fields": {
-            "garage": 4,
-            "floor_number": -1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 6,
+            "floor_number": 1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 30,
         "fields": {
-            "garage": 7,
-            "floor_number": 1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 2,
+            "floor_number": -2,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 31,
         "fields": {
-            "garage": 1,
-            "floor_number": 0,
+            "garage": 8,
+            "floor_number": -2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 32,
         "fields": {
-            "garage": 6,
-            "floor_number": 0,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 8,
+            "floor_number": 1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 33,
         "fields": {
-            "garage": 9,
-            "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 2,
+            "floor_number": 0,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 34,
         "fields": {
-            "garage": 6,
-            "floor_number": 0,
+            "garage": 3,
+            "floor_number": 1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 35,
         "fields": {
-            "garage": 10,
-            "floor_number": -2,
+            "garage": 9,
+            "floor_number": 2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 36,
         "fields": {
-            "garage": 10,
-            "floor_number": -1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 4,
+            "floor_number": 1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 37,
         "fields": {
-            "garage": 10,
-            "floor_number": 1,
+            "garage": 9,
+            "floor_number": -2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 38,
         "fields": {
-            "garage": 1,
-            "floor_number": -1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 2,
+            "floor_number": 1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 39,
         "fields": {
-            "garage": 7,
+            "garage": 10,
             "floor_number": 1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 40,
         "fields": {
-            "garage": 1,
-            "floor_number": 1,
+            "garage": 9,
+            "floor_number": 2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
@@ -444,109 +444,109 @@
         "pk": 41,
         "fields": {
             "garage": 8,
-            "floor_number": 0,
+            "floor_number": 2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 42,
         "fields": {
-            "garage": 4,
-            "floor_number": 2,
+            "garage": 7,
+            "floor_number": 1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 43,
         "fields": {
-            "garage": 1,
-            "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 10,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 44,
         "fields": {
-            "garage": 1,
-            "floor_number": 1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 5,
+            "floor_number": -2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 45,
         "fields": {
-            "garage": 7,
-            "floor_number": 0,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 10,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 46,
         "fields": {
-            "garage": 3,
-            "floor_number": 1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 10,
+            "floor_number": -1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 47,
         "fields": {
-            "garage": 4,
-            "floor_number": 0,
+            "garage": 1,
+            "floor_number": -1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 48,
         "fields": {
-            "garage": 1,
-            "floor_number": -1,
+            "garage": 2,
+            "floor_number": -2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 49,
         "fields": {
-            "garage": 4,
-            "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 10,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 50,
         "fields": {
-            "garage": 3,
-            "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 9,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
@@ -554,175 +554,175 @@
         "pk": 51,
         "fields": {
             "garage": 1,
-            "floor_number": 1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "floor_number": 2,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 52,
         "fields": {
-            "garage": 9,
-            "floor_number": -1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 2,
+            "floor_number": 1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 53,
         "fields": {
-            "garage": 10,
-            "floor_number": 0,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 6,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 54,
         "fields": {
-            "garage": 7,
-            "floor_number": 1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 6,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 55,
         "fields": {
-            "garage": 2,
+            "garage": 9,
             "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 56,
         "fields": {
-            "garage": 10,
-            "floor_number": 1,
+            "garage": 9,
+            "floor_number": 2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 57,
         "fields": {
-            "garage": 3,
-            "floor_number": 0,
+            "garage": 7,
+            "floor_number": -2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 58,
         "fields": {
-            "garage": 9,
-            "floor_number": 1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 4,
+            "floor_number": 0,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 59,
         "fields": {
-            "garage": 2,
-            "floor_number": 1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 1,
+            "floor_number": -1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 60,
         "fields": {
-            "garage": 9,
-            "floor_number": 2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 5,
+            "floor_number": -2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 61,
         "fields": {
-            "garage": 3,
+            "garage": 6,
             "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 62,
         "fields": {
-            "garage": 8,
-            "floor_number": 1,
+            "garage": 7,
+            "floor_number": 2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 63,
         "fields": {
-            "garage": 10,
-            "floor_number": -1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 4,
+            "floor_number": 1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 64,
         "fields": {
-            "garage": 1,
-            "floor_number": 1,
+            "garage": 7,
+            "floor_number": 2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 65,
         "fields": {
-            "garage": 6,
-            "floor_number": 0,
+            "garage": 10,
+            "floor_number": -2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 66,
         "fields": {
-            "garage": 4,
-            "floor_number": 0,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 3,
+            "floor_number": 1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
@@ -730,142 +730,142 @@
         "pk": 67,
         "fields": {
             "garage": 5,
-            "floor_number": 0,
+            "floor_number": 1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 68,
         "fields": {
-            "garage": 7,
-            "floor_number": 1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 5,
+            "floor_number": -1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 69,
         "fields": {
-            "garage": 2,
+            "garage": 4,
             "floor_number": 0,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 70,
         "fields": {
-            "garage": 10,
-            "floor_number": -2,
+            "garage": 3,
+            "floor_number": 0,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 71,
         "fields": {
-            "garage": 7,
+            "garage": 5,
             "floor_number": -2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 72,
         "fields": {
-            "garage": 7,
-            "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 6,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 73,
         "fields": {
-            "garage": 7,
-            "floor_number": -1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 9,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 74,
         "fields": {
-            "garage": 2,
-            "floor_number": 2,
+            "garage": 9,
+            "floor_number": -1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 75,
         "fields": {
-            "garage": 10,
-            "floor_number": -1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 4,
+            "floor_number": -2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 76,
         "fields": {
-            "garage": 8,
-            "floor_number": -2,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 5,
+            "floor_number": -1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 77,
         "fields": {
-            "garage": 1,
-            "floor_number": -2,
+            "garage": 5,
+            "floor_number": -1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 78,
         "fields": {
-            "garage": 10,
+            "garage": 5,
             "floor_number": -2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 79,
         "fields": {
-            "garage": 7,
-            "floor_number": 0,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 10,
+            "floor_number": 1,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
@@ -873,153 +873,153 @@
         "pk": 80,
         "fields": {
             "garage": 7,
-            "floor_number": -1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "floor_number": -2,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 81,
         "fields": {
-            "garage": 4,
-            "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 6,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 82,
         "fields": {
-            "garage": 1,
-            "floor_number": -2,
+            "garage": 6,
+            "floor_number": 2,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 83,
         "fields": {
-            "garage": 5,
-            "floor_number": 1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 8,
+            "floor_number": 0,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 84,
         "fields": {
-            "garage": 4,
-            "floor_number": 2,
+            "garage": 7,
+            "floor_number": -2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 85,
         "fields": {
-            "garage": 1,
-            "floor_number": 0,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 8,
+            "floor_number": -2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 86,
         "fields": {
-            "garage": 2,
-            "floor_number": -1,
+            "garage": 1,
+            "floor_number": 1,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 87,
         "fields": {
-            "garage": 3,
-            "floor_number": 0,
+            "garage": 5,
+            "floor_number": 1,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 88,
         "fields": {
-            "garage": 6,
+            "garage": 4,
             "floor_number": 2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 89,
         "fields": {
-            "garage": 7,
-            "floor_number": -1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 5,
+            "floor_number": 0,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 90,
         "fields": {
-            "garage": 8,
-            "floor_number": -1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 4,
+            "floor_number": 1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 91,
         "fields": {
-            "garage": 4,
-            "floor_number": -1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 5,
+            "floor_number": 0,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 92,
         "fields": {
-            "garage": 8,
-            "floor_number": -2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 2,
+            "floor_number": 2,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 93,
         "fields": {
-            "garage": 3,
-            "floor_number": 2,
+            "garage": 8,
+            "floor_number": 0,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
@@ -1027,10 +1027,10 @@
         "pk": 94,
         "fields": {
             "garage": 3,
-            "floor_number": 1,
+            "floor_number": -2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
@@ -1039,64 +1039,64 @@
         "fields": {
             "garage": 2,
             "floor_number": -1,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 96,
         "fields": {
-            "garage": 2,
-            "floor_number": 2,
-            "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 5,
+            "floor_number": -1,
+            "occupied": 1,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 97,
         "fields": {
-            "garage": 3,
-            "floor_number": -2,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 4,
+            "floor_number": 2,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 98,
         "fields": {
-            "garage": 10,
+            "garage": 3,
             "floor_number": 2,
             "occupied": 0,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 99,
         "fields": {
-            "garage": 2,
-            "floor_number": -1,
+            "garage": 10,
+            "floor_number": 1,
             "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     },
     {
         "model": "api.parkingLots",
         "pk": 100,
         "fields": {
-            "garage": 3,
-            "floor_number": -1,
-            "occupied": 1,
-            "created_at": "2022-11-16T05:11:57.521358+00:00",
-            "updated_at": "2022-11-16T05:11:57.521348+00:00"
+            "garage": 2,
+            "floor_number": 0,
+            "occupied": 0,
+            "created_at": "2022-11-16T07:16:05.875725+00:00",
+            "updated_at": "2022-11-16T07:16:05.875715+00:00"
         }
     }
 ]
