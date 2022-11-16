@@ -1,7 +1,7 @@
 import json
 import datetime
 from faker import Faker
-from random import randint, uniform, choice
+from random import randint, uniform, choice, choices
 from functools import reduce
 
 
@@ -14,15 +14,19 @@ def create_fixtures(
     if not len(set(map(len, values.values()))) == 1:
         raise Exception("Lengths of list values are not equal.")
     values_len = len(list(values.values())[0])
-    if "updated_at" in fields:
-        values |= {
-            "updated_at": [datetime.datetime.now().astimezone().isoformat()]
-            * values_len
-        }
     if "created_at" in fields:
         values |= {
-            "created_at": [datetime.datetime.now().astimezone().isoformat()]
-            * values_len
+            "created_at": [
+                datetime.datetime.now().astimezone().isoformat()
+                for _ in range(values_len)
+            ]
+        }
+    if "updated_at" in fields:
+        values |= {
+            "updated_at": [
+                datetime.datetime.now().astimezone().isoformat()
+                for _ in range(values_len)
+            ]
         }
 
     json_string = json.dumps(
@@ -108,11 +112,12 @@ if __name__ == "__main__":
     )
     create_fixtures(
         "api.parkingLots",
-        ["garage", "floor_number", "occupied", "created_at", "updated_at"],
+        ["garage", "floor_number", "occupied", "disabled", "created_at", "updated_at"],
         {
-            "garage": [randint(1, 10) for _ in range(100)],
-            "floor_number": [randint(-2, 2) for _ in range(100)],
-            "occupied": [randint(0, 1) for _ in range(100)],
+            "garage": [randint(1, 10) for _ in range(300)],
+            "floor_number": [randint(-2, 2) for _ in range(300)],
+            "occupied": [randint(0, 1) for _ in range(300)],
+            "disabled": [choices([0, 1], [0.95, 0.05])[0] for _ in range(300)],
         },
         5,
     )

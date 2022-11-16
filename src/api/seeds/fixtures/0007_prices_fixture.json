@@ -4,11 +4,11 @@
         "pk": 1,
         "fields": {
             "garage": 1,
-            "price_string": "2 uur parkeren",
-            "price": 6.2,
+            "price_string": "8 uur parkeren",
+            "price": 8.5,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500044+00:00",
+            "updated_at": "2022-11-16T10:06:12.500118+00:00"
         }
     },
     {
@@ -16,11 +16,11 @@
         "pk": 2,
         "fields": {
             "garage": 1,
-            "price_string": "8 uur parkeren",
-            "price": 13.6,
+            "price_string": "5 uur parkeren",
+            "price": 11.7,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500053+00:00",
+            "updated_at": "2022-11-16T10:06:12.500122+00:00"
         }
     },
     {
@@ -28,11 +28,11 @@
         "pk": 3,
         "fields": {
             "garage": 2,
-            "price_string": "2 uur parkeren",
-            "price": 14.9,
+            "price_string": "4 uur parkeren",
+            "price": 7.6,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500056+00:00",
+            "updated_at": "2022-11-16T10:06:12.500126+00:00"
         }
     },
     {
@@ -40,11 +40,11 @@
         "pk": 4,
         "fields": {
             "garage": 2,
-            "price_string": "2 uur parkeren",
-            "price": 11.0,
+            "price_string": "4 uur parkeren",
+            "price": 14.9,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500059+00:00",
+            "updated_at": "2022-11-16T10:06:12.500129+00:00"
         }
     },
     {
@@ -53,10 +53,10 @@
         "fields": {
             "garage": 3,
             "price_string": "2 uur parkeren",
-            "price": 8.1,
+            "price": 7.0,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500063+00:00",
+            "updated_at": "2022-11-16T10:06:12.500132+00:00"
         }
     },
     {
@@ -64,11 +64,11 @@
         "pk": 6,
         "fields": {
             "garage": 3,
-            "price_string": "7 uur parkeren",
-            "price": 5.3,
+            "price_string": "1 uur parkeren",
+            "price": 14.6,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500066+00:00",
+            "updated_at": "2022-11-16T10:06:12.500135+00:00"
         }
     },
     {
@@ -76,11 +76,11 @@
         "pk": 7,
         "fields": {
             "garage": 4,
-            "price_string": "10 uur parkeren",
-            "price": 9.6,
+            "price_string": "8 uur parkeren",
+            "price": 10.1,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500069+00:00",
+            "updated_at": "2022-11-16T10:06:12.500138+00:00"
         }
     },
     {
@@ -88,11 +88,11 @@
         "pk": 8,
         "fields": {
             "garage": 4,
-            "price_string": "10 uur parkeren",
-            "price": 4.8,
+            "price_string": "9 uur parkeren",
+            "price": 5.1,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500073+00:00",
+            "updated_at": "2022-11-16T10:06:12.500142+00:00"
         }
     },
     {
@@ -100,11 +100,11 @@
         "pk": 9,
         "fields": {
             "garage": 5,
-            "price_string": "1 uur parkeren",
-            "price": 5.2,
+            "price_string": "4 uur parkeren",
+            "price": 5.1,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500076+00:00",
+            "updated_at": "2022-11-16T10:06:12.500145+00:00"
         }
     },
     {
@@ -112,11 +112,11 @@
         "pk": 10,
         "fields": {
             "garage": 5,
-            "price_string": "9 uur parkeren",
-            "price": 8.2,
+            "price_string": "8 uur parkeren",
+            "price": 6.1,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500079+00:00",
+            "updated_at": "2022-11-16T10:06:12.500148+00:00"
         }
     },
     {
@@ -124,11 +124,11 @@
         "pk": 11,
         "fields": {
             "garage": 6,
-            "price_string": "2 uur parkeren",
-            "price": 11.9,
+            "price_string": "7 uur parkeren",
+            "price": 6.9,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500082+00:00",
+            "updated_at": "2022-11-16T10:06:12.500152+00:00"
         }
     },
     {
@@ -136,11 +136,11 @@
         "pk": 12,
         "fields": {
             "garage": 6,
-            "price_string": "2 uur parkeren",
-            "price": 9.6,
+            "price_string": "9 uur parkeren",
+            "price": 9.1,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500086+00:00",
+            "updated_at": "2022-11-16T10:06:12.500155+00:00"
         }
     },
     {
@@ -148,11 +148,11 @@
         "pk": 13,
         "fields": {
             "garage": 7,
-            "price_string": "7 uur parkeren",
-            "price": 14.2,
+            "price_string": "3 uur parkeren",
+            "price": 14.0,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500090+00:00",
+            "updated_at": "2022-11-16T10:06:12.500158+00:00"
         }
     },
     {
@@ -160,11 +160,11 @@
         "pk": 14,
         "fields": {
             "garage": 7,
-            "price_string": "9 uur parkeren",
-            "price": 13.7,
+            "price_string": "4 uur parkeren",
+            "price": 10.0,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500093+00:00",
+            "updated_at": "2022-11-16T10:06:12.500161+00:00"
         }
     },
     {
@@ -172,11 +172,11 @@
         "pk": 15,
         "fields": {
             "garage": 8,
-            "price_string": "1 uur parkeren",
-            "price": 11.9,
+            "price_string": "7 uur parkeren",
+            "price": 5.2,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500097+00:00",
+            "updated_at": "2022-11-16T10:06:12.500165+00:00"
         }
     },
     {
@@ -184,11 +184,11 @@
         "pk": 16,
         "fields": {
             "garage": 8,
-            "price_string": "8 uur parkeren",
-            "price": 12.9,
+            "price_string": "5 uur parkeren",
+            "price": 6.2,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500100+00:00",
+            "updated_at": "2022-11-16T10:06:12.500168+00:00"
         }
     },
     {
@@ -196,11 +196,11 @@
         "pk": 17,
         "fields": {
             "garage": 9,
-            "price_string": "1 uur parkeren",
-            "price": 5.6,
+            "price_string": "2 uur parkeren",
+            "price": 10.5,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500104+00:00",
+            "updated_at": "2022-11-16T10:06:12.500171+00:00"
         }
     },
     {
@@ -208,11 +208,11 @@
         "pk": 18,
         "fields": {
             "garage": 9,
-            "price_string": "6 uur parkeren",
-            "price": 8.9,
+            "price_string": "7 uur parkeren",
+            "price": 4.8,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500107+00:00",
+            "updated_at": "2022-11-16T10:06:12.500174+00:00"
         }
     },
     {
@@ -221,10 +221,10 @@
         "fields": {
             "garage": 10,
             "price_string": "4 uur parkeren",
-            "price": 13.3,
+            "price": 5.8,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500110+00:00",
+            "updated_at": "2022-11-16T10:06:12.500178+00:00"
         }
     },
     {
@@ -232,11 +232,11 @@
         "pk": 20,
         "fields": {
             "garage": 10,
-            "price_string": "9 uur parkeren",
-            "price": 14.4,
+            "price_string": "10 uur parkeren",
+            "price": 10.7,
             "valuta": "EUR",
-            "created_at": "2022-11-16T07:16:05.877214+00:00",
-            "updated_at": "2022-11-16T07:16:05.877205+00:00"
+            "created_at": "2022-11-16T10:06:12.500114+00:00",
+            "updated_at": "2022-11-16T10:06:12.500181+00:00"
         }
     }
 ]
