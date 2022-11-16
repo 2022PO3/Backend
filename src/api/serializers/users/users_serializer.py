@@ -7,10 +7,20 @@ from django.contrib.auth import authenticate
 class UsersSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(source="first_name")
     lastName = serializers.CharField(source="last_name")
+    favLibraryId = serializers.IntegerField(source="fav_library.pk")
 
     class Meta:
         model = User
-        fields = ["id", "email", "role", "firstName", "lastName"]
+        fields = [
+            "id",
+            "email",
+            "role",
+            "firstName",
+            "lastName",
+            "settings",
+            "favLibraryId",
+            "location",
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
 

@@ -21,6 +21,9 @@ from src.api.views import (
     LicencePlateDetailView,
     UserDetailView,
     GarageSettingsView,
+    ReservationsView,
+    OpeningHoursView,
+    PricesView,
     LoginView,
     LogoutView,
     SignUpView,
@@ -35,6 +38,9 @@ urlpatterns = [
     path("api/user", UserDetailView.as_view()),
     path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/garage-settings/<int:pk>", GarageSettingsView.as_view()),
+    path("api/reservations", ReservationsView.as_view()),
+    path("api/opening-hours/<int:pk>", OpeningHoursView.as_view()),
+    path("api/prices/<int:pk>", PricesView.as_view()),
 ]
 
 # User authentication

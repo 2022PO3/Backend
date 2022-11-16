@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from src.api.models import Garages
+from src.api.models import Locations
 
 
 class LocationsSerializer(serializers.ModelSerializer):
-    postCode = serializers.BooleanField(source="post_code", read_only=True)
+    postCode = serializers.IntegerField(source="post_code")
 
     class Meta:
-        model = Garages
+        model = Locations
         fields = [
             "id",
             "country",

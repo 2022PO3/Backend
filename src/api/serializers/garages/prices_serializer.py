@@ -3,8 +3,8 @@ from src.api.models import Prices
 
 
 class PricesSerializer(serializers.ModelSerializer):
-    garageId = serializers.IntegerField(source="garage_id")
-    priceString = serializers.FloatField(source="price_string")
+    garageId = serializers.IntegerField(source="garage.pk")
+    priceString = serializers.CharField(source="price_string")
 
     class Meta:
         model = Prices

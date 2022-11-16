@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
 from src.users.managers import UserManager
+from src.api.models import ProvincesEnum
 from src.core.models import TimeStampMixin
 
 
@@ -19,6 +20,10 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     role = models.IntegerField(choices=Roles.choices)
     is_active = models.BooleanField(default=True)
     settings = models.ForeignKey("api.Settings", on_delete=models.CASCADE, null=True)
+    fav_garage = models.ForeignKey("api.Garages", on_delete=models.CASCADE, null=True)
+    location = models.CharField(
+        max_length=3, choices=ProvincesEnum.choices, default=ProvincesEnum.__empty__
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["role"]

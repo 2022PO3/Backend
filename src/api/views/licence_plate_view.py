@@ -49,7 +49,7 @@ class LicencePlateDetailView(OriginAPIView, GetObjectMixin):
             return resp
         licence_plate_data = JSONParser().parse(request)
         try:
-            licence_plate = self.get_object(LicencePlates, pk)
+            licence_plate = self._get_object(LicencePlates, pk)
         except Http404:
             return BackendResponse(
                 [f"The given licence plate with id {pk} does not exist,"],

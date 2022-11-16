@@ -14,7 +14,7 @@ class LicencePlatesSerializer(serializers.ModelSerializer):
 
 class PostLicencePlateSerializer(serializers.ModelSerializer):
     """
-    Serializer for serializing PUT requests (only the `licence_plate` and the `garage` have to be given with the request).
+    Serializer for serializing POST requests (only the `licence_plate` and the `garage` have to be given with the request).
     """
 
     garageId = serializers.IntegerField(source="garage_id")

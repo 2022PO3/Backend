@@ -3,6 +3,8 @@ from src.api.serializers.garages.locations_serializer import LocationsSerializer
 from src.api.serializers.garages.garage_settings_serializer import (
     GarageSettingsSerializer,
 )
+from src.api.serializers.garages.opening_hours_serializer import OpeningHoursSerializer
+from src.api.serializers.garages.prices_serializer import PricesSerializer
 
 from src.api.serializers.licence_plates_serializer import (
     LicencePlatesSerializer,
@@ -16,3 +18,5 @@ from src.api.serializers.users.users_serializer import (
     SignUpSerializer,
     LoginSerializer,
 )
+
+from src.api.serializers.reservations_serializer import GetReservationsSerializer
