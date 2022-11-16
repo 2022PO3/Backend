@@ -1,0 +1,112 @@
+[
+    {
+        "model": "api.garages",
+        "pk": 1,
+        "fields": {
+            "owner": 1,
+            "name": "QPark Membruggen",
+            "garage_settings": 1,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 2,
+        "fields": {
+            "owner": 1,
+            "name": "QPark Soiron",
+            "garage_settings": 2,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 3,
+        "fields": {
+            "owner": 2,
+            "name": "QPark Joncret",
+            "garage_settings": 3,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 4,
+        "fields": {
+            "owner": 2,
+            "name": "QPark Seilles",
+            "garage_settings": 4,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 5,
+        "fields": {
+            "owner": 3,
+            "name": "QPark Moorsele",
+            "garage_settings": 5,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 6,
+        "fields": {
+            "owner": 3,
+            "name": "QPark Keumi\u00e9e",
+            "garage_settings": 6,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 7,
+        "fields": {
+            "owner": 4,
+            "name": "QPark Sint-Lambrechts-Herk",
+            "garage_settings": 7,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 8,
+        "fields": {
+            "owner": 4,
+            "name": "QPark Ouwegem",
+            "garage_settings": 8,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 9,
+        "fields": {
+            "owner": 5,
+            "name": "QPark Tienen",
+            "garage_settings": 9,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    },
+    {
+        "model": "api.garages",
+        "pk": 10,
+        "fields": {
+            "owner": 5,
+            "name": "QPark Sainte-Ode",
+            "garage_settings": 10,
+            "updated_at": "2022-11-16T05:11:57.520884+00:00",
+            "created_at": "2022-11-16T05:11:57.520895+00:00"
+        }
+    }
+]

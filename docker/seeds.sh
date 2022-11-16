@@ -1,6 +1,6 @@
 #!/bin/bash
-rm src/api/seeds/fixture/*
-python src/api/seeds/create_fixtures.py
+rm $(pwd)/src/api/seeds/fixtures/*
+python $(pwd)/src/api/seeds/create_fixtures.py
 for file in $(pwd)/src/api/seeds/fixtures/*
 do  
     echo "Seeding $(basename $file)"

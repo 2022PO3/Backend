@@ -37,8 +37,9 @@ def create_fixtures(
         indent=4,
     )
     model_name_snake = model_to_snake_case(model_name).replace("api.", "")
+    no = f"000{number}" if number < 10 else f"00{number}"
     with open(
-        f"src/api/seeds/fixtures/00{number}_{model_name_snake}_fixture.json", "w"
+        f"src/api/seeds/fixtures/{no}_{model_name_snake}_fixture.json", "w"
     ) as file:
         file.write(json_string)
 
@@ -68,7 +69,7 @@ if __name__ == "__main__":
         {
             "country": ["België"] * 10,
             "province": [
-                choice(["LIM", "ANT", "WVL", "OVL", "VBR"] for _ in range(10))  # type: ignore
+                choice(["LIM", "ANT", "WVL", "OVL", "VBR"]) for _ in range(10)
             ],
             "municipality": cities,
             "post_code": [randint(2000, 4000) for _ in range(10)],
@@ -89,20 +90,19 @@ if __name__ == "__main__":
         ],
         {
             "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
-            "location": [i for i in range(10)],
+            "location": [i for i in range(1, 11)],
             "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
             "max_handicapped_lots": [randint(2, 10) for _ in range(10)],
         },
         3,
     )
-
     create_fixtures(
         "api.garages",
         ["owner", "name", "garage_settings", "updated_at", "created_at"],
         {
             "owner": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
             "name": list(map(lambda city: f"QPark {city}", cities)),
-            "garage_settings": [i for i in range(10)],
+            "garage_settings": [i for i in range(1, 11)],
         },
         4,
     )
@@ -134,7 +134,6 @@ if __name__ == "__main__":
         },
         6,
     )
-
     create_fixtures(
         "api.prices",
         [
@@ -168,8 +167,10 @@ if __name__ == "__main__":
             "garage": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
             "from_day": [0, 6] * 10,
             "to_day": [5, 6] * 10,
-            "from_hour": [datetime.time(0, 0, 0), datetime.time(5, 0, 0)] * 20,
-            "to_hour": [datetime.time(23, 59, 0), datetime.time(22, 0, 0)] * 10,
+            "from_hour": [str(datetime.time(0, 0, 0)), str(datetime.time(5, 0, 0))]
+            * 10,
+            "to_hour": [str(datetime.time(23, 59, 0)), str(datetime.time(22, 0, 0))]
+            * 10,
         },
         8,
     )
@@ -190,10 +191,14 @@ if __name__ == "__main__":
             "parking_lot": [randint(1, 100) for _ in range(10)],
             "from_date": [
                 datetime.datetime(2022, 12, randint(20, 21), randint(0, 12))
+                .astimezone()
+                .isoformat()
                 for _ in range(10)
             ],
             "to_date": [
                 datetime.datetime(2022, 12, randint(21, 22), randint(13, 23))
+                .astimezone()
+                .isoformat()
                 for _ in range(10)
             ],
         },
