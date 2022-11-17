@@ -37,7 +37,7 @@ class ValidateOrigin:
             )
         elif origin == "rpi":
             try:
-                sent_key: str = request.headers["RPI-SECRET_KEY"]
+                sent_key: str = request.headers["PO3-RPI-KEY"]
             except KeyError:
                 raise OriginValidationException(
                     "The Raspberry Pi secret key is not sent.",
@@ -53,6 +53,26 @@ class ValidateOrigin:
                 if not check_password(sent_key, hashed_pi_key):
                     raise OriginValidationException(
                         "Validation of Raspberry Pi secret key failed.",
+                        status.HTTP_403_FORBIDDEN,
+                    )
+        elif origin == "app" or origin == "web":
+            try:
+                sent_key: str = request.headers["PO3-APP-KEY"]
+            except KeyError:
+                raise OriginValidationException(
+                    "The secret key of the frontend application is not sent.",
+                    status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                hashed_pi_key = os.environ["HASHED_APP_KEY"]
+                if hashed_pi_key is None:
+                    raise OriginValidationException(
+                        "Cannot validate the secret key, as none is installed on the server.",
+                        status.HTTP_400_BAD_REQUEST,
+                    )
+                if not check_password(sent_key, hashed_pi_key):
+                    raise OriginValidationException(
+                        "Validation of the secret key of the frontend application failed.",
                         status.HTTP_403_FORBIDDEN,
                     )
 

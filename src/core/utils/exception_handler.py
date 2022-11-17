@@ -8,7 +8,7 @@ def custom_exception_handler(exc, context):
 
     # Now add the HTTP status code to the response.
     if response is not None:
-        msg: str = response.data["detail"]
+        msg: str = response.data["detail"]  # type: ignore
         response.data = {"errors": [msg]}
 
     return response
