@@ -4,3 +4,5 @@ __pycache__
 *.egg-info
 .mypy_cache
 certbot/
+src/api/seeds/fixtures/**
+!src/api/seeds/fixtures/0001_users_fixture.json
