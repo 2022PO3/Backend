@@ -3,12 +3,12 @@
         "model": "api.garageSettings",
         "pk": 1,
         "fields": {
-            "max_height": 2.1,
+            "max_height": 1.8,
             "location": 1,
-            "max_width": 2.2,
-            "max_handicapped_lots": 6,
-            "created_at": "2022-11-16T10:06:12.491582+00:00",
-            "updated_at": "2022-11-16T10:06:12.491624+00:00"
+            "max_width": 1.8,
+            "max_handicapped_lots": 8,
+            "created_at": "2022-11-17T05:02:35.462132+00:00",
+            "updated_at": "2022-11-17T05:02:35.462180+00:00"
         }
     },
     {
@@ -17,10 +17,10 @@
         "fields": {
             "max_height": 2.0,
             "location": 2,
-            "max_width": 2.0,
-            "max_handicapped_lots": 10,
-            "created_at": "2022-11-16T10:06:12.491592+00:00",
-            "updated_at": "2022-11-16T10:06:12.491627+00:00"
+            "max_width": 2.3,
+            "max_handicapped_lots": 6,
+            "created_at": "2022-11-17T05:02:35.462144+00:00",
+            "updated_at": "2022-11-17T05:02:35.462184+00:00"
         }
     },
     {
@@ -30,69 +30,69 @@
             "max_height": 1.9,
             "location": 3,
             "max_width": 1.9,
-            "max_handicapped_lots": 8,
-            "created_at": "2022-11-16T10:06:12.491597+00:00",
-            "updated_at": "2022-11-16T10:06:12.491631+00:00"
+            "max_handicapped_lots": 7,
+            "created_at": "2022-11-17T05:02:35.462149+00:00",
+            "updated_at": "2022-11-17T05:02:35.462187+00:00"
         }
     },
     {
         "model": "api.garageSettings",
         "pk": 4,
         "fields": {
-            "max_height": 2.2,
+            "max_height": 2.4,
             "location": 4,
             "max_width": 2.2,
-            "max_handicapped_lots": 6,
-            "created_at": "2022-11-16T10:06:12.491600+00:00",
-            "updated_at": "2022-11-16T10:06:12.491634+00:00"
+            "max_handicapped_lots": 7,
+            "created_at": "2022-11-17T05:02:35.462152+00:00",
+            "updated_at": "2022-11-17T05:02:35.462191+00:00"
         }
     },
     {
         "model": "api.garageSettings",
         "pk": 5,
         "fields": {
-            "max_height": 2.3,
+            "max_height": 2.0,
             "location": 5,
-            "max_width": 1.8,
-            "max_handicapped_lots": 8,
-            "created_at": "2022-11-16T10:06:12.491603+00:00",
-            "updated_at": "2022-11-16T10:06:12.491637+00:00"
+            "max_width": 1.9,
+            "max_handicapped_lots": 5,
+            "created_at": "2022-11-17T05:02:35.462156+00:00",
+            "updated_at": "2022-11-17T05:02:35.462194+00:00"
         }
     },
     {
         "model": "api.garageSettings",
         "pk": 6,
         "fields": {
-            "max_height": 2.3,
+            "max_height": 1.9,
             "location": 6,
-            "max_width": 2.0,
-            "max_handicapped_lots": 9,
-            "created_at": "2022-11-16T10:06:12.491606+00:00",
-            "updated_at": "2022-11-16T10:06:12.491640+00:00"
+            "max_width": 1.9,
+            "max_handicapped_lots": 3,
+            "created_at": "2022-11-17T05:02:35.462159+00:00",
+            "updated_at": "2022-11-17T05:02:35.462198+00:00"
         }
     },
     {
         "model": "api.garageSettings",
         "pk": 7,
         "fields": {
-            "max_height": 2.1,
+            "max_height": 2.2,
             "location": 7,
-            "max_width": 2.0,
-            "max_handicapped_lots": 6,
-            "created_at": "2022-11-16T10:06:12.491610+00:00",
-            "updated_at": "2022-11-16T10:06:12.491643+00:00"
+            "max_width": 2.1,
+            "max_handicapped_lots": 2,
+            "created_at": "2022-11-17T05:02:35.462163+00:00",
+            "updated_at": "2022-11-17T05:02:35.462201+00:00"
         }
     },
     {
         "model": "api.garageSettings",
         "pk": 8,
         "fields": {
-            "max_height": 1.9,
+            "max_height": 2.2,
             "location": 8,
-            "max_width": 2.2,
+            "max_width": 1.8,
             "max_handicapped_lots": 2,
-            "created_at": "2022-11-16T10:06:12.491613+00:00",
-            "updated_at": "2022-11-16T10:06:12.491646+00:00"
+            "created_at": "2022-11-17T05:02:35.462167+00:00",
+            "updated_at": "2022-11-17T05:02:35.462205+00:00"
         }
     },
     {
@@ -103,20 +103,20 @@
             "location": 9,
             "max_width": 2.3,
             "max_handicapped_lots": 5,
-            "created_at": "2022-11-16T10:06:12.491616+00:00",
-            "updated_at": "2022-11-16T10:06:12.491649+00:00"
+            "created_at": "2022-11-17T05:02:35.462171+00:00",
+            "updated_at": "2022-11-17T05:02:35.462208+00:00"
         }
     },
     {
         "model": "api.garageSettings",
         "pk": 10,
         "fields": {
-            "max_height": 2.0,
+            "max_height": 1.9,
             "location": 10,
-            "max_width": 2.3,
-            "max_handicapped_lots": 7,
-            "created_at": "2022-11-16T10:06:12.491619+00:00",
-            "updated_at": "2022-11-16T10:06:12.491652+00:00"
+            "max_width": 2.1,
+            "max_handicapped_lots": 2,
+            "created_at": "2022-11-17T05:02:35.462174+00:00",
+            "updated_at": "2022-11-17T05:02:35.462212+00:00"
         }
     }
 ]

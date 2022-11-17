@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 class UsersSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(source="first_name")
     lastName = serializers.CharField(source="last_name")
-    favLibraryId = serializers.IntegerField(source="fav_library.pk")
+    favGarageId = serializers.IntegerField(source="fav_garage")
 
     class Meta:
         model = User
@@ -17,8 +17,7 @@ class UsersSerializer(serializers.ModelSerializer):
             "role",
             "firstName",
             "lastName",
-            "settings",
-            "favLibraryId",
+            "favGarageId",
             "location",
         ]
         extra_kwargs = {"password": {"write_only": True}}
@@ -31,9 +30,9 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     def is_valid(self, raise_exception: bool = False) -> bool:
         if "firstName" not in self.initial_data:  # type: ignore
-            self.initial_data |= {"firstName": None}
+            self.initial_data |= {"firstName": None}  # type: ignore
         if "lastName" not in self.initial_data:  # type: ignore
-            self.initial_data |= {"lastName": None}
+            self.initial_data |= {"lastName": None}  # type: ignore
         if not super().is_valid():
             return False
         if self.initial_data["password"] != self.initial_data["passwordConfirmation"]:  # type: ignore
