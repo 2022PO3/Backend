@@ -2,11 +2,9 @@ from typing import Any
 
 from rest_framework import serializers
 
-from src.api.models import Garages, GarageSettings, Prices
+from src.api.models import Garages, GarageSettings, Prices, Locations
 from src.api.serializers import (
-    LocationsSerializer,
-    PostOpeningHoursSerializer,
-    PricesSerializer,
+    PostPricesSerializer,
     PostGarageSettingsSerializer,
 )
 
@@ -30,19 +28,21 @@ class GetGaragesSerializer(serializers.ModelSerializer):
 
 
 class PostGaragesSerializer(serializers.ModelSerializer):
-    ownerId = serializers.IntegerField(source="owner_pk")
-    prices = PricesSerializer(many=True)
-    settings = PostGarageSettingsSerializer()
+    ownerId = serializers.IntegerField(source="owner_id")
+    garageSettings = PostGarageSettingsSerializer(source="garage_settings")
 
     class Meta:
         model = Garages
-        field = ["ownerId", "name", "prices", "settings"]
+        fields = ["id", "ownerId", "name", "garageSettings"]
 
     def create(self, validated_data: dict[str, Any]) -> Garages:
-        prices_data = validated_data.pop("prices")
-        settingsData = validated_data.pop("settings")
-        GarageSettings.objects.create(**settingsData)
-        garage = Garages.objects.create(**validated_data)
-        for price_data in prices_data:
-            Prices.objects.create(garage=garage, **price_data)
+        settingsData = validated_data.pop("garage_settings")
+        locationData = settingsData.pop("location")
+        location = Locations.objects.create(**locationData)
+        garage_settings = GarageSettings.objects.create(
+            location=location, **settingsData
+        )
+        garage = Garages.objects.create(
+            garage_settings=garage_settings, **validated_data
+        )
         return garage

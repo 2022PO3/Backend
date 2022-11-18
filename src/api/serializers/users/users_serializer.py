@@ -4,10 +4,10 @@ from src.users.models import User
 from django.contrib.auth import authenticate
 
 
-class UsersSerializer(serializers.ModelSerializer):
-    firstName = serializers.CharField(source="first_name")
-    lastName = serializers.CharField(source="last_name")
-    favGarageId = serializers.IntegerField(source="fav_garage")
+class GetUsersSerializer(serializers.ModelSerializer):
+    firstName = serializers.CharField(source="first_name", allow_null=True)
+    lastName = serializers.CharField(source="last_name", allow_null=True)
+    favGarageId = serializers.IntegerField(source="fav_garage", allow_null=True)
 
     class Meta:
         model = User

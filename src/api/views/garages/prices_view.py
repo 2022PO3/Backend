@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from src.core.views import BackendResponse, GetObjectMixin
 from src.core.utils import OriginAPIView
 from src.api.models import Prices
-from src.api.serializers import PricesSerializer
+from src.api.serializers import GetPricesSerializer
 
 
 class PricesView(OriginAPIView, GetObjectMixin):
@@ -26,5 +26,5 @@ class PricesView(OriginAPIView, GetObjectMixin):
                 [f"The corresponding garage with pk `{pk}` does not exist,"],
                 status=status.HTTP_404_NOT_FOUND,
             )
-        serializer = PricesSerializer(garage_prices, many=True)
+        serializer = GetPricesSerializer(garage_prices, many=True)
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)

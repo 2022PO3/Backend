@@ -31,7 +31,7 @@ class PostOpeningHoursSerializer(serializers.ModelSerializer):
     fromHour = serializers.TimeField(source="from_hour")
     toHour = serializers.TimeField(source="to_hour")
 
-    def validate(self, data):
+    def validate(self, data: dict):
         """
         Check that start is before finish.
         """

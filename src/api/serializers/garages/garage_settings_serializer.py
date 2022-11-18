@@ -40,5 +40,5 @@ class PostGarageSettingsSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict[str, Any]) -> GarageSettings:
         locationData = validated_data.pop("location")
-        Locations.objects.create(**locationData)
-        return GarageSettings.objects.create(**validated_data)
+        location = Locations.objects.create(**locationData)
+        return GarageSettings.objects.create(location=location, **validated_data)

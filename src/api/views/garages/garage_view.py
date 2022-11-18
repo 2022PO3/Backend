@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from src.core.views import BackendResponse, GetObjectMixin
 from src.core.utils import OriginAPIView
 from src.api.models import Garages
-from src.api.serializers import GetGaragesSerializer
+from src.api.serializers import GetGaragesSerializer, PostGaragesSerializer
 
 
 class GarageDetailView(GetObjectMixin, OriginAPIView):
@@ -52,7 +52,7 @@ class GarageListView(OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         garage_data = JSONParser().parse(request)
-        garages_serializer = GetGaragesSerializer(data=garage_data)
+        garages_serializer = PostGaragesSerializer(data=garage_data)
         if garages_serializer.is_valid():
             garages_serializer.save()
             return BackendResponse(
