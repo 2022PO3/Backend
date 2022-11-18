@@ -10,17 +10,6 @@ from typing import TypeVar, Any
 T = TypeVar("T")
 
 
-class GetObjectMixin:
-    def get_object(self, cls: T, pk: int) -> T:
-        """
-        Retrieves the `T`-object with the given `pk` from the database.
-        """
-        try:
-            return cls.objects.get(pk=pk)  # type: ignore
-        except cls.DoesNotExist:  # type: ignore
-            raise Http404
-
-
 class BackendResponse(Response):
     """
     Extended `Response`-class of the Django Rest Framework, which adds default headers and content-type. Furthermore, it adds a top level key to the JSON-output: `data` if the status code indicates success and `errors` if the status code indicates an error.
@@ -57,6 +46,26 @@ class BackendResponse(Response):
         return "application/json" if content_type is None else content_type
 
     # TODO Add default headers for the Backend.
+
+
+class GetObjectMixin:
+    def get_object(self, cls: T, pk: int) -> T:
+        """
+        Retrieves the `T`-object with the given `pk` from the database.
+        """
+        try:
+            return cls.objects.get(pk=pk)  # type: ignore
+        except cls.DoesNotExist:  # type: ignore
+            raise Http404
+
+    def get_object_on_field(self, cls: T, field_name: str, field_value: str | int) -> T:
+        """
+        Retrieves the `T`-object with the given `field_value` for `field_name` from the database.
+        """
+        try:
+            return cls.objects.get(**{field_name: field_value})  # type: ignore
+        except cls.DoesNotExist:  # type: ignore
+            raise Http404
 
 
 def server_error(request: Request, *args, **kwargs):

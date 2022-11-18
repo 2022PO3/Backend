@@ -5,28 +5,45 @@ from django.contrib.auth import authenticate
 
 
 class UsersSerializer(serializers.ModelSerializer):
-    firstName = serializers.CharField(source="first_name")
-    lastName = serializers.CharField(source="last_name")
+    """
+    Serializer for serializing GET and PUT request for retrieving and updating the users's data, respectively.
+    """
+
+    firstName = serializers.CharField(source="first_name", allow_null=True)
+    lastName = serializers.CharField(source="last_name", allow_null=True)
+    favGarageId = serializers.IntegerField(source="fav_garage", allow_null=True)
 
     class Meta:
         model = User
-        fields = ["id", "email", "role", "firstName", "lastName"]
+        fields = [
+            "id",
+            "email",
+            "role",
+            "firstName",
+            "lastName",
+            "favGarageId",
+            "location",
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
 
 class SignUpSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing sign up POST-requests for creating new users.
+    """
+
     firstName = serializers.CharField(source="first_name", allow_null=True)
     lastName = serializers.CharField(source="last_name", allow_null=True)
     passwordConfirmation = serializers.CharField(max_length=192, write_only=True)
 
     def is_valid(self, raise_exception: bool = False) -> bool:
-        if "firstName" not in self.initial_data:
-            self.initial_data |= {"firstName": None}
-        if "lastName" not in self.initial_data:
-            self.initial_data |= {"lastName": None}
+        if "firstName" not in self.initial_data:  # type: ignore
+            self.initial_data |= {"firstName": None}  # type: ignore
+        if "lastName" not in self.initial_data:  # type: ignore
+            self.initial_data |= {"lastName": None}  # type: ignore
         if not super().is_valid():
             return False
-        if self.initial_data["password"] != self.initial_data["passwordConfirmation"]:
+        if self.initial_data["password"] != self.initial_data["passwordConfirmation"]:  # type: ignore
             raise ValidationError(
                 {"errors": ["Password and passwordConfirmation do not match."]}
             )
@@ -49,6 +66,10 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing the login POST-requests for logging in users.
+    """
+
     email = serializers.CharField()
     password = serializers.CharField()
 

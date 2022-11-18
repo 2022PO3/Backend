@@ -1,10 +1,9 @@
 from secrets import token_hex
-from random import choices
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-from django.utils import timezone
 
 from src.users.managers import UserManager
+from src.api.models import ProvincesEnum
 from src.core.models import TimeStampMixin
 
 
@@ -20,6 +19,8 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     email = models.EmailField(unique=True)
     role = models.IntegerField(choices=Roles.choices)
     is_active = models.BooleanField(default=True)
+    fav_garage = models.ForeignKey("api.Garages", on_delete=models.CASCADE, null=True)
+    location = models.CharField(max_length=3, choices=ProvincesEnum.choices, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["role"]

@@ -1,10 +1,10 @@
 from django.db import models
-from src.users.models import User
 from src.core.models import TimeStampMixin
 
 
 class Garages(TimeStampMixin, models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    owner = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    garage_settings = models.ForeignKey("api.GarageSettings", on_delete=models.CASCADE)
     name = models.CharField(max_length=192)
 
     @property
@@ -25,4 +25,3 @@ class Garages(TimeStampMixin, models.Model):
         from src.api.models.parking_lots import ParkingLots
 
         return len(ParkingLots.objects.filter(garage_id=self.pk))
-

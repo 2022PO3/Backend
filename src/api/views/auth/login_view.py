@@ -10,21 +10,25 @@ from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
 from src.core.views import BackendResponse
+from src.core.utils import OriginAPIView
 from src.users.models import User
 from src.api.serializers import LoginSerializer, UsersSerializer
 
 
-class LoginView(APIView):
+class LoginView(OriginAPIView):
     """
     A view to log in a user.
     """
 
     permission_classes = [AllowAny]
+    origins = ["web", "app"]
 
     def get_token_limit_per_user(self):
         return knox_settings.TOKEN_LIMIT_PER_USER
 
     def post(self, request: Request, format=None) -> BackendResponse:
+        if (resp := super().post(request, format)) is not None:
+            return resp
         login_data = JSONParser().parse(request)
         login_serializer = LoginSerializer(data=login_data)
         if login_serializer.is_valid():

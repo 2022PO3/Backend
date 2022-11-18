@@ -15,5 +15,6 @@ RUN pip3 install --upgrade pip
 # Install all the dependencies of the project.
 RUN pip3 install -r requirements.txt
 RUN pip3 install psycopg2
+RUN pip3 install faker
 
 ENTRYPOINT ["/docker/run.sh"]

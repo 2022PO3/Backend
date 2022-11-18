@@ -3,7 +3,6 @@ from typing import Any
 from django.db import models
 
 from src.users.models import User
-from src.api.models import Garages
 from src.core.models import TimeStampMixin
 
 from django.views.decorators.http import require_http_methods
@@ -23,8 +22,8 @@ class LicencePlates(TimeStampMixin, models.Model):
     The `updated_at`-column is used to calculate the time inside the parking garage.
     """
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    garage = models.ForeignKey(Garages, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    garage = models.ForeignKey("api.Garages", on_delete=models.CASCADE, null=True)
     licence_plate = models.CharField(max_length=192, unique=True)
 
     @property
