@@ -1,7 +1,8 @@
-from src.api.serializers.garages.garages_serializer import GaragesSerializer
+from src.api.serializers.garages.garages_serializer import GetGaragesSerializer
 from src.api.serializers.garages.locations_serializer import LocationsSerializer
 from src.api.serializers.garages.garage_settings_serializer import (
-    GarageSettingsSerializer,
+    PostGarageSettingsSerializer,
+    GetGarageSettingsSerializer,
 )
 from src.api.serializers.garages.opening_hours_serializer import (
     GetOpeningHoursSerializer,

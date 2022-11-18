@@ -14,7 +14,7 @@ class ProvincesEnum(models.TextChoices):
     VLAAMS_BRABANT = "VBR", _("Vlaams-Brabant")
     WAALS_BRABANT = "WBR", _("Waals-Brabant")
 
-    __empty__ = _("(Unknown)")
+    __empty__ = _("UNK")
 
 
 class ValutasEnum(models.TextChoices):

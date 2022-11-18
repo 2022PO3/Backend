@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from src.core.views import BackendResponse, GetObjectMixin
 from src.core.utils import OriginAPIView
 from src.api.models import Garages
-from src.api.serializers import GaragesSerializer
+from src.api.serializers import GetGaragesSerializer
 
 
 class GarageDetailView(GetObjectMixin, OriginAPIView):
@@ -30,7 +30,7 @@ class GarageDetailView(GetObjectMixin, OriginAPIView):
                 [f"The corresponding garage with pk `{pk}` does not exist,"],
                 status=status.HTTP_404_NOT_FOUND,
             )
-        serializer = GaragesSerializer(garage)
+        serializer = GetGaragesSerializer(garage)
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -45,14 +45,14 @@ class GarageListView(OriginAPIView):
         if (resp := super().get(request, format)) is not None:
             return resp
         garages = Garages.objects.all()
-        serializer = GaragesSerializer(garages, many=True)
+        serializer = GetGaragesSerializer(garages, many=True)
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
         garage_data = JSONParser().parse(request)
-        garages_serializer = GaragesSerializer(data=garage_data)
+        garages_serializer = GetGaragesSerializer(data=garage_data)
         if garages_serializer.is_valid():
             garages_serializer.save()
             return BackendResponse(
