@@ -20,7 +20,7 @@ class GarageSettingsView(OriginAPIView, GetObjectMixin):
         if (resp := super().get(request, format)) is not None:
             return resp
         try:
-            garage_settings = self._get_object(Garages, pk).garage_settings
+            garage_settings = self.get_object(Garages, pk).garage_settings
         except Http404:
             return BackendResponse(
                 [f"The corresponding garage with pk `{pk}` does not exist."],

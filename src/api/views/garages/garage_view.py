@@ -24,7 +24,7 @@ class GarageDetailView(GetObjectMixin, OriginAPIView):
         if (resp := super().get(request, format)) is not None:
             return resp
         try:
-            garage = self._get_object(Garages, pk)
+            garage = self.get_object(Garages, pk)
         except Http404:
             return BackendResponse(
                 [f"The corresponding garage with pk `{pk}` does not exist,"],

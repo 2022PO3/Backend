@@ -49,7 +49,7 @@ class BackendResponse(Response):
 
 
 class GetObjectMixin:
-    def _get_object(self, cls: T, pk: int) -> T:
+    def get_object(self, cls: T, pk: int) -> T:
         """
         Retrieves the `T`-object with the given `pk` from the database.
         """
@@ -58,9 +58,7 @@ class GetObjectMixin:
         except cls.DoesNotExist:  # type: ignore
             raise Http404
 
-    def _get_object_on_field(
-        self, cls: T, field_name: str, field_value: str | int
-    ) -> T:
+    def get_object_on_field(self, cls: T, field_name: str, field_value: str | int) -> T:
         """
         Retrieves the `T`-object with the given `field_value` for `field_name` from the database.
         """
