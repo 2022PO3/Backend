@@ -13,7 +13,7 @@ from src.core.utils import OriginAPIView
 
 class RPiLicencePlateView(OriginAPIView):
     """
-    A view class to get all the licence plates.
+    A view class to handle the incoming licence plates from the Raspberry Pi.
     """
 
     permission_classes = [AllowAny]

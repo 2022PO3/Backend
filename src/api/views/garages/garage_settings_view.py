@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from src.core.views import BackendResponse, GetObjectMixin
 from src.core.utils import OriginAPIView
 from src.api.models import Garages
-from src.api.serializers import PostGarageSettingsSerializer
+from src.api.serializers import GarageSettingsSerializer
 
 
 class GarageSettingsView(OriginAPIView, GetObjectMixin):
@@ -26,5 +26,5 @@ class GarageSettingsView(OriginAPIView, GetObjectMixin):
                 [f"The corresponding garage with pk `{pk}` does not exist."],
                 status=status.HTTP_404_NOT_FOUND,
             )
-        serializer = PostGarageSettingsSerializer(garage_settings)
+        serializer = GarageSettingsSerializer(garage_settings)
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)

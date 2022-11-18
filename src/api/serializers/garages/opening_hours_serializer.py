@@ -5,6 +5,10 @@ from src.api.models import DaysOfTheWeekEnum
 
 
 class GetOpeningHoursSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing GET-requests of the opening hours.
+    """
+
     garageId = serializers.IntegerField(source="garage.pk")
     fromDay = serializers.IntegerField(source="from_day")
     toDay = serializers.IntegerField(source="to_day")
@@ -25,6 +29,10 @@ class GetOpeningHoursSerializer(serializers.ModelSerializer):
 
 
 class PostOpeningHoursSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing POST-requests of the opening hours.
+    """
+
     garageId = serializers.IntegerField(source="garage_id")
     fromDay = serializers.IntegerField(source="from_day")
     toDay = serializers.IntegerField(source="to_day")
@@ -33,7 +41,8 @@ class PostOpeningHoursSerializer(serializers.ModelSerializer):
 
     def validate(self, data: dict):
         """
-        Check that start is before finish.
+        Check that start is before finish and that the `toDay` and `fromDay`-field in the
+        requests contain only values of the `DayOfTheWeekEnum`.
         """
         if data["from_day"] > data["to_day"]:
             raise serializers.ValidationError("`from_date` must occur before `to_date`")

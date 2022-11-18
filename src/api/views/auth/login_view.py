@@ -12,7 +12,7 @@ from rest_framework.permissions import AllowAny
 from src.core.views import BackendResponse
 from src.core.utils import OriginAPIView
 from src.users.models import User
-from src.api.serializers import LoginSerializer, GetUsersSerializer
+from src.api.serializers import LoginSerializer, UsersSerializer
 
 
 class LoginView(OriginAPIView):
@@ -46,7 +46,7 @@ class LoginView(OriginAPIView):
 
             return BackendResponse(
                 {
-                    "user": GetUsersSerializer(user).data,
+                    "user": UsersSerializer(user).data,
                     "token": AuthToken.objects.create(user)[1],
                 },
                 status=status.HTTP_200_OK,

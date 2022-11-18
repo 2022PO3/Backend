@@ -3,6 +3,10 @@ from src.api.models import LicencePlates
 
 
 class LicencePlatesSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing GET-requests of licence plates.
+    """
+
     garageId = serializers.IntegerField(source="garage.pk")
     licencePlate = serializers.CharField(source="licence_plate")
     updatedAt = serializers.DateTimeField(source="updated_at", read_only=True)

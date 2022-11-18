@@ -14,7 +14,7 @@ from src.api.serializers import GetGaragesSerializer, PostGaragesSerializer
 
 class GarageDetailView(GetObjectMixin, OriginAPIView):
     """
-    A view class which incorporates the views regarding single instances of the
+    A view class which incorporates the views regarding single instance of the
     `Garage`-model, which makes it possible to query a single garage on `pk`.
     """
 

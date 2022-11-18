@@ -3,20 +3,13 @@ from src.api.serializers import GetGaragesSerializer
 from src.api.models import Reservations
 
 
-class GetReservationsSerializer(serializers.ModelSerializer):
+class ReservationsSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing both GET and POST requests of the current user's reservations.
+    """
+
     garage = GetGaragesSerializer(read_only=True)
-    userId = serializers.IntegerField(source="user.pk")
-    parkingLotId = serializers.IntegerField(source="parking_lot.pk")
-    fromDate = serializers.DateTimeField(source="from_date")
-    toDate = serializers.DateTimeField(source="to_date")
-
-    class Meta:
-        model = Reservations
-        fields = ["id", "garage", "userId", "parkingLotId", "fromDate", "toDate"]
-
-
-class PostReservationsSerializer(serializers.ModelSerializer):
-    garageId = serializers.IntegerField(source="garage_id")
+    userId = serializers.IntegerField(source="user_id")
     parkingLotId = serializers.IntegerField(source="parking_lot_id")
     fromDate = serializers.DateTimeField(source="from_date")
     toDate = serializers.DateTimeField(source="to_date")
@@ -31,4 +24,4 @@ class PostReservationsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reservations
-        fields = ["garageId", "parkingLotId", "fromDate", "toDate"]
+        fields = ["id", "garage", "userId", "parkingLotId", "fromDate", "toDate"]

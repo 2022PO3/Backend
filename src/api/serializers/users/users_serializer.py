@@ -4,7 +4,11 @@ from src.users.models import User
 from django.contrib.auth import authenticate
 
 
-class GetUsersSerializer(serializers.ModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing GET and PUT request for retrieving and updating the users's data, respectively.
+    """
+
     firstName = serializers.CharField(source="first_name", allow_null=True)
     lastName = serializers.CharField(source="last_name", allow_null=True)
     favGarageId = serializers.IntegerField(source="fav_garage", allow_null=True)
@@ -24,6 +28,10 @@ class GetUsersSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing sign up POST-requests for creating new users.
+    """
+
     firstName = serializers.CharField(source="first_name", allow_null=True)
     lastName = serializers.CharField(source="last_name", allow_null=True)
     passwordConfirmation = serializers.CharField(max_length=192, write_only=True)
@@ -58,6 +66,10 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing the login POST-requests for logging in users.
+    """
+
     email = serializers.CharField()
     password = serializers.CharField()
 

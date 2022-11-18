@@ -3,6 +3,10 @@ from src.api.models import ParkingLots
 
 
 class ParkingLotsSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing GET-requests of parking lots.
+    """
+
     garageId = serializers.IntegerField(source="garage_id")
     floorNumber = serializers.IntegerField(source="floor_number")
 

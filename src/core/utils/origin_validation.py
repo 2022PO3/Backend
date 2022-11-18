@@ -18,6 +18,12 @@ class ValidateOrigin:
     origins = []
 
     def _validate_origins(self, request: Request) -> None:
+        """
+        Checks if the given origin(s) in the request are valid, based on the `BASE_ORIGINS` and
+        on the custom-defined `origins` and validates the sent case in case of the Raspberry Pi
+        and the frontend application.
+        """
+
         try:
             origin: str = request.headers["PO3-ORIGIN"]
         except KeyError:
@@ -36,45 +42,41 @@ class ValidateOrigin:
                 status.HTTP_403_FORBIDDEN,
             )
         elif origin == "rpi":
-            try:
-                sent_key: str = request.headers["PO3-RPI-KEY"]
-            except KeyError:
-                raise OriginValidationException(
-                    "The Raspberry Pi secret key is not sent.",
-                    status.HTTP_400_BAD_REQUEST,
-                )
-            else:
-                hashed_pi_key = os.environ["HASHED_RASPBERRY_PI_KEY"]
-                if hashed_pi_key is None:
-                    raise OriginValidationException(
-                        "Cannot validate the secret key, as none is installed on the server.",
-                        status.HTTP_400_BAD_REQUEST,
-                    )
-                if not check_password(sent_key, hashed_pi_key):
-                    raise OriginValidationException(
-                        "Validation of Raspberry Pi secret key failed.",
-                        status.HTTP_403_FORBIDDEN,
-                    )
+            self._validate_key(
+                request, "PO3-RPI-KEY", "HASHED_RASPBERRY_PI_KEY", "Raspberry Pi"
+            )
         elif origin == "app" or origin == "web":
-            try:
-                sent_key: str = request.headers["PO3-APP-KEY"]
-            except KeyError:
+            self._validate_key(
+                request, "PO3-APP-KEY", "HASHED_APP_KEY", "frontend application"
+            )
+
+    def _validate_key(
+        self, request: Request, header_name: str, env_name: str, origin_name: str
+    ) -> None:
+        """
+        Validates the sent key with the header `header_name` and checks if it matches the
+        hashed key in `env_name`. It throws the correct error in case of failures.
+        """
+
+        try:
+            sent_key: str = request.headers[header_name]
+        except KeyError:
+            raise OriginValidationException(
+                "The secret key of the frontend application is not sent.",
+                status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            hashed_pi_key = os.environ[env_name]
+            if hashed_pi_key is None:
                 raise OriginValidationException(
-                    "The secret key of the frontend application is not sent.",
+                    "Cannot validate the secret key, as none is installed on the server.",
                     status.HTTP_400_BAD_REQUEST,
                 )
-            else:
-                hashed_pi_key = os.environ["HASHED_APP_KEY"]
-                if hashed_pi_key is None:
-                    raise OriginValidationException(
-                        "Cannot validate the secret key, as none is installed on the server.",
-                        status.HTTP_400_BAD_REQUEST,
-                    )
-                if not check_password(sent_key, hashed_pi_key):
-                    raise OriginValidationException(
-                        "Validation of the secret key of the frontend application failed.",
-                        status.HTTP_403_FORBIDDEN,
-                    )
+            if not check_password(sent_key, hashed_pi_key):
+                raise OriginValidationException(
+                    f"Validation of the secret key of the {origin_name} failed.",
+                    status.HTTP_403_FORBIDDEN,
+                )
 
 
 class OriginAPIView(ValidateOrigin, APIView):

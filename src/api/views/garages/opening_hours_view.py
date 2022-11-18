@@ -12,7 +12,7 @@ from src.api.serializers import GetOpeningHoursSerializer, PostOpeningHoursSeria
 
 class GetOpeningHoursView(OriginAPIView, GetObjectMixin):
     """
-    A view class which renders the settings for a given garage. These include all fields from the `GarageSettings`-model, as well as the location and opening hours of the Garage. See the API-documentation for more details.
+    A view class which renders all the opening hours for a given garage with `pk`.
     """
 
     origins = ["app", "web"]
@@ -32,6 +32,10 @@ class GetOpeningHoursView(OriginAPIView, GetObjectMixin):
 
 
 class PostOpeningHoursView(OriginAPIView):
+    """
+    A view class which to add new opening hours to a garage.
+    """
+
     origins = ["app", "web"]
 
     def post(self, request: Request, format=None) -> BackendResponse | None:
