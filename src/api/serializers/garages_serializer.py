@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from typing import Any
-from src.api.serializers.users_serializer import UsersSerializer
-from src.api.models.garages import Garages
-from src.api.models.parking_lots import ParkingLots
+
+from src.api.models import Garages
 
 
 class GaragesSerializer(serializers.ModelSerializer):

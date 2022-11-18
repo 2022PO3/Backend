@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from src.api.models.licence_plates import LicencePlates
+from src.api.models import LicencePlates
 
 
 class LicencePlatesSerializer(serializers.ModelSerializer):

@@ -1,21 +1,22 @@
-from urllib.request import Request
 from rest_framework import status
-from django.http import HttpResponse, JsonResponse
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.request import Request
+
+from src.core.views import BackendResponse
+from src.core.utils import OriginAPIView
+from src.api.models import ParkingLots
+from src.api.serializers import ParkingLotsSerializer
 
 
-from src.api.models.parking_lots import ParkingLots
-from src.api.serializers.parking_lots_serializer import ParkingLotsSerializer
-from rest_framework.decorators import api_view
-
-
-class ParkingLotList(APIView):
+class ParkingLotListView(OriginAPIView):
     """
     A view class to get all the parking lots.
     """
 
-    def get(self, request: Request, format=None) -> Response:
+    origins = ["app", "web"]
+
+    def get(self, request: Request, format=None) -> BackendResponse:
+        if (resp := super().get(request, format)) is not None:
+            return resp
         parking_lots = ParkingLots.objects.all()
         serializer = ParkingLotsSerializer(parking_lots, many=True)
-        return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+        return BackendResponse(serializer.data, status=status.HTTP_200_OK)

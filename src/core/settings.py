@@ -14,6 +14,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from os import path, getenv
 
+from datetime import timedelta
+
+
 # Load the `.env`-file.
 dotenv_path = path.abspath(".env")
 load_dotenv(dotenv_path)
@@ -103,9 +106,12 @@ PASSWORD_HASHERS = [
 ]
 
 
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("knox.auth.TokenAuthentication",),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "EXCEPTION_HANDLER": "src.core.utils.exception_handler.custom_exception_handler",
 }
 
 # Password validation
@@ -117,6 +123,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 10,
+        },
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -124,9 +133,23 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
+    {
+        "NAME": "src.core.utils.password_validators.SpecialCharacterValidation",
+    },
+    {
+        "NAME": "src.core.utils.password_validators.MinimumNumberValidation",
+    },
 ]
 
 AUTH_USER_MODEL = "users.User"
+
+AUTHENTICATION_BACKENDS = ["src.users.backends.EmailAuthBackend"]
+
+REST_KNOX = {
+    "TOKEN_TTL": timedelta(days=7),
+    "TOKEN_LIMIT_PER_USER": 1,
+    "AUTO_REFRESH": True,
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

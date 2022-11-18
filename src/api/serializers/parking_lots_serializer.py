@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from src.api.models.parking_lots import ParkingLots
+from src.api.models import ParkingLots
 
 
 class ParkingLotsSerializer(serializers.ModelSerializer):

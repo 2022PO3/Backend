@@ -1,19 +1,25 @@
-from rest_framework.request import Request
+from django.http import Http404
+
 from rest_framework import status
-from src.api.models.garages import Garages
-from src.api.serializers.garages_serializer import GaragesSerializer
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
-from django.http import Http404
+
+from src.core.views import BackendResponse
+from src.core.utils import OriginAPIView
+from src.api.models import Garages
+from src.api.serializers import GaragesSerializer
 
 
-class GarageDetail(APIView):
+class GarageDetailView(OriginAPIView):
     """
     A view class which incorporates the views regarding single instances of the `Garage`-model:
     - get a single garage by `id`;
     - post a new garage.
     """
+
+    origins = ["app", "web"]
 
     def get_object(self, pk):
         try:
@@ -22,24 +28,30 @@ class GarageDetail(APIView):
             raise Http404
 
 
-class GarageList(APIView):
+class GarageListView(OriginAPIView):
     """
     A view class to get all the garages.
     """
 
-    def get(self, request: Request, format=None) -> Response:
+    origins = ["app", "web"]
+
+    def get(self, request: Request, format=None) -> BackendResponse:
+        if (resp := super().get(request, format)) is not None:
+            return resp
         garages = Garages.objects.all()
         serializer = GaragesSerializer(garages, many=True)
-        return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+        return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request: Request, format=None) -> Response:
+    def post(self, request: Request, format=None) -> BackendResponse:
+        if (resp := super().post(request, format)) is not None:
+            return resp
         garage_data = JSONParser().parse(request)
         garages_serializer = GaragesSerializer(data=garage_data)
         if garages_serializer.is_valid():
             garages_serializer.save()
-            return Response(
-                {"data": garages_serializer.data}, status=status.HTTP_201_CREATED
+            return BackendResponse(
+                garages_serializer.data, status=status.HTTP_201_CREATED
             )
-        return Response(
-            {"errors": garages_serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        return BackendResponse(
+            garages_serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )

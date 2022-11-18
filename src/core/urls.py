@@ -13,16 +13,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path
-from src.api.views import garage_view, parking_lot_view, user_view, licence_plate_view
-from knox import views as knox_views
+from src.api.views import (
+    GarageDetailView,
+    GarageListView,
+    RPiLicencePlateView,
+    LicencePlateDetailView,
+    UserDetailView,
+    LoginView,
+    LogoutView,
+    SignUpView,
+)
+
+handler500 = "src.core.views.server_error"
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/garage/<int:pk>/", garage_view.GarageDetail.as_view()),  # type: ignore
-    path("api/garages/", garage_view.GarageList.as_view()),  # type: ignore
-    path("api/parking-lots/", parking_lot_view.ParkingLotList.as_view()),  # type: ignore
-    path("api/users/", user_view.UserList.as_view()),  # type: ignore
-    path("api/licence-plates/", licence_plate_view.LicencePlateList.as_view()),  # type: ignore
+    path("api/garage/<int:pk>", GarageDetailView.as_view()),  # type: ignore
+    path("api/garages", GarageListView.as_view()),  # type: ignore
+    path("api/licence-plates", RPiLicencePlateView.as_view()),  # type: ignore
+    path("api/user", UserDetailView.as_view()),  # type: ignore
+    path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),  # type: ignore
+]
+
+# User authentication
+urlpatterns += [
+    path("api/auth/login", LoginView.as_view()),  # type: ignore
+    path("api/auth/logout", LogoutView.as_view()),  # type: ignore
+    path("api/auth/sign-up", SignUpView.as_view()),  # type: ignore
 ]
