@@ -2,14 +2,13 @@ from django.http import Http404
 
 from rest_framework import status
 from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
-from rest_framework.views import APIView
 
 from src.core.views import BackendResponse, GetObjectMixin
 from src.core.utils import OriginAPIView
 from src.api.models import Garages
 from src.api.serializers import GetGaragesSerializer, PostGaragesSerializer
+from src.users.permissions import IsGarageOwner
 
 
 class GarageDetailView(GetObjectMixin, OriginAPIView):
@@ -40,6 +39,7 @@ class GarageListView(OriginAPIView):
     """
 
     origins = ["app", "web"]
+    permission_classes = [IsGarageOwner]
 
     def get(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
@@ -54,7 +54,8 @@ class GarageListView(OriginAPIView):
         garage_data = JSONParser().parse(request)
         garages_serializer = PostGaragesSerializer(data=garage_data)
         if garages_serializer.is_valid():
-            garages_serializer.save()
+            garage = garages_serializer.save()
+            self.check_object_permissions(request, garage)
             return BackendResponse(
                 garages_serializer.data, status=status.HTTP_201_CREATED
             )

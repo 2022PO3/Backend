@@ -3,10 +3,11 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.request import Request
 
-from src.core.views import BackendResponse, GetObjectMixin
-from src.core.utils import OriginAPIView
 from src.api.models import Garages
 from src.api.serializers import GarageSettingsSerializer
+from src.core.views import BackendResponse, GetObjectMixin
+from src.core.utils import OriginAPIView
+from src.users.permissions import IsGarageOwner
 
 
 class GarageSettingsView(OriginAPIView, GetObjectMixin):
@@ -27,4 +28,5 @@ class GarageSettingsView(OriginAPIView, GetObjectMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
         serializer = GarageSettingsSerializer(garage_settings)
+        print(serializer.get_fields())
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)

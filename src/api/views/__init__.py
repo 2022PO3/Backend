@@ -5,7 +5,10 @@ from src.api.views.garages.opening_hours_view import (
     PostOpeningHoursView,
 )
 from src.api.views.garages.prices_view import PricesView
-from src.api.views.garages.parking_lots_view import ParkingsLotsView
+from src.api.views.garages.parking_lots_view import (
+    ParkingLotsListView,
+    ParkingLotsDetailView,
+)
 
 from src.api.views.licence_plate_view import LicencePlateDetailView, RPiLicencePlateView
 

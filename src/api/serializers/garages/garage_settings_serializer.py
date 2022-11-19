@@ -26,6 +26,16 @@ class GarageSettingsSerializer(serializers.ModelSerializer):
         location = Locations.objects.create(**locationData)
         return GarageSettings.objects.create(location=location, **validated_data)
 
+    def update(self, validated_data: dict[str, Any]) -> GarageSettings:
+        """
+        Override of the default `update()`-method, for allowing  the post of nested
+        JSON-objects. First, a `Locations`-object is created, whereafter a
+        `GarageSettings`-object is created with the `Locations`-object created earlier.
+        """
+        locationData = validated_data.pop("location")
+        location = Locations.objects.create(**locationData)
+        return GarageSettings.objects.create(location=location, **validated_data)
+
     class Meta:
         model = GarageSettings
         fields = [

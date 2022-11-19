@@ -4,10 +4,11 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 
-from src.core.views import BackendResponse, GetObjectMixin
-from src.core.utils import OriginAPIView
 from src.api.models import OpeningHours
 from src.api.serializers import GetOpeningHoursSerializer, PostOpeningHoursSerializer
+from src.core.views import BackendResponse, GetObjectMixin
+from src.core.utils import OriginAPIView
+from src.users.permissions import IsGarageOwner
 
 
 class GetOpeningHoursView(OriginAPIView, GetObjectMixin):
@@ -20,6 +21,8 @@ class GetOpeningHoursView(OriginAPIView, GetObjectMixin):
     def get(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
             return resp
+        self.check_object_permissions(request, OpeningHours)
+
         try:
             garage_opening_hours = OpeningHours.objects.filter(garage_id=pk)
         except Http404:
@@ -37,14 +40,17 @@ class PostOpeningHoursView(OriginAPIView):
     """
 
     origins = ["app", "web"]
+    permission_classes = [IsGarageOwner]
 
     def post(self, request: Request, format=None) -> BackendResponse | None:
         if (resp := super().post(request, format)) is not None:
             return resp
+
         opening_hour = JSONParser().parse(request)
         opening_hours_serializer = PostOpeningHoursSerializer(data=opening_hour)
         if opening_hours_serializer.is_valid():
-            opening_hours_serializer.save()
+            opening_hours = opening_hours_serializer.save()
+            self.check_object_permissions(request, opening_hours)
             return BackendResponse(
                 opening_hours_serializer.data, status=status.HTTP_201_CREATED
             )
