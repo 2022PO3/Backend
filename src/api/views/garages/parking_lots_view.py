@@ -29,6 +29,7 @@ class ParkingLotsListView(OriginAPIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
         serializer = ParkingLotsSerializer(parking_lots, many=True)
+        print("fields", serializer.get_fields())
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
 
