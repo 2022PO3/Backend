@@ -1,17 +1,10 @@
+import re
+from functools import reduce
 from rest_framework import serializers
 from django.db.models import Model
-
-
-from typing import TypeVar
+from typing import OrderedDict, TypeVar, Any
 
 T = TypeVar("T", bound=Model)
-
-
-class Meta:
-    def __new__(cls, model_name: T, fields: list[str] | str, *args, **kwargs):
-        setattr(cls, "model", model_name)
-        setattr(cls, "fields", fields)
-        return super().__new__(cls, *args, **kwargs)
 
 
 class APIBaseSerializer(serializers.ModelSerializer):
@@ -20,60 +13,29 @@ class APIBaseSerializer(serializers.ModelSerializer):
     converts all field from snake_case to lowerCamelCase with the correct source attribute.
     """
 
-    model: T  # type: ignore
-    # field_names: list[str] | str
+    def to_internal_value(self, data: dict[str, Any]) -> OrderedDict:
+        data_copy = data.copy()
+        for key in data.keys():
+            if re.search(r"[A-Z]", key):
+                snake_case_key = to_snake_case(key)
+                data_copy[snake_case_key] = data_copy.pop(key)
+        print(data_copy)
+        return super(APIBaseSerializer, self).to_internal_value(data_copy)
 
-    def __new__(cls, *args, **kwargs):
-        camel_case_fields = cls.to_lower_camel_case(cls.get_fields_tuple())
-        cls.create_fields(camel_case_fields)
-        cls.create_meta_class()
-        return super().__new__(cls, *args, **kwargs)
+    def to_representation(self, instance: T) -> OrderedDict:
+        data = super(APIBaseSerializer, self).to_representation(instance)
+        data_copy = data.copy()
+        for key in data.keys():
+            if "_" in key:
+                camel_case_string = to_camel_case(key)
+                data_copy[camel_case_string] = data_copy.pop(key)
+        return data_copy
 
-    @classmethod
-    def get_fields_tuple(cls) -> list[tuple[str, str]]:
-        """
-        Returns a tuple of length 2 where the first element represents the field class name and
-        the second element the name of the field.
-        """
-        return list(
-            map(lambda x: (x.get_internal_type(), x.name), cls.model._meta.fields)
-        )
 
-    @classmethod
-    def to_lower_camel_case(
-        cls, field_names: list[tuple[str, str]]
-    ) -> list[tuple[str, str, str]]:
-        def to_camel_case(field_tuple: tuple[str, str]) -> tuple[str, str, str]:
-            """
-            Returns a tuple of length 3 where the first element represents the field class name,
-            the second the field name in snake_case and the last one the field name in
-            lowerCamelCase.
-            """
-            if field_tuple[0] == "ForeignKey":
-                field_tuple = ("IntegerField", f"{field_tuple[1]}_id")
-            components = field_tuple[1].split("_")
-            return (
-                field_tuple[0],
-                field_tuple[1],
-                components[0] + "".join(x.title() for x in components[1:]),
-            )
+def to_camel_case(string: str) -> str:
+    init, *temp = string.split("_")
+    return "".join([init.lower(), *map(str.title, temp)])
 
-        return list(map(to_camel_case, field_names))
 
-    @classmethod
-    def create_fields(cls, camel_case_fields: list[tuple[str, str, str]]) -> None:
-        """
-        Creates the fields with the correct name and source attribute.
-        """
-        for field_tuple in camel_case_fields:
-            if "_" in field_tuple[1]:
-                print("class", cls)
-                setattr(
-                    cls,
-                    field_tuple[2],
-                    eval(f"serializers.{field_tuple[0]}")(source=field_tuple[1]),
-                )
-
-    @classmethod
-    def create_meta_class(cls) -> None:
-        setattr(cls, "Meta", Meta(cls.model, cls.field_names))
+def to_snake_case(string: str) -> str:
+    return reduce(lambda x, y: x + ("_" if y.isupper() else "") + y, string).lower()

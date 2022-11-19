@@ -8,5 +8,6 @@ class ParkingLotsSerializer(APIBaseSerializer):
     Serializer for serializing GET-requests of parking lots.
     """
 
-    model = ParkingLots
-    field_names = ["id", "occupied", "disabled", "garageId"]
+    class Meta:
+        model = ParkingLots
+        fields = ["id", "garage_id", "floor_number", "occupied", "disabled"]

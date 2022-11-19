@@ -55,7 +55,7 @@ class GarageListView(OriginAPIView):
         garages_serializer = PostGaragesSerializer(data=garage_data)
         if garages_serializer.is_valid():
             garage = garages_serializer.save()
-            self.check_object_permissions(request, garage)
+            # self.check_object_permissions(request, garage)
             return BackendResponse(
                 garages_serializer.data, status=status.HTTP_201_CREATED
             )

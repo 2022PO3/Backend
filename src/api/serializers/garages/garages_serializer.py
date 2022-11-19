@@ -6,6 +6,7 @@ from src.api.models import Garages, GarageSettings, Prices, Locations
 from src.api.serializers import (
     GarageSettingsSerializer,
 )
+from src.core.serializers import APIBaseSerializer
 
 
 class GetGaragesSerializer(serializers.ModelSerializer):
@@ -30,17 +31,16 @@ class GetGaragesSerializer(serializers.ModelSerializer):
         ]
 
 
-class PostGaragesSerializer(serializers.ModelSerializer):
+class PostGaragesSerializer(APIBaseSerializer):
     """
     Serializer for serializing GET-requests of garages.
     """
 
-    ownerId = serializers.IntegerField(source="owner_id")
-    garageSettings = GarageSettingsSerializer(source="garage_settings")
+    garage_settings = GarageSettingsSerializer()
 
     class Meta:
         model = Garages
-        fields = ["id", "ownerId", "name", "garageSettings"]
+        fields = ["id", "owner_id", "name", "garage_settings"]
 
     def create(self, validated_data: dict[str, Any]) -> Garages:
         """
