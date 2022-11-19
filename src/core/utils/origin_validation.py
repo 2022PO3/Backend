@@ -62,7 +62,7 @@ class ValidateOrigin:
             sent_key: str = request.headers[header_name]
         except KeyError:
             raise OriginValidationException(
-                "The secret key of the frontend application is not sent.",
+                f"The secret key of the {origin_name} is not sent.",
                 status.HTTP_400_BAD_REQUEST,
             )
         else:
