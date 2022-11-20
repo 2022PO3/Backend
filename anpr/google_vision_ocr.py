@@ -3,10 +3,9 @@ import os
 from typing import Union
 
 import cv2
-import numpy
 from google.cloud import vision
 
-from ocr import OCR, OCRResult, ResultLocation
+from anpr.ocr import OCR, OCRResult, ResultLocation
 
 
 class GoogleVisionOCR(OCR):

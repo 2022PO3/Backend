@@ -1,5 +1,5 @@
 import os
-from ocr import OCR, OCRResult, ResultLocation
+from anpr.ocr import OCR, OCRResult, ResultLocation
 from easyocr import Reader
 
 

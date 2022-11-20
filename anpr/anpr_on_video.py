@@ -4,13 +4,12 @@ the ANPR class and tries to solve problems that are already solved !!!
 """
 
 
-from license_plate_recognition import ANPR
+from anpr.license_plate_recognition import ANPR
 import cv2
 import numpy as np
 
 
 class VideoANPR:
-
     def __init__(self, anpr: ANPR, imshow: bool = False):
         self.anpr = anpr
 
@@ -33,7 +32,7 @@ class VideoANPR:
                 frame = resize_to_MP(frame)
                 # Show input image
                 if self.imshow:
-                    cv2.imshow('Input', frame)
+                    cv2.imshow("Input", frame)
                 # Get license plate texts from anpr
                 (lpText, lpCnt) = self.anpr.find_and_ocr(frame, clearBorder=True)
 
@@ -83,11 +82,15 @@ def combine_strings(all_strings: list[str], formats: list[str]):
         return sorted(strings, key=lambda x: len(x))
     else:
         # Convert strings to formats, the format and the actual string are stored in a dict
-        formatted_strings_dict = {string: convert_to_format(string) for string in strings}
+        formatted_strings_dict = {
+            string: convert_to_format(string) for string in strings
+        }
 
         # Go over all formats to find direct matches
         for format in formats:
-            matches = dict(filter(lambda item: item[1] == format, formatted_strings_dict.items()))
+            matches = dict(
+                filter(lambda item: item[1] == format, formatted_strings_dict.items())
+            )
             # Check original strings to find better option between matches
             # bv. if "1-ABC-123" and "1-ADC-123" match and "ABC" was also detected, the function should return "1-ABC-123"
             if len(matches) > 1:
@@ -97,7 +100,9 @@ def combine_strings(all_strings: list[str], formats: list[str]):
                         if detected_string in match_string:
                             scoring_dict[match_string] += 1
                 # Return the license plate with the most substring matches
-                sorted_dict = sorted(scoring_dict.items(), key=lambda item: item[1], reverse=True)
+                sorted_dict = sorted(
+                    scoring_dict.items(), key=lambda item: item[1], reverse=True
+                )
                 return sorted_dict[0][0]
             elif len(matches) == 1:
                 return list(matches.values())[0]
@@ -120,18 +125,18 @@ def combine_images(images, anpr: ANPR, formats: list[str]):
 
 def convert_to_format(string: str):
     """This function converts a string to a license plate format.
-     - -: -
-     - L: letter
-     - N: number
+    - -: -
+    - L: letter
+    - N: number
     """
-    format_string = ''
+    format_string = ""
     for c in string:
-        if c == '-':
-            format_string += '-'
+        if c == "-":
+            format_string += "-"
         elif c.isnumeric():
-            format_string += 'N'
-        elif c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
-            format_string += 'L'
+            format_string += "N"
+        elif c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+            format_string += "L"
     return format_string
 
 
@@ -149,13 +154,13 @@ def compare_to_format(string: str, format: str):
         str_char = string[i]
         format_char = format[i]
 
-        if format_char == '-':
-            if str_char != '-':
+        if format_char == "-":
+            if str_char != "-":
                 return False
-        elif format_char == 'L':
-            if str_char not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+        elif format_char == "L":
+            if str_char not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
                 return False
-        elif format_char == 'N':
+        elif format_char == "N":
             if not str_char.isnumeric():
                 return False
     return True

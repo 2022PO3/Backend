@@ -15,7 +15,7 @@ class ResultLocation:
     """
 
     @classmethod
-    def fromTopLeftBottomRight(cls, topLeft, bottomRight) -> 'ResultLocation':
+    def fromTopLeftBottomRight(cls, topLeft, bottomRight) -> "ResultLocation":
         """
         Constructor to create a ResultLocation based on the coordinates of the top-left and bottom-right corners.
 
@@ -25,7 +25,11 @@ class ResultLocation:
         """
 
         # Use topLeft as origin and calculate width and height based of the difference in the coordinates.
-        return cls(topLeft=topLeft, width=bottomRight[0] - topLeft[0], height=bottomRight[1] - topLeft[1])
+        return cls(
+            topLeft=topLeft,
+            width=bottomRight[0] - topLeft[0],
+            height=bottomRight[1] - topLeft[1],
+        )
 
     def __init__(self, topLeft, width, height):
         """
@@ -82,7 +86,7 @@ class ResultLocation:
         """
         self.topLeft = (self.topLeft[0] + x, self.topLeft[1] + y)
 
-    def moveByLocation(self, location: 'ResultLocation') -> None:
+    def moveByLocation(self, location: "ResultLocation") -> None:
         """
         Method to move this ResultLocation's origin by x and y coordinate of the top-left corner of the given
         ResultLocation object.
@@ -91,7 +95,9 @@ class ResultLocation:
         @return: None, the class changes the topLeft attribute of this instance.
         """
         self.topLeft = (
-            self.topLeft[0] + location.topLeft[0], self.topLeft[1] + location.topLeft[1])
+            self.topLeft[0] + location.topLeft[0],
+            self.topLeft[1] + location.topLeft[1],
+        )
 
 
 class OCRResult:
@@ -130,12 +136,13 @@ class OCR:
         return []
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     import cv2
 
     # Initialize the Google Vision OCR tool
     from google_vision_ocr import GoogleVisionOCR
+
     ocr = GoogleVisionOCR()
 
     # Initialize the EasyOCR OCR tool
@@ -143,7 +150,7 @@ if __name__ == '__main__':
     # ocr = EasyOCR()
 
     # Load the image
-    image = cv2.imread('google_vision_image.png')
+    image = cv2.imread("google_vision_image.png")
 
     # Print text on the image
     print(ocr.getTextFromImage(image))

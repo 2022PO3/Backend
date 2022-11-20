@@ -11,6 +11,9 @@ from src.core.utils import OriginAPIView
 from src.core.views import BackendResponse
 from src.api.models import Image
 
+from anpr.license_plate_recognition import ANPR
+from anpr.google_vision_ocr import GoogleVisionOCR
+
 
 class LicencePlateImageView(OriginAPIView):
     """
@@ -36,6 +39,13 @@ class LicencePlateImageView(OriginAPIView):
         # Make sure the image files get deleted.
         delete_file()
         return BackendResponse("Success", status=status.HTTP_200_OK)
+
+
+def perform_ocr(image_path: str):
+    anpr = ANPR(None, GoogleVisionOCR(), formats=["N-LLL-NNN"], verbosity=0)  # type: ignore
+    image = cv2.imread(image_path)
+    licence_plates = anpr.find_and_ocr(image, doSelection=False)
+    print(licence_plates)
 
 
 def google_vision_api(image_path: str):
