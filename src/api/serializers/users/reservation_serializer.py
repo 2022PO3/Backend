@@ -1,17 +1,17 @@
 from collections import OrderedDict
 from typing import Any
 from rest_framework import serializers
-from src.api.serializers import GetGarageSerializer
+from src.api.serializers import GarageSerializer
 from src.api.models import Reservation
 from src.core.serializers import APIForeignKeySerializer
 
 
-class ReservationSerializer(serializers.ModelSerializer):
+class GetReservationSerializer(serializers.ModelSerializer):
     """
     Serializer for serializing both GET and POST requests of the current user's reservations.
     """
 
-    garage = GetGarageSerializer()
+    garage = GarageSerializer()
     user_id = serializers.IntegerField()
     parking_lot_id = serializers.IntegerField()
 

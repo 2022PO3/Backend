@@ -73,7 +73,7 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
         user = authenticate(**data)
         if user and user.is_active:
-            return user
+            return user  # type: ignore
         raise serializers.ValidationError("Incorrect Credentials Passed.")
 
     class Meta:

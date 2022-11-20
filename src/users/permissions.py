@@ -18,4 +18,4 @@ class IsGarageOwner(BasePermission):
 
         # Instance must have an attribute named `owner`.
         g = Garage.objects.get(pk=obj)
-        return g.owner == request.user
+        return g.user == request.user

@@ -14,4 +14,4 @@ class Location(TimeStampMixin, models.Model):
 
     class Meta:
         db_table = "locations"
-        app_label = 'api'
+        app_label = "api"

@@ -102,9 +102,9 @@ if __name__ == "__main__":
     )
     create_fixtures(
         "api.garage",
-        ["owner", "name", "garage_settings", "updated_at", "created_at"],
+        ["user", "name", "garage_settings", "updated_at", "created_at"],
         {
-            "owner": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
+            "user": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
             "name": list(map(lambda city: f"QPark {city}", cities)),
             "garage_settings": [i for i in range(1, 11)],
         },

@@ -7,10 +7,7 @@ from src.api.serializers.garages.garage_settings_serializer import (
     GarageSettingsSerializer,
 )
 
-from src.api.serializers.garages.garage_serializer import (
-    GetGarageSerializer,
-    PostGarageSerializer,
-)
+from src.api.serializers.garages.garage_serializer import GarageSerializer
 
 from src.api.serializers.garages.opening_hour_serializer import OpeningHourSerializer
 
@@ -27,6 +24,6 @@ from src.api.serializers.users.users_serializer import (
     LoginSerializer,
 )
 from src.api.serializers.users.reservation_serializer import (
-    ReservationSerializer,
+    GetReservationSerializer,
     PostReservationSerializer,
 )

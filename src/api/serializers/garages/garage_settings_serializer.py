@@ -16,7 +16,13 @@ class GarageSettingsSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = GarageSettings
-        fields = "__all__"
+        fields = [
+            "id",
+            "location",
+            "max_height",
+            "max_width",
+            "max_handicapped_lots",
+        ]
 
     def create(self, validated_data: dict[str, Any]) -> GarageSettings:
         """

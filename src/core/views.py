@@ -201,15 +201,16 @@ class GetObjectMixin:
 class BaseAPIView(_OriginAPIView, GetObjectMixin):
     serializer: U = None  # type: ignore
     model: V = None  # type: ignore
-    user_id = False
+    get_user_id = False
+    post_user_id = False
 
     def get(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
             return resp
-        if self.model and not self.user_id:
+        if self.model and not self.get_user_id:
             objects = self.model.objects.all()  # type: ignore
             serializer = self.serializer(objects, many=True)  # type: ignore
-        elif self.user_id:
+        elif self.get_user_id:
             objects = self.model.objects.filter(**{"user_id": request.user.pk})  # type: ignore
             serializer = self.serializer(objects, many=True)  # type: ignore
         else:
@@ -228,7 +229,9 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
                 )
             except KeyError:
                 pass
-            serializer.save(user=request.user) if self.user_id else serializer.save()
+            serializer.save(
+                user=request.user
+            ) if self.post_user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(
             serializer.errors,
@@ -243,7 +246,7 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
         if self.model is not None:
             try:
-                object = self.get_object(self.model, pk)
+                object = self.get_object(self.model, pk)  # type: ignore
             except Http404:
                 return BackendResponse(
                     [f"The {self.model} with pk `{pk}` does not exist,"],
@@ -252,7 +255,6 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
             serializer = self.serializer(object, data=data)  # type: ignore
         else:
             serializer = self.serializer(request.user, data=data)  # type: ignore
-        print(serializer.initial_data)
         if serializer.is_valid():
             try:
                 self.check_object_permissions(
@@ -261,8 +263,9 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
                 pass
             except KeyError:
                 pass
-            serializer.save(user=request.user) if self.user_id else serializer.save()
-            print(serializer.data)
+            serializer.save(
+                user=request.user
+            ) if self.post_user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(
             serializer.errors,
@@ -272,24 +275,25 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
 
 class PkAPIView(_OriginAPIView, GetObjectMixin):
     model: V = None  # type: ignore
-    column: str = None  # type: ignore
+    fk_model = None  # type: ignore
     serializer: U = None  # type: ignore
     list = False
+    column: str = ""
 
     def get(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
             return resp
         try:
-            if self.column is None:
-                data: V = self.model.get_object(self.model, pk)  # type: ignore
+            if self.fk_model is None:
+                data: V = self.get_object(self.model, pk)  # type: ignore
             elif self.list:
                 data: list[V] = self.model.objects.filter(**{self.column: pk})  # type: ignore
             else:
-                data: V = self.model.get_object_on_field(self.model, self.column, pk)  # type: ignore
+                data: V = getattr(self.get_object(self.fk_model, pk), to_snake_case(self.model.__name__))  # type: ignore
         except Http404:
             return BackendResponse(
                 [
-                    f"The corresponding {self.model} with {self.column if not self.column else 'pk'} `{pk}` does not exist."
+                    f"The corresponding {self.fk_model if self.fk_model else self.model} with 'pk' `{pk}` does not exist."
                 ],
                 status=status.HTTP_404_NOT_FOUND,
             )
