@@ -1,9 +1,6 @@
 from src.api.models import ParkingLot
 from src.api.serializers import ParkingLotSerializer
-from src.core.views import (
-    PkAPIView,
-    BaseAPIView,
-)
+from src.core.views import PkAPIView, BaseAPIView
 from src.users.permissions import IsGarageOwner
 
 

@@ -1,7 +1,6 @@
 from src.api.models import Garage, GarageSettings
 from src.api.serializers import GarageSettingsSerializer
-from src.core.views import PkAPIView, BaseAPIView
-from src.users.permissions import IsGarageOwner
+from src.core.views import PkAPIView
 
 
 class GetGarageSettingsView(PkAPIView):

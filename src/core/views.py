@@ -238,6 +238,35 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+
+class PkAPIView(_OriginAPIView, GetObjectMixin):
+    model: V = None  # type: ignore
+    fk_model = None  # type: ignore
+    serializer: U = None  # type: ignore
+    list = False
+    column: str = ""
+    user_id = False
+
+    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
+        if (resp := super().get(request, format)) is not None:
+            return resp
+        try:
+            if self.list:
+                data: list[V] = self.model.objects.filter(**{self.column: pk})  # type: ignore
+            elif self.fk_model is None:
+                data: V = self.get_object(self.model, pk)  # type: ignore
+            else:
+                data: V = getattr(self.get_object(self.fk_model, pk), to_snake_case(self.model.__name__))  # type: ignore
+        except Http404:
+            return BackendResponse(
+                [
+                    f"The corresponding {self.fk_model if self.fk_model else self.model} with 'pk' `{pk}` does not exist."
+                ],
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer: U = self.serializer(data, many=self.list)  # type: ignore
+        return BackendResponse(serializer.data, status=status.HTTP_200_OK)
+
     def put(
         self, request: Request, pk: int | None = None, format=None
     ) -> BackendResponse:
@@ -263,42 +292,12 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
                 pass
             except KeyError:
                 pass
-            serializer.save(
-                user=request.user
-            ) if self.post_user_id else serializer.save()
+            serializer.save(user=request.user) if self.user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
-
-
-class PkAPIView(_OriginAPIView, GetObjectMixin):
-    model: V = None  # type: ignore
-    fk_model = None  # type: ignore
-    serializer: U = None  # type: ignore
-    list = False
-    column: str = ""
-
-    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
-        if (resp := super().get(request, format)) is not None:
-            return resp
-        try:
-            if self.fk_model is None:
-                data: V = self.get_object(self.model, pk)  # type: ignore
-            elif self.list:
-                data: list[V] = self.model.objects.filter(**{self.column: pk})  # type: ignore
-            else:
-                data: V = getattr(self.get_object(self.fk_model, pk), to_snake_case(self.model.__name__))  # type: ignore
-        except Http404:
-            return BackendResponse(
-                [
-                    f"The corresponding {self.fk_model if self.fk_model else self.model} with 'pk' `{pk}` does not exist."
-                ],
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        serializer: U = self.serializer(data, many=self.list)  # type: ignore
-        return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
 
 def _dict_key_to_case(d: dict[str, Any], f: Callable) -> dict[str, Any]:
