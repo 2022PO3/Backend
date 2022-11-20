@@ -4,7 +4,7 @@ from src.api.serializers.garages.prices_serializer import (
 
 from src.api.serializers.garages.locations_serializer import LocationsSerializer
 from src.api.serializers.garages.garage_settings_serializer import (
-    GarageSettingsSerializer
+    GarageSettingsSerializer,
 )
 
 from src.api.serializers.garages.garages_serializer import (

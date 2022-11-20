@@ -6,3 +6,5 @@ __pycache__
 certbot/
 src/api/seeds/fixtures/**
 !src/api/seeds/fixtures/0001_users_fixture.json
+google_vision_api_credentials.json
+.idea/

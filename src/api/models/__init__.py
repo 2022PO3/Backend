@@ -9,3 +9,4 @@ from src.api.models.garages.locations import Locations
 from src.api.models.licence_plates import LicencePlates
 from src.api.models.parking_lots import ParkingLots
 from src.api.models.reservations import Reservations
+from src.api.models.licence_plate_image import Image
