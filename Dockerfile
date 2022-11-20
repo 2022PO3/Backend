@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y libmariadb-dev build-essential netcat l
 RUN pip3 install --upgrade pip
 # Install all the dependencies of the project.
 RUN pip3 install -r requirements.txt
+RUN pip3 install opencv-python==4.5.5.64
 RUN pip3 install psycopg2
 RUN pip3 install faker
 

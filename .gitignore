@@ -8,3 +8,5 @@ src/api/seeds/fixtures/**
 !src/api/seeds/fixtures/0001_users_fixture.json
 .idea/
 google_vision_api_credentials.json
+*.jpg
+*.png

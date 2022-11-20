@@ -33,7 +33,7 @@ class GoogleVisionOCR(OCR):
         # Store the path to the API key in the environment
 
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(
-            os.getcwd(), "anpr/src/anpr/parkeergarage-c76e9940c139.json"
+            os.getcwd(), "google_vision_api_credentials.json"
         )
 
         self.default_image_path = default_image_path

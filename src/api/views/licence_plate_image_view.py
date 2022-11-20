@@ -1,21 +1,21 @@
 import os
 import io
 import shutil
+import cv2
 from google.cloud import vision
 
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
-from src.core.utils import OriginAPIView
-from src.core.views import BackendResponse
+from src.core.views import BackendResponse, _OriginAPIView
 from src.api.models import Image
 
 from anpr.license_plate_recognition import ANPR
 from anpr.google_vision_ocr import GoogleVisionOCR
 
 
-class LicencePlateImageView(OriginAPIView):
+class LicencePlateImageView(_OriginAPIView):
     """
     A view class to handle the incoming images in base64-format. From within this view, a image
     processing is performed and a request is sent to the Google Vision API. The image itself
@@ -31,19 +31,22 @@ class LicencePlateImageView(OriginAPIView):
         file = request.data["file"]  # type: ignore
         Image.objects.create(image=file)
         try:
-            pass
-            # google_vision_api(file.name)  # type: ignore
+            perform_ocr(file.name)  # type: ignore
         except Exception as e:
             print(e)
-            delete_file()
+            # delete_file()
         # Make sure the image files get deleted.
-        delete_file()
-        return BackendResponse("Success", status=status.HTTP_200_OK)
+        # delete_file()
+        print("Doing something")
+        return BackendResponse({"response": "Success"}, status=status.HTTP_200_OK)
 
 
 def perform_ocr(image_path: str):
+    print("Starting...")
     anpr = ANPR(None, GoogleVisionOCR(), formats=["N-LLL-NNN"], verbosity=0)  # type: ignore
-    image = cv2.imread(image_path)
+    print("Anpr initialised...")
+    image = cv2.imread(os.path.join(os.getcwd(), f"src/media/images/{image_path}"))
+    print("Performing ocr")
     licence_plates = anpr.find_and_ocr(image, doSelection=False)
     print(licence_plates)
 
