@@ -2,26 +2,30 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 
-from src.core.views import BackendResponse
-from src.core.utils import OriginAPIView
-from src.api.models import Reservations
-from src.api.serializers import ReservationsSerializer
+from src.core.views import BackendResponse, _OriginAPIView, BaseAPIView
+from src.api.models import Reservation
+from src.api.serializers import PostReservationSerializer
 
 
-class ReservationsView(OriginAPIView):
+class ReservationsView(BaseAPIView):
     """
     A view class to get all reservations from the currently logged in user.
     """
 
     origins = ["app", "web"]
+    serializer = PostReservationSerializer
+    user_id = True
+    model = Reservation
 
+    """
     def get(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
             return resp
         user_reservations = Reservations.objects.filter(user_id=request.user.pk)
         serializer = ReservationsSerializer(user_reservations, many=True)
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-
+    """
+    """
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
             return resp
@@ -36,3 +40,4 @@ class ReservationsView(OriginAPIView):
             reservation_serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
+    """

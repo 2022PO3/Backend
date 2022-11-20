@@ -1,41 +1,38 @@
-import re
-from functools import reduce
+from typing import OrderedDict, Any
+from collections import OrderedDict
+
 from rest_framework import serializers
-from django.db.models import Model
-from typing import OrderedDict, TypeVar, Any
 
-T = TypeVar("T", bound=Model)
+import src.api.models
+from src.core.utils import to_camel_case
 
 
-class APIBaseSerializer(serializers.ModelSerializer):
+class APIForeignKeySerializer(serializers.ModelSerializer):
     """
-    Base serializer class from which all serializers for API models should inherit from. It
-    converts all field from snake_case to lowerCamelCase with the correct source attribute.
+    Base serializer class which validates foreign key constraints in POST- or PUT-requests.
     """
 
-    def to_internal_value(self, data: dict[str, Any]) -> OrderedDict:
-        data_copy = data.copy()
+    def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
+        """
+        Validates if all fields with suffix "_id" have an pk which exist in the database.
+        """
         for key in data.keys():
-            if re.search(r"[A-Z]", key):
-                snake_case_key = to_snake_case(key)
-                data_copy[snake_case_key] = data_copy.pop(key)
-        print(data_copy)
-        return super(APIBaseSerializer, self).to_internal_value(data_copy)
+            if "_id" in key:
+                self._validate_key(key, data[key])
+        return super().validate(data)
 
-    def to_representation(self, instance: T) -> OrderedDict:
-        data = super(APIBaseSerializer, self).to_representation(instance)
-        data_copy = data.copy()
-        for key in data.keys():
-            if "_" in key:
-                camel_case_string = to_camel_case(key)
-                data_copy[camel_case_string] = data_copy.pop(key)
-        return data_copy
-
-
-def to_camel_case(string: str) -> str:
-    init, *temp = string.split("_")
-    return "".join([init.lower(), *map(str.title, temp)])
-
-
-def to_snake_case(string: str) -> str:
-    return reduce(lambda x, y: x + ("_" if y.isupper() else "") + y, string).lower()
+    def _validate_key(self, key: str, value: Any):
+        """
+        Validates a single field with suffix "_id" and validates the corresponding object with
+        `pk=value` is present in the database.
+        """
+        class_name = to_camel_case(
+            key.replace("_id", "").replace("fav_", ""), lower_case=False
+        )
+        klazz = eval(f"src.api.models.{class_name}")
+        try:
+            klazz.objects.get(pk=value)
+        except klazz.DoesNotExist:
+            raise serializers.ValidationError(
+                f"{class_name} with `pk` {value} does not exist."
+            )

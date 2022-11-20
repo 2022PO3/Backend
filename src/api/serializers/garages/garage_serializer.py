@@ -2,36 +2,34 @@ from typing import Any
 
 from rest_framework import serializers
 
-from src.api.models import Garages, GarageSettings, Prices, Locations
+from src.api.models import Garage, GarageSettings, Price, Location
 from src.api.serializers import (
     GarageSettingsSerializer,
 )
-from src.core.serializers import APIBaseSerializer
+from src.core.serializers import APIForeignKeySerializer
 
 
-class GetGaragesSerializer(serializers.ModelSerializer):
+class GetGarageSerializer(serializers.ModelSerializer):
     """
     Serializer for serializing GET-requests of garages.
     """
 
-    ownerId = serializers.IntegerField(source="owner.pk")
-    isFull = serializers.BooleanField(source="is_full", read_only=True)
-    unoccupiedLots = serializers.IntegerField(source="unoccupied_lots", read_only=True)
-    parkingLots = serializers.IntegerField(source="parking_lots", read_only=True)
+    owner_id = serializers.IntegerField()
 
     class Meta:
-        model = Garages
+        model = Garage
         fields = [
             "id",
-            "ownerId",
+            "owner_id",
             "name",
-            "isFull",
-            "unoccupiedLots",
-            "parkingLots",
+            "is_full",
+            "unoccupied_lots",
+            "parking_lots",
         ]
+        read_only_fields = ["is_full", "unoccupied_lots", "parking_lots"]
 
 
-class PostGaragesSerializer(APIBaseSerializer):
+class PostGarageSerializer(APIForeignKeySerializer):
     """
     Serializer for serializing GET-requests of garages.
     """
@@ -39,10 +37,10 @@ class PostGaragesSerializer(APIBaseSerializer):
     garage_settings = GarageSettingsSerializer()
 
     class Meta:
-        model = Garages
+        model = Garage
         fields = ["id", "owner_id", "name", "garage_settings"]
 
-    def create(self, validated_data: dict[str, Any]) -> Garages:
+    def create(self, validated_data: dict[str, Any]) -> Garage:
         """
         Override of the default `create()`-method, for allowing  the post of nested
         JSON-objects. First, a `Locations`-object is created, whereafter a
@@ -50,13 +48,13 @@ class PostGaragesSerializer(APIBaseSerializer):
         a `Garage`-object will be created with the two previously created models.
         """
 
-        settingsData = validated_data.pop("garage_settings")
-        locationData = settingsData.pop("location")
-        location = Locations.objects.create(**locationData)
+        settings_data = validated_data.pop("garage_settings")
+        location_data = settings_data.pop("location")
+        location = Location.objects.create(**location_data)
         garage_settings = GarageSettings.objects.create(
-            location=location, **settingsData
+            location=location, **settings_data
         )
-        garage = Garages.objects.create(
+        garage = Garage.objects.create(
             garage_settings=garage_settings, **validated_data
         )
         return garage

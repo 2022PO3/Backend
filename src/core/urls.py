@@ -26,6 +26,7 @@ from src.api.views import (
     PostOpeningHoursView,
     ParkingLotsListView,
     ParkingLotsDetailView,
+    LocationsView,
     PricesView,
     LoginView,
     LogoutView,
@@ -40,6 +41,7 @@ urlpatterns = [
     path("api/licence-plates", RPiLicencePlateView.as_view()),
     path("api/parking-lots/<int:pk>", ParkingLotsListView.as_view()),
     path("api/parking-lot/<int:pk>", ParkingLotsDetailView.as_view()),
+    path("api/parking-lot", ParkingLotsDetailView.as_view()),
     path("api/user", UserDetailView.as_view()),
     path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/garage-settings/<int:pk>", GarageSettingsView.as_view()),
@@ -47,6 +49,7 @@ urlpatterns = [
     path("api/opening-hours/<int:pk>", GetOpeningHoursView.as_view()),
     path("api/opening-hours", PostOpeningHoursView.as_view()),
     path("api/prices/<int:pk>", PricesView.as_view()),
+    path("api/garage-locations/<int:pk>", LocationsView.as_view()),
 ]
 
 # User authentication

@@ -9,7 +9,7 @@ from src.api.views.garages.parking_lots_view import (
     ParkingLotsListView,
     ParkingLotsDetailView,
 )
-
+from src.api.views.garages.locations_view import LocationsView
 from src.api.views.licence_plate_view import LicencePlateDetailView, RPiLicencePlateView
 
 from src.api.views.users.user_view import UserDetailView
