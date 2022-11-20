@@ -59,7 +59,7 @@ if __name__ == "__main__":
     faker = Faker(["nl-BE"])
     cities = [faker.city() for _ in range(10)]
     create_fixtures(
-        "api.locations",
+        "api.location",
         [
             "country",
             "province",
@@ -101,17 +101,17 @@ if __name__ == "__main__":
         3,
     )
     create_fixtures(
-        "api.garages",
-        ["owner", "name", "garage_settings", "updated_at", "created_at"],
+        "api.garage",
+        ["user", "name", "garage_settings", "updated_at", "created_at"],
         {
-            "owner": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
+            "user": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
             "name": list(map(lambda city: f"QPark {city}", cities)),
             "garage_settings": [i for i in range(1, 11)],
         },
         4,
     )
     create_fixtures(
-        "api.parkingLots",
+        "api.parkingLot",
         ["garage", "floor_number", "occupied", "disabled", "created_at", "updated_at"],
         {
             "garage": [randint(1, 10) for _ in range(300)],
@@ -122,7 +122,7 @@ if __name__ == "__main__":
         5,
     )
     create_fixtures(
-        "api.licencePlates",
+        "api.licencePlate",
         ["user", "licence_plate", "garage", "created_at", "updated_at"],
         {
             "user": [1, 1, 2, 2, 3, 4, 5],
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         6,
     )
     create_fixtures(
-        "api.prices",
+        "api.price",
         [
             "garage",
             "price_string",
@@ -158,7 +158,7 @@ if __name__ == "__main__":
         7,
     )
     create_fixtures(
-        "api.openingHours",
+        "api.openingHour",
         [
             "garage",
             "from_day",
@@ -180,7 +180,7 @@ if __name__ == "__main__":
         8,
     )
     create_fixtures(
-        "api.reservations",
+        "api.reservation",
         [
             "garage",
             "user",

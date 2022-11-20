@@ -8,7 +8,7 @@ from src.core.models import TimeStampMixin
 from django.views.decorators.http import require_http_methods
 
 
-class LicencePlates(TimeStampMixin, models.Model):
+class LicencePlate(TimeStampMixin, models.Model):
     """
     Licence plate model, which is has a many-to-one relationship with `User` and a
     one-to-one relationship with `Garage`.
@@ -23,7 +23,7 @@ class LicencePlates(TimeStampMixin, models.Model):
     """
 
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
-    garage = models.ForeignKey("api.Garages", on_delete=models.CASCADE, null=True)
+    garage = models.ForeignKey("api.Garage", on_delete=models.CASCADE, null=True)
     licence_plate = models.CharField(max_length=192, unique=True)
 
     @property
@@ -40,7 +40,7 @@ class LicencePlates(TimeStampMixin, models.Model):
         is created, which is linked to the given `LicencePlate`.
         """
 
-        queryset = LicencePlates.objects.filter(licence_plate=licence_plate)
+        queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
         if not queryset:
             email = User.email_generator()
             password = User.objects.make_random_password(
@@ -52,7 +52,7 @@ class LicencePlates(TimeStampMixin, models.Model):
                 password=password,
                 role=0,
             )
-            LicencePlates.objects.create(
+            LicencePlate.objects.create(
                 user=generated_user,
                 licence_plate=licence_plate,
                 garage_id=garage_id,
@@ -65,7 +65,7 @@ class LicencePlates(TimeStampMixin, models.Model):
             )
 
     @staticmethod
-    def _sign_out_licence_plate(licence_plate: "LicencePlates") -> None:
+    def _sign_out_licence_plate(licence_plate: "LicencePlate") -> None:
         """
         This signs out the `LicencePlate` from a `Garage`, setting its `garage_id` to `null`
         in the database. If the `LicencePlate` is associated with a dummy `User` of role 0,
@@ -95,11 +95,15 @@ class LicencePlates(TimeStampMixin, models.Model):
 
         licence_plate = params["licencePlate"]
         garage_id = params["garageId"]
-        queryset = LicencePlates.objects.filter(licence_plate=licence_plate)
+        queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
         if not queryset:
-            LicencePlates._register_licence_plate(licence_plate, garage_id)
+            LicencePlate._register_licence_plate(licence_plate, garage_id)
         else:
             lp = queryset[0]
-            LicencePlates._register_licence_plate(
+            LicencePlate._register_licence_plate(
                 licence_plate, garage_id
-            ) if lp.in_garage else LicencePlates._sign_out_licence_plate(lp)
+            ) if lp.in_garage else LicencePlate._sign_out_licence_plate(lp)
+
+    class Meta:
+        db_table = "licence_plates"
+        app_label = 'api'

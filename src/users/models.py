@@ -19,7 +19,9 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     email = models.EmailField(unique=True)
     role = models.IntegerField(choices=Roles.choices)
     is_active = models.BooleanField(default=True)
-    fav_garage = models.ForeignKey("api.Garages", on_delete=models.CASCADE, null=True)
+    fav_garage = models.ForeignKey(
+        "api.Garage", on_delete=models.CASCADE, null=True, related_name="fav_garage"
+    )
     location = models.CharField(max_length=3, choices=ProvincesEnum.choices, null=True)
 
     USERNAME_FIELD = "email"

@@ -1,63 +1,27 @@
-from django.http import Http404
-
-from rest_framework import status
-from rest_framework.request import Request
-from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
-from rest_framework.views import APIView
-
-from src.core.views import BackendResponse, GetObjectMixin
-from src.core.utils import OriginAPIView
-from src.api.models import Garages
-from src.api.serializers import GetGaragesSerializer, PostGaragesSerializer
+from src.core.views import PkAPIView, BaseAPIView
+from src.api.models import Garage
+from src.api.serializers import GarageSerializer
+from src.users.permissions import IsGarageOwner
 
 
-class GarageDetailView(GetObjectMixin, OriginAPIView):
+class GarageDetailView(PkAPIView):
     """
     A view class which incorporates the views regarding single instance of the
     `Garage`-model, which makes it possible to query a single garage on `pk`.
     """
 
     origins = ["app", "web"]
-
-    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
-        if (resp := super().get(request, format)) is not None:
-            return resp
-        try:
-            garage = self.get_object(Garages, pk)
-        except Http404:
-            return BackendResponse(
-                [f"The corresponding garage with pk `{pk}` does not exist,"],
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        serializer = GetGaragesSerializer(garage)
-        return BackendResponse(serializer.data, status=status.HTTP_200_OK)
+    model = Garage
+    serializer = GarageSerializer
 
 
-class GarageListView(OriginAPIView):
+class GarageListView(BaseAPIView):
     """
     A view class to get all the garages and to post a new garage.
     """
 
     origins = ["app", "web"]
-
-    def get(self, request: Request, format=None) -> BackendResponse:
-        if (resp := super().get(request, format)) is not None:
-            return resp
-        garages = Garages.objects.all()
-        serializer = GetGaragesSerializer(garages, many=True)
-        return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request: Request, format=None) -> BackendResponse:
-        if (resp := super().post(request, format)) is not None:
-            return resp
-        garage_data = JSONParser().parse(request)
-        garages_serializer = PostGaragesSerializer(data=garage_data)
-        if garages_serializer.is_valid():
-            garages_serializer.save()
-            return BackendResponse(
-                garages_serializer.data, status=status.HTTP_201_CREATED
-            )
-        return BackendResponse(
-            garages_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+    permission_classes = [IsGarageOwner]
+    serializer = GarageSerializer
+    model = Garage
+    post_user_id = True
