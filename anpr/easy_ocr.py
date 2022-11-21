@@ -1,6 +1,6 @@
 import os
 from anpr.ocr import OCR, OCRResult, ResultLocation
-from easyocr import Reader
+from easyocr import Reader  # type: ignore
 
 
 def createOCRResult(result: dict) -> OCRResult:
@@ -47,7 +47,7 @@ class EasyOCR(OCR):
             model_storage_directory=model_storage_directory,
         )
 
-    def getTextFromImage(self, image) -> list[OCRResult]:
+    def get_text_from_image(self, image) -> list[OCRResult]:
         """
         This method reads the text on the given image using EasyOCR. The configuration used (decoder='greedy',
         paragraph = False) was found by testing different settings and selecting the ones that worked the best for

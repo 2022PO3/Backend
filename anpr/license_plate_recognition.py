@@ -8,9 +8,6 @@ from dotenv import load_dotenv
 from anpr.ocr import OCR, ResultLocation
 
 
-GARAGE_ID = 1
-
-
 class LicensePlateResult:
     """
     This class contains the result of a license plate recognition detection algorithm. It stores the detected text and
@@ -48,7 +45,7 @@ class ANPR:
         self,
         selection_ocr: OCR,
         result_ocr: OCR,
-        formats: list[str] = None,
+        formats: list[str] | None = None,
         minAR: float = 3,
         maxAR: float = 7,
         verbosity: int = 4,
@@ -81,9 +78,7 @@ class ANPR:
 
         # Transform custom format to regex ex. 'N-LLL-NNN' -> '[0-9]-[A-Z][A-Z][A-Z]-[0-9][0-9][0-9]'
         if formats is not None:
-            formats = [f.replace("N", "[0-9]") for f in formats]
-            formats = [f.replace("L", "[A-Z]") for f in formats]
-            self._debug_print(formats, verbosity=0)
+            formats = [f.replace("N", "[0-9]").replace("L", "[A-Z]") for f in formats]
         self.formats = formats
 
     def _debug_imshow(self, title: str, image, verbosity: int, waitKey=False) -> None:
@@ -202,8 +197,8 @@ class ANPR:
         return [location for _, location in largest_area_tuples]
 
     def _pick_license_plate_location(
-        self, gray: np.array, candidates: list[ResultLocation]
-    ) -> tuple[np.array, ResultLocation]:
+        self, gray: np.array, candidates: list[ResultLocation]  # type: ignore
+    ) -> tuple[np.array, ResultLocation]:  # type: ignore
         """
         Pick the best estimation of the position of the license plate. Based on shape, contrast and presence of text.
 
@@ -235,7 +230,7 @@ class ANPR:
             )[1]
 
             # Select the license plate with the longest text on it
-            ocr_results = self.selection_ocr.getTextFromImage(roi_temp)  # Read text
+            ocr_results = self.selection_ocr.get_text_from_image(roi_temp)  # Read text
             self._debug_print(
                 f"Found Text on Candidate: {[r.text for r in ocr_results]}", 3
             )
@@ -258,10 +253,10 @@ class ANPR:
         # associated with it
         if roi is not None:
             cv2.imshow("ROI", roi)
-        return roi, lp_location
+        return roi, lp_location  # type: ignore
 
     def find_and_ocr(
-        self, image: np.array, doSelection: bool = True
+        self, image_path: str, doSelection: bool = True
     ) -> list[LicensePlateResult]:
         """
         Find license plate candidates and get the final text on it.
@@ -273,25 +268,11 @@ class ANPR:
         @return: list of detected license plates
         """
 
-        # convert the input image to grayscale, locate all candidate
-        # license plate regions in the image, and then process the
-        # candidates, leaving us with the *actual* license plate
-        # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        # If doSelection is set, firstly look for possible rectangular candidates. Otherwise, just perform OCR on the
-        # entire image and find license plates in these results.
-        location = None
-        if doSelection:
-            candidates = self._locate_license_plate_candidates(gray)
-            (lp_image, location) = self._pick_license_plate_location(gray, candidates)
-        else:
-            lp_image = image
-
         # Only OCR the license plate if the license plate ROI is not
         # empty
-        if lp_image is not None:
+        if image_path is not None:
             # OCR the license plate
-            ocr_results = self.result_ocr.getTextFromImage(lp_image)
+            ocr_results = self.result_ocr.get_text_from_image_path(image_path)  # type: ignore
 
             lp_results = [
                 LicensePlateResult(result.text, result.location)
@@ -306,26 +287,7 @@ class ANPR:
                     formatted_results += new_results
                 lp_results = formatted_results
 
-            # Move the location of the detected text in the possibly cropped license plate image, to the coordinate
-            # system of the original image
-            if location is not None:
-                for r in lp_results:
-                    r.location.moveByLocation(location)
-
-            # Print results
-            if self.verbosity >= 1:
-                for index, result in enumerate(lp_results):
-                    show_text_on_image(
-                        image,
-                        result.text,
-                        result.location,
-                        waitKey=index == len(lp_results) - 1,
-                    )
-
-            self._debug_imshow("License Plate", lp_image, 2, waitKey=True)
-
             self._debug_print([lp.text for lp in lp_results], 0)
-
             return lp_results
 
 
@@ -340,7 +302,7 @@ def cleanup_text(text: str) -> str:
 
 
 def show_text_on_image(
-    image: np.array, text: str, location: ResultLocation, waitKey=True
+    image: np.array, text: str, location: ResultLocation, waitKey=True  # type: ignore
 ) -> None:
     """
     Show the text on the image with a rectangle surrounding it.

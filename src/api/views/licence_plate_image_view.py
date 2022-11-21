@@ -1,15 +1,13 @@
 import os
-import io
+import re
 import shutil
-import cv2
-from google.cloud import vision
 
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
 from src.core.views import BackendResponse, _OriginAPIView
-from src.api.models import Image
+from src.api.models import Image, LicencePlate
 
 from anpr.license_plate_recognition import ANPR
 from anpr.google_vision_ocr import GoogleVisionOCR
@@ -29,41 +27,42 @@ class LicencePlateImageView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         file = request.data["file"]  # type: ignore
+        garage_id: int = request.headers["PO3-GARAGE-ID"]
         Image.objects.create(image=file)
+        lp = ""
         try:
-            perform_ocr(file.name)  # type: ignore
+            lp = perform_ocr(file.name)  # type: ignore
         except Exception as e:
-            print(e)
-            # delete_file()
-        # Make sure the image files get deleted.
-        # delete_file()
-        print("Doing something")
-        return BackendResponse({"response": "Success"}, status=status.HTTP_200_OK)
+            delete_file()
+            return BackendResponse(
+                [f"An error occurred while parsing the licence plate image: {e}."],
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        out_int = LicencePlate.handle_licence_plate(strip_special_chars(lp), garage_id)
+        delete_file()
+        return BackendResponse(
+            {"response": f"Successfully registered licence plate {lp}."}
+            if out_int == 1
+            else {"response": f"Successfully signed out licence plate {lp}."},
+            status=status.HTTP_200_OK,
+        )
 
 
-def perform_ocr(image_path: str):
-    print("Starting...")
+def perform_ocr(image_path: str) -> str:
     anpr = ANPR(None, GoogleVisionOCR(), formats=["N-LLL-NNN"], verbosity=0)  # type: ignore
-    print("Anpr initialised...")
-    image = cv2.imread(os.path.join(os.getcwd(), f"src/media/images/{image_path}"))
-    print("Performing ocr")
-    licence_plates = anpr.find_and_ocr(image, doSelection=False)
-    print(licence_plates)
-
-
-def google_vision_api(image_path: str):
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(
-        os.getcwd(), "google_vision_api_credentials.json"
+    ocr_results = anpr.find_and_ocr(
+        os.path.join(os.getcwd(), f"src/media/images/{image_path}"),
+        doSelection=False,
     )
-    client = vision.ImageAnnotatorClient()
-    with io.open(
-        os.path.join(os.getcwd(), f"src/media/images/{image_path}"), "rb"
-    ) as image_file:
-        content = image_file.read()
+    lp = "".join([lp.text for lp in ocr_results])
+    return lp
 
-    image = vision.Image(content=content)
-    response = client.text_detection(image=image)  # type: ignore
-    print(response)
+
+def strip_special_chars(string: str) -> str:
+    """
+    Strips out all special characters from a given string.
+    """
+    return re.sub(r"\W", "", string)
 
 
 def delete_file() -> None:
@@ -75,3 +74,8 @@ def delete_file() -> None:
         shutil.rmtree(os.path.join(os.getcwd(), "src/media/images"))
     except FileNotFoundError:
         pass
+    # Delete record from the database.
+    try:
+        Image.objects.all().delete()
+    except Exception as e:
+        print("Image deletion exception:", e)

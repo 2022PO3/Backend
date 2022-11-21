@@ -17,7 +17,6 @@ from django.urls import path
 from src.api.views import (
     GarageDetailView,
     GarageListView,
-    RPiLicencePlateView,
     LicencePlateDetailView,
     UserDetailView,
     GetGarageSettingsView,
@@ -38,7 +37,6 @@ handler500 = "src.core.views.server_error"
 urlpatterns = [
     path("api/garage/<int:pk>", GarageDetailView.as_view()),
     path("api/garages", GarageListView.as_view()),
-    path("api/licence-plates", RPiLicencePlateView.as_view()),
     path("api/parking-lots/<int:pk>", ParkingLotsListView.as_view()),
     path("api/parking-lot/<int:pk>", ParkingLotsDetailView.as_view()),
     path("api/parking-lot", ParkingLotsDetailView.as_view()),

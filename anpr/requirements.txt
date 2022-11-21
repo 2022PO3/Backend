@@ -1,4 +1,0 @@
-easyocr>=1.6.2
-google-cloud-vision==3.1.4 
-setuptools==65.5.0
-requests==2.28.1

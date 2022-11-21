@@ -21,7 +21,6 @@ def get_background(file_path):
 
 def detect(input_file, background_file, group_size=8):
 
-
     # get the background model
     background = get_background(background_file)
     # cv2.imshow('Background', background)
@@ -32,7 +31,7 @@ def detect(input_file, background_file, group_size=8):
     frame_count = 0
 
     cap = cv2.VideoCapture(input_file)
-    while (cap.isOpened()):
+    while cap.isOpened():
         ret, frame = cap.read()
         if ret:
             frame_count += 1
@@ -44,20 +43,22 @@ def detect(input_file, background_file, group_size=8):
                 frame_diff_list = []
             # find the difference between current frame and base frame
             frame_diff = cv2.absdiff(gray, background)
-            cv2.imshow('diff', frame_diff)
+            cv2.imshow("diff", frame_diff)
             # thresholding to convert the frame to binary
             ret, thres = cv2.threshold(frame_diff, 50, 255, cv2.THRESH_BINARY)
             # dilate the frame a bit to get some more white area...
             # ... makes the detection of contours a bit easier
             dilate_frame = cv2.dilate(thres, None, iterations=2)
             # append the final result into the `frame_diff_list`
-            frame_diff_list.append(dilate_frame)
+            frame_diff_list.append(dilate_frame)  # type: ignore
             # if we have reached `consecutive_frame` number of frames
-            if len(frame_diff_list) == group_size:
+            if len(frame_diff_list) == group_size:  # type: ignore
                 # add all the frames in the `frame_diff_list`
-                sum_frames = sum(frame_diff_list)
+                sum_frames = sum(frame_diff_list)  # type: ignore
                 # find the contours around the white segmented areas
-                contours, hierarchy = cv2.findContours(sum_frames, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                contours, hierarchy = cv2.findContours(
+                    sum_frames, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE  # type: ignore
+                )
                 # draw the contours, not strictly necessary
                 for i, cnt in enumerate(contours):
                     cv2.drawContours(frame, contours, i, (0, 0, 255), 3)
@@ -69,15 +70,16 @@ def detect(input_file, background_file, group_size=8):
                     # get the xmin, ymin, width, and height coordinates from the contours
                     (x, y, w, h) = cv2.boundingRect(contour)
                     # draw the bounding boxes
-                    cv2.rectangle(orig_frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                    cv2.rectangle(orig_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-                cv2.imshow('Detected Objects', orig_frame)
-                if cv2.waitKey(100) & 0xFF == ord('q'):
+                cv2.imshow("Detected Objects", orig_frame)
+                if cv2.waitKey(100) & 0xFF == ord("q"):
                     break
         else:
             break
     cap.release()
     cv2.destroyAllWindows()
 
-directory = '/Users/runeverachtert/Documents/Universiteit/P&O/3/Backend/utils/ANPR'
-detect(directory + '/input.mov', directory + '/bg.mov')
+
+directory = "/Users/runeverachtert/Documents/Universiteit/P&O/3/Backend/utils/ANPR"
+detect(directory + "/input.mov", directory + "/bg.mov")

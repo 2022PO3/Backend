@@ -1,10 +1,8 @@
 import io
 import os
-from typing import Union
 
 import cv2
 from google.cloud import vision
-
 from anpr.ocr import OCR, OCRResult, ResultLocation
 
 
@@ -41,7 +39,7 @@ class GoogleVisionOCR(OCR):
         # Initialize client to connect to Google Cloud
         self.client = vision.ImageAnnotatorClient()
 
-    def getTextFromImagePath(self, path: Union[str, None]) -> list[OCRResult]:
+    def get_text_from_image_path(self, path: str) -> list[OCRResult]:
         """
         This method reads the text on the image at the given path, using Google Vision API.
 
@@ -49,9 +47,6 @@ class GoogleVisionOCR(OCR):
         this class instance is used.
         @return: list containing OCRResults' found on the image.
         """
-        # Check if the path parameter is provided. Otherwise, use the default_image_path attribute.
-        if path is None:
-            path = self.default_image_path
 
         # Open the image
         with io.open(path, "rb") as image_file:
@@ -59,7 +54,7 @@ class GoogleVisionOCR(OCR):
 
         # Send image to the Google Vision API
         image = vision.Image(content=content)
-        response = self.client.text_detection(image=image)
+        response = self.client.text_detection(image=image)  # type: ignore
 
         # If an error is returned, raise an exception
         if response.error.message:
@@ -72,11 +67,11 @@ class GoogleVisionOCR(OCR):
 
         # Parse the results returned by Google Vision to OCRResult objects and return them in a list.
         return [
-            self.createOCRResult(text_annotation)
+            self.create_ocr_result(text_annotation)
             for text_annotation in response.text_annotations
         ]
 
-    def getTextFromImage(self, image) -> list[OCRResult]:
+    def get_text_from_image(self, image) -> list[OCRResult]:
         """
         This method reads the text on the given image using Google Vision API.
 
@@ -87,9 +82,9 @@ class GoogleVisionOCR(OCR):
         cv2.imwrite(self.default_image_path, image)
 
         # Read text from this path
-        return self.getTextFromImagePath(self.default_image_path)
+        return self.get_text_from_image_path(self.default_image_path)
 
-    def createOCRResult(self, text_annotation: vision.TextAnnotation) -> OCRResult:
+    def create_ocr_result(self, text_annotation: vision.TextAnnotation) -> OCRResult:
         """
         Function to parse the text result of Google Vision into an OCRResult.
 

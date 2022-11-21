@@ -34,13 +34,13 @@ class VideoANPR:
                 if self.imshow:
                     cv2.imshow("Input", frame)
                 # Get license plate texts from anpr
-                (lpText, lpCnt) = self.anpr.find_and_ocr(frame, clearBorder=True)
+                (lpText, lpCnt) = self.anpr.find_and_ocr(frame, clearBorder=True)  # type: ignore
 
                 # Add texts to list of detected string
                 if lpText is not None and len(lpText) > 0:
                     self.detected_strings += lpText
                 if self.imshow:
-                    self.anpr.show_text_on_image(frame, lpText, lpCnt, waitKey=False)
+                    self.anpr.show_text_on_image(frame, lpText, lpCnt, waitKey=False)  # type: ignore
         else:
             raise IOError("Cannot open webcam")
 
@@ -180,27 +180,3 @@ def remove_doubles(strings):
                     unique.remove(string1)
 
     return unique
-
-
-if __name__ == "__main__":
-    # print("start")
-    # strings = ['1-AB', '1-AB', '63', '21', '1-ABC', '123', '1-ABC123', '1-ABC123', '1-ABC', '123', '1-ABC123', '1-ABC-123', '1-ABC-123', '1ABC-123', '1-ABC', '123', '1-ABC-123', '1-ABC', '123', '1-ADC-123', '1-ABC-123', '1-ADC123', 'ABC', '123', 'ADC', '123', 'ADC', '123', '1-ABC', '123', '1-ADC-123', '1-ABC-123', '1-ABC', '123', '1-ABC', '123', '1-ABC-123', 'AI-']
-    # print(combine_strings(strings, ["N-LLL-NNN"]))
-
-    anpr = ANPR(debug=False)
-
-    video_anpr = VideoANPR(anpr, imshow=False)
-
-    while True:
-        video_anpr.detect_on_frame()
-
-        if len(video_anpr.detected_strings) > 5:
-            print("Checking for license plate")
-            lp = video_anpr.check_for_license_plate(["N-LLL-NNN"])
-            print(lp)
-            if lp is not None:
-                break
-
-        c = cv2.waitKey(1)
-        if c == 113:
-            break

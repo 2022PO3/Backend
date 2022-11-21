@@ -124,7 +124,7 @@ class OCR:
     Abstract OCR class. This class does nothing, but is subclasses should have the 'getTextFromImage' method.
     """
 
-    def getTextFromImage(self, image) -> list[OCRResult]:
+    def get_text_from_image(self, image) -> list[OCRResult]:
         """
         This method finds and returns all the text on the given image.
 
@@ -134,23 +134,3 @@ class OCR:
         @return: list containing OCRResults' found on the image.
         """
         return []
-
-
-if __name__ == "__main__":
-
-    import cv2
-
-    # Initialize the Google Vision OCR tool
-    from google_vision_ocr import GoogleVisionOCR
-
-    ocr = GoogleVisionOCR()
-
-    # Initialize the EasyOCR OCR tool
-    # from easy_ocr import EasyOCR
-    # ocr = EasyOCR()
-
-    # Load the image
-    image = cv2.imread("google_vision_image.png")
-
-    # Print text on the image
-    print(ocr.getTextFromImage(image))
