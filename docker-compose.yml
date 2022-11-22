@@ -15,6 +15,7 @@ services:
       context: .
     volumes:
       - .:/backend
+      - ./google_vision_api_credentials.json:./google_vision_api_credentials.jso
     ports:
       - 8000:8000
     image: backend:django

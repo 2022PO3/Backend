@@ -5,7 +5,6 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements.txt requirements.txt
 COPY ./docker/run.sh /docker/run.sh
 COPY ./docker/seeds.sh /docker/seeds.sh
-COPY ./google_vision_api_credentials.json ./google_vision_api_credentials.jso
 RUN chmod +x /docker/run.sh
 
 # Install the MySQL-client for Python and the gcc compiler for C++.
