@@ -17,7 +17,6 @@ from django.urls import path
 from src.api.views import (
     GarageDetailView,
     GarageListView,
-    RPiLicencePlateView,
     LicencePlateDetailView,
     UserDetailView,
     GetGarageSettingsView,
@@ -30,6 +29,7 @@ from src.api.views import (
     LoginView,
     LogoutView,
     SignUpView,
+    LicencePlateImageView,
 )
 
 handler500 = "src.core.views.server_error"
@@ -37,7 +37,6 @@ handler500 = "src.core.views.server_error"
 urlpatterns = [
     path("api/garage/<int:pk>", GarageDetailView.as_view()),
     path("api/garages", GarageListView.as_view()),
-    path("api/licence-plates", RPiLicencePlateView.as_view()),
     path("api/parking-lots/<int:pk>", ParkingLotsListView.as_view()),
     path("api/parking-lot/<int:pk>", ParkingLotsDetailView.as_view()),
     path("api/parking-lot", ParkingLotsDetailView.as_view()),
@@ -56,3 +55,6 @@ urlpatterns += [
     path("api/auth/logout", LogoutView.as_view()),  # type: ignore
     path("api/auth/sign-up", SignUpView.as_view()),  # type: ignore
 ]
+
+# Raspberry Pi
+urlpatterns += [path("api/images", LicencePlateImageView.as_view())]

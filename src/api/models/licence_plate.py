@@ -31,7 +31,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         return self.garage == None
 
     @staticmethod
-    def _register_licence_plate(licence_plate: str, garage_id: int) -> None:
+    def _register_licence_plate(licence_plate: str, garage_id: int) -> int:
         """
         This registers that a `LicencePlate` is entering a `Garage`. If the `LicencePlate`
         exists in the database, the `garage_id` is updated.
@@ -39,12 +39,11 @@ class LicencePlate(TimeStampMixin, models.Model):
         If the `LicencePlate` doesn't exist in the database, a new dummy `User` with role 0
         is created, which is linked to the given `LicencePlate`.
         """
-
         queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
         if not queryset:
             email = User.email_generator()
             password = User.objects.make_random_password(
-                length=20,
+                length=30,
                 allowed_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*();,./<>",
             )
             generated_user = User.objects.create_user(
@@ -63,9 +62,10 @@ class LicencePlate(TimeStampMixin, models.Model):
                 garage_id=garage_id,
                 updated_at=datetime.datetime.now().astimezone().isoformat(),
             )
+        return 1
 
     @staticmethod
-    def _sign_out_licence_plate(licence_plate: "LicencePlate") -> None:
+    def _sign_out_licence_plate(licence_plate: "LicencePlate") -> int:
         """
         This signs out the `LicencePlate` from a `Garage`, setting its `garage_id` to `null`
         in the database. If the `LicencePlate` is associated with a dummy `User` of role 0,
@@ -78,9 +78,10 @@ class LicencePlate(TimeStampMixin, models.Model):
         else:
             licence_plate.garage = None
             licence_plate.save()
+        return 0
 
     @staticmethod
-    def handle_licence_plate(params: dict[str, Any]) -> None:
+    def handle_licence_plate(licence_plate: str, garage_id: int) -> int:
         """
         This function handles the business logic for incoming licence plates.
 
@@ -91,19 +92,21 @@ class LicencePlate(TimeStampMixin, models.Model):
 
         The variable `params` contains the fields `garageId` and `licencePlate` from the
         `LicencePlateSerializer`.
-        """
 
-        licence_plate = params["licencePlate"]
-        garage_id = params["garageId"]
+        The output int-variable indicates if the licence plate is registered (1) or is signed
+        out (0).
+        """
         queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
         if not queryset:
-            LicencePlate._register_licence_plate(licence_plate, garage_id)
+            return LicencePlate._register_licence_plate(licence_plate, garage_id)
         else:
             lp = queryset[0]
-            LicencePlate._register_licence_plate(
-                licence_plate, garage_id
-            ) if lp.in_garage else LicencePlate._sign_out_licence_plate(lp)
+            return (
+                LicencePlate._register_licence_plate(licence_plate, garage_id)
+                if lp.in_garage
+                else LicencePlate._sign_out_licence_plate(lp)
+            )
 
     class Meta:
         db_table = "licence_plates"
-        app_label = 'api'
+        app_label = "api"
