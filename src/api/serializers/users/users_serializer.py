@@ -36,8 +36,10 @@ class SignUpSerializer(serializers.ModelSerializer):
     Serializer for serializing sign up POST-requests for creating new users.
     """
 
+    password_confirmation = serializers.CharField()
+
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
-        if data["password"] != data["passwordConfirmation"]:  # type: ignore
+        if data["password"] != data["password_confirmation"]:  # type: ignore
             raise serializers.ValidationError(
                 {"errors": ["Password and passwordConfirmation do not match."]}
             )
