@@ -4,10 +4,10 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.core.utils import OriginAPIView
+from src.core.views import _OriginAPIView
 
 
-class LogoutView(OriginAPIView):
+class LogoutView(_OriginAPIView):
     """
     View to log out the currently logged in user.
 

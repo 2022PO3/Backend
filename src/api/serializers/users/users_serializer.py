@@ -1,17 +1,17 @@
+from collections import OrderedDict
+from typing import Any
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from src.users.models import User
 from django.contrib.auth import authenticate
+from src.core.serializers import APIForeignKeySerializer
 
 
-class UsersSerializer(serializers.ModelSerializer):
+class UsersSerializer(APIForeignKeySerializer):
     """
     Serializer for serializing GET and PUT request for retrieving and updating the users's data, respectively.
     """
 
-    firstName = serializers.CharField(source="first_name", allow_null=True)
-    lastName = serializers.CharField(source="last_name", allow_null=True)
-    favGarageId = serializers.IntegerField(source="fav_garage", allow_null=True)
+    fav_garage_id = serializers.IntegerField()
 
     class Meta:
         model = User
@@ -19,12 +19,16 @@ class UsersSerializer(serializers.ModelSerializer):
             "id",
             "email",
             "role",
-            "firstName",
-            "lastName",
-            "favGarageId",
+            "first_name",
+            "last_name",
+            "fav_garage_id",
             "location",
         ]
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "first_name": {"allow_null": True},
+            "last_name": {"allow_null": True},
+        }
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -32,22 +36,12 @@ class SignUpSerializer(serializers.ModelSerializer):
     Serializer for serializing sign up POST-requests for creating new users.
     """
 
-    firstName = serializers.CharField(source="first_name", allow_null=True)
-    lastName = serializers.CharField(source="last_name", allow_null=True)
-    passwordConfirmation = serializers.CharField(max_length=192, write_only=True)
-
-    def is_valid(self, raise_exception: bool = False) -> bool:
-        if "firstName" not in self.initial_data:  # type: ignore
-            self.initial_data |= {"firstName": None}  # type: ignore
-        if "lastName" not in self.initial_data:  # type: ignore
-            self.initial_data |= {"lastName": None}  # type: ignore
-        if not super().is_valid():
-            return False
-        if self.initial_data["password"] != self.initial_data["passwordConfirmation"]:  # type: ignore
-            raise ValidationError(
+    def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
+        if data["password"] != data["passwordConfirmation"]:  # type: ignore
+            raise serializers.ValidationError(
                 {"errors": ["Password and passwordConfirmation do not match."]}
             )
-        return True
+        return data
 
     class Meta:
         model = User
@@ -55,13 +49,16 @@ class SignUpSerializer(serializers.ModelSerializer):
             "id",
             "email",
             "password",
-            "passwordConfirmation",
+            "password_confirmation",
             "role",
-            "firstName",
-            "lastName",
+            "first_name",
+            "last_name",
         ]
         extra_kwargs = {
             "password": {"write_only": True},
+            "password_confirmation": {"write_only": True},
+            "first_name": {"allow_null": True},
+            "last_name": {"allow_null": True},
         }
 
 
@@ -73,10 +70,10 @@ class LoginSerializer(serializers.ModelSerializer):
     email = serializers.CharField()
     password = serializers.CharField()
 
-    def validate(self, data):
+    def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
         user = authenticate(**data)
         if user and user.is_active:
-            return user
+            return user  # type: ignore
         raise serializers.ValidationError("Incorrect Credentials Passed.")
 
     class Meta:
