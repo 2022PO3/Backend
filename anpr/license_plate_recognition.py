@@ -255,16 +255,11 @@ class ANPR:
             cv2.imshow("ROI", roi)
         return roi, lp_location  # type: ignore
 
-    def find_and_ocr(
-        self, image_path: str, doSelection: bool = True
-    ) -> list[LicensePlateResult]:
+    def find_and_ocr(self, image_path: str) -> list[LicensePlateResult]:
         """
         Find license plate candidates and get the final text on it.
 
         @param image: image to find license plate on
-        @param doSelection: boolean indicating whether the algorithm should first use the
-        '_locate_license_plate_candidates' method to find rectangular candidates or just look for license plates formats
-        in all the text on the image.
         @return: list of detected license plates
         """
 

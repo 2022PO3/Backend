@@ -51,8 +51,7 @@ class LicencePlateImageView(_OriginAPIView):
 def perform_ocr(image_path: str) -> str:
     anpr = ANPR(None, GoogleVisionOCR(), formats=["N-LLL-NNN"], verbosity=0)  # type: ignore
     ocr_results = anpr.find_and_ocr(
-        os.path.join(os.getcwd(), f"src/media/images/{image_path}"),
-        doSelection=False,
+        os.path.join(os.getcwd(), f"src/media/images/{image_path}")
     )
     lp = "".join([lp.text for lp in ocr_results])
     return lp
