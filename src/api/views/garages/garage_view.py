@@ -7,12 +7,15 @@ from src.users.permissions import IsGarageOwner
 class GarageDetailView(PkAPIView):
     """
     A view class which incorporates the views regarding single instance of the
-    `Garage`-model, which makes it possible to query a single garage on `pk`.
+    `Garage`-model, which makes it possible to query a single garage on `pk` and to update a
+    garage on `pk`.
     """
 
     origins = ["app", "web"]
+    permission_classes = [IsGarageOwner]
     model = Garage
     serializer = GarageSerializer
+    user_id = True
 
 
 class GarageListView(BaseAPIView):
@@ -22,6 +25,6 @@ class GarageListView(BaseAPIView):
 
     origins = ["app", "web"]
     permission_classes = [IsGarageOwner]
-    serializer = GarageSerializer
+    serializer = {"get": GarageSerializer}
     model = Garage
     post_user_id = True

@@ -12,4 +12,23 @@ class ParkingLotSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = ParkingLot
-        fields = ["id", "garage_id", "floor_number", "occupied", "disabled"]
+        fields = [
+            "id",
+            "garage_id",
+            "floor_number",
+            "occupied",
+            "disabled",
+            "parking_lot_no",
+        ]
+
+
+class RPIParkingLotSerializer(APIForeignKeySerializer):
+    """
+    Serializer for serializing request coming from the Raspberry Pi to update a parking lot.
+    """
+
+    garage_id = serializers.IntegerField()
+
+    class Meta:
+        model = ParkingLot
+        fields = ["id", "garage_id", "parking_lot_no"]

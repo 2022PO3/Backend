@@ -199,7 +199,7 @@ class GetObjectMixin:
 
 
 class BaseAPIView(_OriginAPIView, GetObjectMixin):
-    serializer: U = None  # type: ignore
+    serializer: dict[str, U] = None  # type: ignore
     model: V = None  # type: ignore
     get_user_id = False
     post_user_id = False
@@ -209,7 +209,7 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
             return resp
         if self.model and not self.get_user_id:
             objects = self.model.objects.all()  # type: ignore
-            serializer = self.serializer(objects, many=True)  # type: ignore
+            serializer = self.serializer["get"](objects, many=True)  # type: ignore
         else:
             objects = self.model.objects.filter(**{"user_id": request.user.pk})  # type: ignore
             serializer = self.serializer(objects, many=True)  # type: ignore
@@ -219,7 +219,7 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
         if (resp := super().post(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
-        serializer = self.serializer(data=data)  # type: ignore
+        serializer = self.serializer["post"](data=data)  # type: ignore
         if serializer.is_valid():
             try:
                 self.check_object_permissions(
@@ -230,11 +230,8 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
             serializer.save(
                 user=request.user
             ) if self.post_user_id else serializer.save()
-            return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-        return BackendResponse(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+            return BackendResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PkAPIView(_OriginAPIView, GetObjectMixin):
@@ -263,7 +260,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         except Http404:
             return BackendResponse(
                 [
-                    f"The corresponding {self.fk_model if self.fk_model else self.model} with 'pk' `{pk}` does not exist."
+                    f"The corresponding {self.fk_model.__name__ if self.fk_model else self.model.__name__} with 'pk' `{pk}` does not exist."  # type: ignore
                 ],
                 status=status.HTTP_404_NOT_FOUND,
             )
@@ -282,7 +279,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
                 object = self.get_object(self.model, pk)  # type: ignore
             except Http404:
                 return BackendResponse(
-                    [f"The {self.model} with pk `{pk}` does not exist,"],
+                    [f"The {self.model.__name__} with pk `{pk}` does not exist,"],  # type: ignore
                     status=status.HTTP_404_NOT_FOUND,
                 )
             serializer = self.serializer(object, data=data)  # type: ignore
@@ -294,15 +291,12 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
                 self.check_object_permissions(
                     request, serializer.validated_data["garage_id"]
                 )
-                pass
             except KeyError:
-                pass
+                # When the object is a Garage.
+                self.check_object_permissions(request, pk)
             serializer.save(user=request.user) if self.user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-        return BackendResponse(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def _dict_key_to_case(d: dict[str, Any], f: Callable) -> dict[str, Any]:
