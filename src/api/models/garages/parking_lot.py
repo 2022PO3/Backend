@@ -57,32 +57,23 @@ def parking_lot_is_available(
     # When a ParkingLot is occupied, this offset will be added to the time when the request is
     # made.
     OFFSET = timedelta(hours=8)
-
     pl_reservations = Reservation.objects.filter(parking_lot=pl)
-    if pl.occupied and not (
-        start_time.timestamp()
-        <= (datetime.utcnow() + OFFSET).timestamp()
-        <= end_time.timestamp()
+    if any(
+        map(
+            lambda reservation: in_daterange(
+                reservation.from_date, reservation.to_date, start_time, end_time
+            ),
+            pl_reservations,
+        )
     ):
-        return True
+        return False
     elif pl.occupied and (
         start_time.timestamp()
         <= (datetime.utcnow() + OFFSET).timestamp()
         <= end_time.timestamp()
     ):
         return False
-    else:
-        if not pl_reservations:
-            return True
-        else:
-            return not any(
-                map(
-                    lambda reservation: in_daterange(
-                        reservation.from_date, reservation.to_date, start_time, end_time
-                    ),
-                    pl_reservations,
-                )
-            )
+    return True
 
 
 def in_daterange(st1: datetime, et1: datetime, st2: datetime, et2: datetime) -> bool:

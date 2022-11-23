@@ -29,12 +29,10 @@ class ParkingLotView(PkAPIView):
     list = True
 
     def get(self, request: Request, pk: int, format=None) -> BackendResponse:
-        print("executed")
         if (resp := _OriginAPIView.get(self, request, format)) is not None:
             return resp
         try:
             request_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
-            print(request_data)
             pls = ParkingLot.objects.is_available(
                 pk,
                 parse(request_data["from_date"]),  # type: ignore
