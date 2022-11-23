@@ -210,11 +210,9 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
         if self.model and not self.get_user_id:
             objects = self.model.objects.all()  # type: ignore
             serializer = self.serializer(objects, many=True)  # type: ignore
-        elif self.get_user_id:
+        else:
             objects = self.model.objects.filter(**{"user_id": request.user.pk})  # type: ignore
             serializer = self.serializer(objects, many=True)  # type: ignore
-        else:
-            serializer = self.serializer(request.user)  # type: ignore
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request, format=None) -> BackendResponse | None:
@@ -247,11 +245,16 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
     column: str = ""
     user_id = False
 
-    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
+    def get(
+        self, request: Request, pk: int | None = None, format=None
+    ) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
             return resp
         try:
-            if self.list:
+            if pk is None:
+                # Special case for the UserView
+                data = request.user  # type: ignore
+            elif self.list:
                 data: list[V] = self.model.objects.filter(**{self.column: pk})  # type: ignore
             elif self.fk_model is None:
                 data: V = self.get_object(self.model, pk)  # type: ignore
@@ -273,6 +276,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         if (resp := super().put(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        # For the UserView, no model has to be defined.
         if self.model is not None:
             try:
                 object = self.get_object(self.model, pk)  # type: ignore
@@ -283,6 +287,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
                 )
             serializer = self.serializer(object, data=data)  # type: ignore
         else:
+            # Special case for the UserView.
             serializer = self.serializer(request.user, data=data)  # type: ignore
         if serializer.is_valid():
             try:

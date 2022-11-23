@@ -112,12 +112,21 @@ if __name__ == "__main__":
     )
     create_fixtures(
         "api.parkingLot",
-        ["garage", "floor_number", "occupied", "disabled", "created_at", "updated_at"],
+        [
+            "garage",
+            "floor_number",
+            "occupied",
+            "disabled",
+            "created_at",
+            "updated_at",
+            "parking_lot_no",
+        ],
         {
-            "garage": [randint(1, 10) for _ in range(300)],
+            "garage": list(map(lambda x: x // 30 + 1, list(range(300)))),
             "floor_number": [randint(-2, 2) for _ in range(300)],
             "occupied": [randint(0, 1) for _ in range(300)],
             "disabled": [choices([0, 1], [0.95, 0.05])[0] for _ in range(300)],
+            "parking_lot_no": list(map(lambda x: x % 30 + 1, list(range(300)))),
         },
         5,
     )
