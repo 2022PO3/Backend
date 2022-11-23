@@ -18,7 +18,7 @@ services:
       - ./google_vision_api_credentials.json:/google_vision_api_credentials.json
     ports:
       - 8000:8000
-    image: backend:django
+    image: python1002/django:backend
     container_name: django_backend_container
     entrypoint: /docker/run.sh
     depends_on:
