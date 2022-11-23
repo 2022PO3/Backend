@@ -27,7 +27,13 @@ class LicencePlateImageView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         file = request.data["file"]  # type: ignore
-        garage_id: int = request.headers["PO3-GARAGE-ID"]
+        try:
+            garage_id: int = request.headers["PO3-GARAGE-ID"]
+        except KeyError:
+            return BackendResponse(
+                ["The PO3-GARAGE-ID-header is not sent with the request."],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         Image.objects.create(image=file)
         lp = ""
         try:
@@ -38,21 +44,27 @@ class LicencePlateImageView(_OriginAPIView):
                 [f"An error occurred while parsing the licence plate image: {e}."],
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        out_int = LicencePlate.handle_licence_plate(strip_special_chars(lp), garage_id)
+        stripped_lp_string = strip_special_chars(lp)
+        out_int = LicencePlate.handle_licence_plate(stripped_lp_string, garage_id)
         delete_file()
         return BackendResponse(
-            {"response": f"Successfully registered licence plate {lp}."}
+            {"response": f"Successfully registered licence plate {stripped_lp_string}."}
             if out_int == 1
-            else {"response": f"Successfully signed out licence plate {lp}."},
+            else {
+                "response": f"Successfully signed out licence plate {stripped_lp_string}."
+            },
             status=status.HTTP_200_OK,
         )
 
 
 def perform_ocr(image_path: str) -> str:
-    anpr = ANPR(None, GoogleVisionOCR(), formats=["N-LLL-NNN"], verbosity=0)  # type: ignore
+    anpr = ANPR(None, GoogleVisionOCR(), formats=["N-LLL-NNN", "N:LLL-NNN"], verbosity=0)  # type: ignore
     ocr_results = anpr.find_and_ocr(
         os.path.join(os.getcwd(), f"src/media/images/{image_path}")
     )
+    if not ocr_results:
+        raise Exception("No licence plates detected on the image.")
+
     lp = "".join([lp.text for lp in ocr_results])
     return lp
 
