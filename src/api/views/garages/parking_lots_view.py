@@ -1,13 +1,18 @@
+from dateutil.parser import parse
 from rest_framework import status
 from rest_framework.request import Request
-from rest_framework.parsers import JSONParser
+from rest_framework.parsers import JSONParser, ParseError
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from src.api.models import ParkingLot
-from src.api.serializers import ParkingLotSerializer, RPIParkingLotSerializer
+from src.api.serializers import (
+    ParkingLotSerializer,
+    RPIParkingLotSerializer,
+    GetAvailableParkingLotsSerializer,
+)
 from src.core.utils import to_snake_case
-from src.core.views import PkAPIView, _OriginAPIView, _dict_key_to_case
+from src.core.views import PkAPIView, _OriginAPIView, _dict_key_to_case, BackendResponse
 from src.users.permissions import IsGarageOwner
 
 
@@ -22,6 +27,27 @@ class ParkingLotView(PkAPIView):
     model = ParkingLot
     serializer = ParkingLotSerializer
     list = True
+
+    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
+        print("executed")
+        if (resp := _OriginAPIView.get(self, request, format)) is not None:
+            return resp
+        try:
+            request_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+            print(request_data)
+            pls = ParkingLot.objects.is_available(
+                pk,
+                parse(request_data["from_date"]),  # type: ignore
+                parse(request_data["to_date"]),  # type: ignore
+            )
+            pls = ParkingLot.objects.filter(garage_id=pk)
+            serializer = GetAvailableParkingLotsSerializer(pls, many=True)  # type: ignore
+            return BackendResponse(serializer.data, status=status.HTTP_200_OK)
+        except ParseError:
+            serializer = ParkingLotSerializer(
+                ParkingLot.objects.filter(garage_id=pk), many=True
+            )
+            return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
 
 class ParkingLotPutView(PkAPIView):
@@ -59,7 +85,3 @@ class RPiParkingLotView(_OriginAPIView):
             else:
                 return Response(None, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class FreeParkingLotView(_OriginAPIView):
-    pass

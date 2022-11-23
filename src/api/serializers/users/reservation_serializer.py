@@ -1,8 +1,10 @@
-from collections import OrderedDict
 from typing import Any
+from datetime import datetime
+from collections import OrderedDict
+
 from rest_framework import serializers
+from src.api.models import Reservation, parking_lot_is_available
 from src.api.serializers import GarageSerializer
-from src.api.models import Reservation, ParkingLot
 from src.core.serializers import APIForeignKeySerializer
 
 
@@ -31,6 +33,12 @@ class PostReservationSerializer(APIForeignKeySerializer):
         """
         if data["from_date"] > data["to_date"]:
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
+        if not parking_lot_is_available(
+            data["parking_lot_id"], data["from_data"], data["to_date"]
+        ):
+            raise serializers.ValidationError(
+                "The parking lot is already occupied on that day and time, please choose another one."
+            )
         return super().validate(data)
 
     class Meta:
