@@ -59,3 +59,7 @@ class RPiParkingLotView(_OriginAPIView):
             else:
                 return Response(None, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FreeParkingLotView(_OriginAPIView):
+    pass
