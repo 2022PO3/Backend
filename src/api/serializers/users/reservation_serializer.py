@@ -1,5 +1,4 @@
 from typing import Any
-from datetime import datetime
 from collections import OrderedDict
 
 from rest_framework import serializers
@@ -46,3 +45,20 @@ class PostReservationSerializer(APIForeignKeySerializer):
     class Meta:
         model = Reservation
         fields = ["id", "garage_id", "parking_lot_id", "from_date", "to_date"]
+
+
+class AssignReservationSerializer(APIForeignKeySerializer):
+    """
+    Serializer class which serializes responses which assign a random free parking lot to the user. Note that the reservation will not be recorded  before they made a call to the reservations view.
+    """
+
+    garage_id = serializers.IntegerField()
+
+    def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
+        if data["from_date"] > data["to_date"]:
+            raise serializers.ValidationError("`from_date` must occur before `to_date`")
+        return super().validate(data)
+
+    class Meta:
+        model = Reservation
+        fields = ["garage_id", "from_date", "to_date"]

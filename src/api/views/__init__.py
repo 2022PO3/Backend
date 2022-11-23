@@ -13,7 +13,7 @@ from src.api.views.garages.parking_lots_view import (
 from src.api.views.licence_plates.licence_plate_view import LicencePlateDetailView
 
 from src.api.views.users.user_view import UserDetailView
-from src.api.views.users.reservations_view import ReservationsView
+from src.api.views.users.reservations_view import ReservationsView, AssignReservationView
 
 from src.api.views.auth.login_view import LoginView
 from src.api.views.auth.logout_view import LogoutView

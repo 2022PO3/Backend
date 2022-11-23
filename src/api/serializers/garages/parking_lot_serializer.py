@@ -1,4 +1,8 @@
+from typing import Any
+from collections import OrderedDict
+
 from rest_framework import serializers
+
 from src.api.models import ParkingLot
 from src.core.serializers import APIForeignKeySerializer
 
@@ -22,7 +26,7 @@ class ParkingLotSerializer(APIForeignKeySerializer):
         ]
 
 
-class GetAvailableParkingLotsSerializer(APIForeignKeySerializer):
+class AvailableParkingLotsSerializer(APIForeignKeySerializer):
     """
     Serializer for handling requests which demand only the available parking lots of given garage.
     """
