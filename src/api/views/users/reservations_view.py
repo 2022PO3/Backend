@@ -1,21 +1,18 @@
-from src.core.views import BaseAPIView
-from src.api.models import Reservation
-from src.api.serializers import GetReservationSerializer, PostReservationSerializer
-
-from dateutil.parser import parse
 from random import randint
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 
-
-from src.api.models import ParkingLot
+from src.api.models import ParkingLot, Reservation
 from src.api.serializers import (
     AvailableParkingLotsSerializer,
     AssignReservationSerializer,
+    GetReservationSerializer,
+    PostReservationSerializer,
 )
 from src.core.utils import to_snake_case
 from src.core.views import _OriginAPIView, _dict_key_to_case, BackendResponse
+from src.core.views import BaseAPIView
 
 
 class ReservationsView(BaseAPIView):
