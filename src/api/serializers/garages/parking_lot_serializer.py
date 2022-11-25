@@ -1,6 +1,3 @@
-from typing import Any
-from collections import OrderedDict
-
 from rest_framework import serializers
 
 from src.api.models import ParkingLot
@@ -23,27 +20,9 @@ class ParkingLotSerializer(APIForeignKeySerializer):
             "occupied",
             "disabled",
             "parking_lot_no",
-        ]
-
-
-class AvailableParkingLotsSerializer(APIForeignKeySerializer):
-    """
-    Serializer for handling requests which demand only the available parking lots of given garage.
-    """
-
-    garage_id = serializers.IntegerField()
-
-    class Meta:
-        model = ParkingLot
-        fields = [
-            "id",
-            "garage_id",
-            "floor_number",
-            "occupied",
-            "disabled",
-            "parking_lot_no",
             "booked",
         ]
+        extra_kwargs = {"booked": {"allow_null": True}}
 
 
 class RPIParkingLotSerializer(APIForeignKeySerializer):

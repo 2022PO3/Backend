@@ -21,7 +21,8 @@ class ParkingLot(TimeStampMixin, models.Model):
         - `parking_lot_no`: the number of the parking lot in the garage;
         - `floor_number`: the floor on which the parking lot resides in the garage;
         - `occupied`: indicates if the parking lot is occupied at the given time (note that a parking lot is occupied both if it holds a car or when it's booked);
-        - `disabled`: indicates if the parking lot is disabled by the garage owner.
+        - `disabled`: indicates if the parking lot is disabled by the garage owner;
+        - `booked`: indicates wether the parking lot is booked in a given time frame.
     """
 
     garage = models.ForeignKey("api.Garage", on_delete=models.CASCADE)
@@ -32,9 +33,9 @@ class ParkingLot(TimeStampMixin, models.Model):
 
     def booked(
         self, start_time: datetime | None = None, end_time: datetime | None = None
-    ) -> bool:
+    ) -> bool | None:
         if start_time is None and end_time is None:
-            return False
+            return None
         return not parking_lot_is_available(self, start_time, end_time)  # type: ignore
 
     objects = ParkingLotManager()
