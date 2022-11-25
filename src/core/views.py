@@ -1,6 +1,8 @@
 from collections import OrderedDict
 import os
 import json
+
+from functools import reduce
 from typing import Callable, TypeVar, Any
 
 from django.db import models
@@ -19,6 +21,8 @@ from rest_framework.renderers import JSONRenderer
 
 from src.core.utils import to_camel_case, to_snake_case, decode_jwt
 from src.core.exceptions import BackendException
+from src.core.utils import to_camel_case, to_snake_case
+from src.core.exceptions import OriginValidationException
 
 T = TypeVar("T")
 U = TypeVar("U", bound=serializers.ModelSerializer)
@@ -117,17 +121,17 @@ class _ValidateOrigin:
         try:
             origin: str = request.headers["PO3-ORIGIN"]
         except KeyError:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 "The PO3-ORIGIN-header is not sent with the request.",
                 status.HTTP_400_BAD_REQUEST,
             )
         if origin not in self.BASE_ORIGINS:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 "The PO3-ORIGIN-header contains a wrong value. It can only be `rpi`, `app` or `web`.",
                 status.HTTP_400_BAD_REQUEST,
             )
         elif origin not in self.origins:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 f"The origin `{origin}` is not allowed on this view.",
                 status.HTTP_403_FORBIDDEN,
             )
@@ -203,18 +207,8 @@ class _OriginAPIView(_ValidateOrigin, APIView):
     def _validate_origins(self, request: Request) -> None | BackendResponse:
         try:
             super()._validate_origins(request)
-        except _OriginValidationException as e:
+        except OriginValidationException as e:
             return BackendResponse([str(e)], status=e.status)
-
-
-class _OriginValidationException(Exception):
-    """
-    Exception raised when there is an error in the origin validation of the request.
-    """
-
-    def __init__(self, message: str, status_code: int) -> None:
-        self.status = status_code
-        super().__init__(message)
 
 
 class GetObjectMixin:

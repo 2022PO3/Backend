@@ -1,0 +1,9 @@
+The Parking Boys
+
+
+Please click the link below to verify your e-mail address for activation your Parking  Boys' account.
+
+­{{ activation_url }}
+­
+
+If you did not create an account, no further action is required.

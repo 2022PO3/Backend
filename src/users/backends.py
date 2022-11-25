@@ -1,5 +1,5 @@
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.hashers import check_password
 
 from rest_framework.request import Request
 
@@ -27,3 +27,21 @@ class EmailAuthBackend(BaseBackend):
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
+
+class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
+    def make_token(self, user: User) -> str:
+        """
+        Create a token that can be used once to active a user's account.
+        """
+        return super().make_token(user)
+
+    def _make_hash_value(self, user: User, timestamp) -> str:
+        """
+        Creates a hash of the user's active state, primary key and the timestamp of token 
+        creation.
+        """
+        return str(user.is_active) + str(user.pk) + str(timestamp)
+
+
+email_verification_token = EmailVerificationTokenGenerator()

@@ -66,7 +66,7 @@ ROOT_URLCONF = "src.core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["src/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -175,3 +175,11 @@ MEDIA_URL = "media/"
 
 # Path where media is stored
 MEDIA_ROOT = path.join(BASE_DIR, "media/")
+
+# Email configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = getenv("EMAIL_HOST_PASSWORD")
