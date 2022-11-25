@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser
 
 from src.api.models import ParkingLot, Reservation
 from src.api.serializers import (
-    AvailableParkingLotsSerializer,
+    ParkingLotSerializer,
     AssignReservationSerializer,
     GetReservationSerializer,
     PostReservationSerializer,
@@ -49,7 +49,7 @@ class AssignReservationView(_OriginAPIView):
                 )
             )
             pl = pls[randint(0, len(pls))]
-            serializer = AvailableParkingLotsSerializer(pl)
+            serializer = ParkingLotSerializer(pl)
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(
             assignment_serializer.errors, status=status.HTTP_400_BAD_REQUEST

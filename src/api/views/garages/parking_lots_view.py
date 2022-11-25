@@ -1,5 +1,4 @@
 from dateutil.parser import parse
-from random import randint
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser, ParseError
@@ -7,11 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from src.api.models import ParkingLot
-from src.api.serializers import (
-    ParkingLotSerializer,
-    RPIParkingLotSerializer,
-    AvailableParkingLotsSerializer,
-)
+from src.api.serializers import ParkingLotSerializer, RPIParkingLotSerializer
 from src.core.utils import to_snake_case
 from src.core.views import PkAPIView, _OriginAPIView, _dict_key_to_case, BackendResponse
 from src.users.permissions import IsGarageOwner
@@ -35,12 +30,12 @@ class ParkingLotView(PkAPIView):
         try:
             request_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
             pls = ParkingLot.objects.is_available(
-                pk,
+                int(pk),
                 parse(request_data["from_date"]),  # type: ignore
                 parse(request_data["to_date"]),  # type: ignore
             )
             pls = ParkingLot.objects.filter(garage_id=pk)
-            serializer = AvailableParkingLotsSerializer(pls, many=True)  # type: ignore
+            serializer = ParkingLotSerializer(pls, many=True)  # type: ignore
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         except ParseError:
             serializer = ParkingLotSerializer(
