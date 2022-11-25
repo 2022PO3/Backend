@@ -24,4 +24,4 @@ class PostOpeningHoursView(BaseAPIView):
     origins = ["app", "web"]
     permission_classes = [IsGarageOwner]
     model = OpeningHour
-    serializer = OpeningHourSerializer
+    serializer = {"post": OpeningHourSerializer}

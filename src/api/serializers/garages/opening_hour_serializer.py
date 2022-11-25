@@ -36,4 +36,4 @@ class OpeningHourSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = OpeningHour
-        fields = ["garage_id", "from_day", "to_day", "from_hour", "to_hour"]
+        fields = ["id", "garage_id", "from_day", "to_day", "from_hour", "to_hour"]

@@ -20,12 +20,15 @@ from src.api.views import (
     LicencePlateDetailView,
     UserDetailView,
     GetGarageSettingsView,
-    GetReservationsView,
+    ReservationsView,
     GetOpeningHoursView,
     PostOpeningHoursView,
-    ParkingLotsListView,
-    ParkingLotsDetailView,
+    ParkingLotView,
+    ParkingLotPutView,
+    RPiParkingLotView,
+    AssignReservationView,
     PricesView,
+    PostPricesView,
     LoginView,
     LogoutView,
     SignUpView,
@@ -37,16 +40,17 @@ handler500 = "src.core.views.server_error"
 urlpatterns = [
     path("api/garage/<int:pk>", GarageDetailView.as_view()),
     path("api/garages", GarageListView.as_view()),
-    path("api/parking-lots/<int:pk>", ParkingLotsListView.as_view()),
-    path("api/parking-lot/<int:pk>", ParkingLotsDetailView.as_view()),
-    path("api/parking-lot", ParkingLotsDetailView.as_view()),
+    path("api/parking-lots/<int:pk>", ParkingLotView.as_view()),
+    path("api/parking-lot/<int:pk>", ParkingLotPutView.as_view()),
+    path("api/assign-parking-lot", AssignReservationView.as_view()),
     path("api/user", UserDetailView.as_view()),
     path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/garage-settings/<int:pk>", GetGarageSettingsView.as_view()),
-    path("api/reservations", GetReservationsView.as_view()),
+    path("api/reservations", ReservationsView.as_view()),
     path("api/opening-hours/<int:pk>", GetOpeningHoursView.as_view()),
     path("api/opening-hours", PostOpeningHoursView.as_view()),
     path("api/prices/<int:pk>", PricesView.as_view()),
+    path("api/prices", PostPricesView.as_view()),
 ]
 
 # User authentication
@@ -57,4 +61,7 @@ urlpatterns += [
 ]
 
 # Raspberry Pi
-urlpatterns += [path("api/images", LicencePlateImageView.as_view())]
+urlpatterns += [
+    path("api/images", LicencePlateImageView.as_view()),
+    path("api/rpi-parking-lot", RPiParkingLotView.as_view()),
+]
