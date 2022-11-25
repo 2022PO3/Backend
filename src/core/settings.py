@@ -112,6 +112,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "EXCEPTION_HANDLER": "src.core.utils.exception_handler.custom_exception_handler",
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
 }
 
 # Password validation
@@ -170,7 +171,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "static/"
 
 # Base url to serve media files
-MEDIA_URL = 'media/'
+MEDIA_URL = "media/"
 
 # Path where media is stored
-MEDIA_ROOT = path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = path.join(BASE_DIR, "media/")
