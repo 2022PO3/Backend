@@ -19,6 +19,7 @@ from src.api.views import (
     GarageListView,
     LicencePlateDetailView,
     UserDetailView,
+    UserActivationView,
     GetGarageSettingsView,
     ReservationsView,
     GetOpeningHoursView,
@@ -58,6 +59,10 @@ urlpatterns += [
     path("api/auth/login", LoginView.as_view()),  # type: ignore
     path("api/auth/logout", LogoutView.as_view()),  # type: ignore
     path("api/auth/sign-up", SignUpView.as_view()),  # type: ignore
+    path(
+        "api/auth/activate-account/<str:uid_b64>/<str:token>",
+        UserActivationView.as_view(),
+    ),
 ]
 
 # Raspberry Pi
