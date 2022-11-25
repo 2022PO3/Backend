@@ -1,11 +1,15 @@
+from collections import OrderedDict
 import os
-import re
+import json
+
 from functools import reduce
 from typing import Callable, TypeVar, Any
 
 from django.db import models
 from django.http import Http404, JsonResponse
+from django.utils.safestring import SafeString
 from django.contrib.auth.hashers import check_password
+from jwt.exceptions import DecodeError, ExpiredSignatureError
 
 from rest_framework import status
 from rest_framework import serializers
@@ -13,8 +17,12 @@ from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 
+from src.core.utils import to_camel_case, to_snake_case, decode_jwt
+from src.core.exceptions import BackendException
 from src.core.utils import to_camel_case, to_snake_case
+from src.core.exceptions import OriginValidationException
 
 T = TypeVar("T")
 U = TypeVar("U", bound=serializers.ModelSerializer)
@@ -55,11 +63,39 @@ class BackendResponse(Response):
             {"errors": data}
             if status >= 400
             else {
-                "data": _dict_key_to_case(data, to_camel_case)
+                "data": BackendResponse.__escape_data(
+                    _dict_key_to_case(data, to_camel_case)
+                )
                 if isinstance(data, dict)
-                else list(map(lambda d: _dict_key_to_case(d, to_camel_case), data))  # type: ignore
+                else list(map(lambda d: BackendResponse.__escape_data(_dict_key_to_case(d, to_camel_case)), data))  # type: ignore
             }
         )
+
+    @staticmethod
+    def __escape_data(data: str | list[str] | dict[str, Any]):
+        """
+        Escapes given data to be safely transmitted via the API. This means that special characters, like accents are escaped.
+        """
+        if isinstance(data, str):
+            return BackendResponse.__escape_string(data)
+        elif isinstance(data, list):
+            print(data)
+            return [BackendResponse.__escape_data(d) for d in data]
+        elif isinstance(data, OrderedDict):
+            escaped_data = {}
+            for k, v in data.items():
+                if isinstance(v, OrderedDict):
+                    escaped_data |= {k: BackendResponse.__escape_data(v)}
+                elif isinstance(v, str):
+                    escaped_data |= {k: BackendResponse.__escape_string(v)}
+                else:
+                    escaped_data |= {k: v}
+            return escaped_data
+
+    @staticmethod
+    def __escape_string(string: str) -> str:
+        print(string)
+        return json.dumps(string).replace('"', "")
 
     @staticmethod
     def __set_content_type(content_type: str | None) -> str | None:
@@ -85,17 +121,17 @@ class _ValidateOrigin:
         try:
             origin: str = request.headers["PO3-ORIGIN"]
         except KeyError:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 "The PO3-ORIGIN-header is not sent with the request.",
                 status.HTTP_400_BAD_REQUEST,
             )
         if origin not in self.BASE_ORIGINS:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 "The PO3-ORIGIN-header contains a wrong value. It can only be `rpi`, `app` or `web`.",
                 status.HTTP_400_BAD_REQUEST,
             )
         elif origin not in self.origins:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 f"The origin `{origin}` is not allowed on this view.",
                 status.HTTP_403_FORBIDDEN,
             )
@@ -117,24 +153,30 @@ class _ValidateOrigin:
         """
 
         try:
-            sent_key: str = request.headers[header_name]
+            encoded_jwt: str = request.headers[header_name]
         except KeyError:
-            raise _OriginValidationException(
-                "The secret key of the frontend application is not sent.",
+            raise OriginValidationException(
+                f"The secret key of the {origin_name} is not sent.",
                 status.HTTP_400_BAD_REQUEST,
             )
-        else:
-            hashed_pi_key = os.environ[env_name].replace("\\", "")
-            if hashed_pi_key is None:
-                raise _OriginValidationException(
-                    "Cannot validate the secret key, as none is installed on the server.",
-                    status.HTTP_400_BAD_REQUEST,
-                )
-            if not check_password(sent_key, hashed_pi_key):
-                raise _OriginValidationException(
-                    f"Validation of the secret key of the {origin_name} failed.",
-                    status.HTTP_403_FORBIDDEN,
-                )
+        try:
+            decoded_data = decode_jwt(encoded_jwt)
+        except (ExpiredSignatureError, DecodeError, BackendException) as e:
+            raise OriginValidationException(
+                f"{e.__class__.__name__}: {str(e)}",
+                status.HTTP_403_FORBIDDEN,
+            )
+        hashed_pi_key = os.environ[env_name].replace("\\", "")
+        if hashed_pi_key is None:
+            raise OriginValidationException(
+                "Cannot validate the secret key, as none is installed on the server.",
+                status.HTTP_400_BAD_REQUEST,
+            )
+        if not check_password(decoded_data["key"], hashed_pi_key):
+            raise OriginValidationException(
+                f"Validation of the secret key of the {origin_name} failed.",
+                status.HTTP_403_FORBIDDEN,
+            )
 
 
 class _OriginAPIView(_ValidateOrigin, APIView):
@@ -148,6 +190,7 @@ class _OriginAPIView(_ValidateOrigin, APIView):
     """
 
     origins: list[str] = []
+    renderer_classes = [JSONRenderer]
 
     def get(self, request: Request, format=None) -> BackendResponse | None:
         return self._validate_origins(request)
@@ -164,18 +207,8 @@ class _OriginAPIView(_ValidateOrigin, APIView):
     def _validate_origins(self, request: Request) -> None | BackendResponse:
         try:
             super()._validate_origins(request)
-        except _OriginValidationException as e:
+        except OriginValidationException as e:
             return BackendResponse([str(e)], status=e.status)
-
-
-class _OriginValidationException(Exception):
-    """
-    Exception raised when there is an error in the origin validation of the request.
-    """
-
-    def __init__(self, message: str, status_code: int) -> None:
-        self.status = status_code
-        super().__init__(message)
 
 
 class GetObjectMixin:
@@ -199,7 +232,7 @@ class GetObjectMixin:
 
 
 class BaseAPIView(_OriginAPIView, GetObjectMixin):
-    serializer: U = None  # type: ignore
+    serializer: dict[str, U] = None  # type: ignore
     model: V = None  # type: ignore
     get_user_id = False
     post_user_id = False
@@ -209,19 +242,17 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
             return resp
         if self.model and not self.get_user_id:
             objects = self.model.objects.all()  # type: ignore
-            serializer = self.serializer(objects, many=True)  # type: ignore
-        elif self.get_user_id:
+            serializer = self.serializer["get"](objects, many=True)  # type: ignore
+        else:
             objects = self.model.objects.filter(**{"user_id": request.user.pk})  # type: ignore
             serializer = self.serializer(objects, many=True)  # type: ignore
-        else:
-            serializer = self.serializer(request.user)  # type: ignore
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request, format=None) -> BackendResponse | None:
         if (resp := super().post(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
-        serializer = self.serializer(data=data)  # type: ignore
+        serializer = self.serializer["post"](data=data)  # type: ignore
         if serializer.is_valid():
             try:
                 self.check_object_permissions(
@@ -232,11 +263,8 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
             serializer.save(
                 user=request.user
             ) if self.post_user_id else serializer.save()
-            return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-        return BackendResponse(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+            return BackendResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PkAPIView(_OriginAPIView, GetObjectMixin):
@@ -247,11 +275,16 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
     column: str = ""
     user_id = False
 
-    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
+    def get(
+        self, request: Request, pk: int | None = None, format=None
+    ) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
             return resp
         try:
-            if self.list:
+            if pk is None:
+                # Special case for the UserView
+                data = request.user  # type: ignore
+            elif self.list:
                 data: list[V] = self.model.objects.filter(**{self.column: pk})  # type: ignore
             elif self.fk_model is None:
                 data: V = self.get_object(self.model, pk)  # type: ignore
@@ -260,7 +293,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         except Http404:
             return BackendResponse(
                 [
-                    f"The corresponding {self.fk_model if self.fk_model else self.model} with 'pk' `{pk}` does not exist."
+                    f"The corresponding {self.fk_model.__name__ if self.fk_model else self.model.__name__} with 'pk' `{pk}` does not exist."  # type: ignore
                 ],
                 status=status.HTTP_404_NOT_FOUND,
             )
@@ -273,31 +306,30 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         if (resp := super().put(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        # For the UserView, no model has to be defined.
         if self.model is not None:
             try:
                 object = self.get_object(self.model, pk)  # type: ignore
             except Http404:
                 return BackendResponse(
-                    [f"The {self.model} with pk `{pk}` does not exist,"],
+                    [f"The {self.model.__name__} with pk `{pk}` does not exist,"],  # type: ignore
                     status=status.HTTP_404_NOT_FOUND,
                 )
             serializer = self.serializer(object, data=data)  # type: ignore
         else:
+            # Special case for the UserView.
             serializer = self.serializer(request.user, data=data)  # type: ignore
         if serializer.is_valid():
             try:
                 self.check_object_permissions(
                     request, serializer.validated_data["garage_id"]
                 )
-                pass
             except KeyError:
-                pass
+                # When the object is a Garage.
+                self.check_object_permissions(request, pk)
             serializer.save(user=request.user) if self.user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-        return BackendResponse(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def _dict_key_to_case(d: dict[str, Any], f: Callable) -> dict[str, Any]:

@@ -1,6 +1,7 @@
-from src.core.views import PkAPIView
+from src.core.views import PkAPIView, BaseAPIView
 from src.api.models import Price
 from src.api.serializers import PriceSerializer
+from src.users.permissions import IsGarageOwner
 
 
 class PricesView(PkAPIView):
@@ -13,3 +14,10 @@ class PricesView(PkAPIView):
     serializer = PriceSerializer
     model = Price
     list = True
+
+
+class PostPricesView(BaseAPIView):
+    origins: list[str] = ["app", "web"]
+    permission_classes = [IsGarageOwner]
+    serializer = {"post": PriceSerializer}
+    model = Price 

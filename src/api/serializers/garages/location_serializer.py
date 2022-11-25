@@ -10,4 +10,12 @@ class LocationsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
-        fields = "__all__"
+        fields = [
+            "id",
+            "country",
+            "province",
+            "municipality",
+            "post_code",
+            "street",
+            "number",
+        ]
