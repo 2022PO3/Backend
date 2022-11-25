@@ -59,6 +59,7 @@ class BackendResponse(Response):
     ) -> dict | None:
         if data is None or status is None:
             return None
+        print(data)
         return (
             {"errors": data}
             if status >= 400
@@ -81,7 +82,7 @@ class BackendResponse(Response):
         elif isinstance(data, list):
             print(data)
             return [BackendResponse.__escape_data(d) for d in data]
-        elif isinstance(data, OrderedDict):
+        elif isinstance(data, OrderedDict) or isinstance(data, dict):
             escaped_data = {}
             for k, v in data.items():
                 if isinstance(v, OrderedDict):
