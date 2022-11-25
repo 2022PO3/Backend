@@ -1,13 +1,14 @@
 from rest_framework import serializers
 from src.api.models import Price
+from src.core.serializers import APIForeignKeySerializer
 
 
-class PriceSerializer(serializers.ModelSerializer):
+class PriceSerializer(APIForeignKeySerializer):
     """
     Serializer for serializing requests for prices.
     """
 
-    garage_id = serializers.IntegerField(source="garage_id")
+    garage_id = serializers.IntegerField()
 
     class Meta:
         model = Price
