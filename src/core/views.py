@@ -1,11 +1,11 @@
 import os
-import re
 from functools import reduce
 from typing import Callable, TypeVar, Any
 
 from django.db import models
 from django.http import Http404, JsonResponse
 from django.contrib.auth.hashers import check_password
+from jwt.exceptions import DecodeError, ExpiredSignatureError
 
 from rest_framework import status
 from rest_framework import serializers
@@ -14,7 +14,8 @@ from rest_framework.parsers import JSONParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.core.utils import to_camel_case, to_snake_case
+from src.core.utils import to_camel_case, to_snake_case, decode_jwt
+from src.core.exceptions import BackendException
 
 T = TypeVar("T")
 U = TypeVar("U", bound=serializers.ModelSerializer)
@@ -117,24 +118,30 @@ class _ValidateOrigin:
         """
 
         try:
-            sent_key: str = request.headers[header_name]
+            encoded_jwt: str = request.headers[header_name]
         except KeyError:
             raise _OriginValidationException(
-                "The secret key of the frontend application is not sent.",
+                f"The secret key of the {origin_name} is not sent.",
                 status.HTTP_400_BAD_REQUEST,
             )
-        else:
-            hashed_pi_key = os.environ[env_name].replace("\\", "")
-            if hashed_pi_key is None:
-                raise _OriginValidationException(
-                    "Cannot validate the secret key, as none is installed on the server.",
-                    status.HTTP_400_BAD_REQUEST,
-                )
-            if not check_password(sent_key, hashed_pi_key):
-                raise _OriginValidationException(
-                    f"Validation of the secret key of the {origin_name} failed.",
-                    status.HTTP_403_FORBIDDEN,
-                )
+        try:
+            decoded_data = decode_jwt(encoded_jwt)
+        except (ExpiredSignatureError, DecodeError, BackendException) as e:
+            raise _OriginValidationException(
+                f"{e.__class__.__name__}: {str(e)}",
+                status.HTTP_403_FORBIDDEN,
+            )
+        hashed_pi_key = os.environ[env_name].replace("\\", "")
+        if hashed_pi_key is None:
+            raise _OriginValidationException(
+                "Cannot validate the secret key, as none is installed on the server.",
+                status.HTTP_400_BAD_REQUEST,
+            )
+        if not check_password(decoded_data["key"], hashed_pi_key):
+            raise _OriginValidationException(
+                f"Validation of the secret key of the {origin_name} failed.",
+                status.HTTP_403_FORBIDDEN,
+            )
 
 
 class _OriginAPIView(_ValidateOrigin, APIView):
