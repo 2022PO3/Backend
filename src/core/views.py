@@ -155,25 +155,25 @@ class _ValidateOrigin:
         try:
             encoded_jwt: str = request.headers[header_name]
         except KeyError:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 f"The secret key of the {origin_name} is not sent.",
                 status.HTTP_400_BAD_REQUEST,
             )
         try:
             decoded_data = decode_jwt(encoded_jwt)
         except (ExpiredSignatureError, DecodeError, BackendException) as e:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 f"{e.__class__.__name__}: {str(e)}",
                 status.HTTP_403_FORBIDDEN,
             )
         hashed_pi_key = os.environ[env_name].replace("\\", "")
         if hashed_pi_key is None:
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 "Cannot validate the secret key, as none is installed on the server.",
                 status.HTTP_400_BAD_REQUEST,
             )
         if not check_password(decoded_data["key"], hashed_pi_key):
-            raise _OriginValidationException(
+            raise OriginValidationException(
                 f"Validation of the secret key of the {origin_name} failed.",
                 status.HTTP_403_FORBIDDEN,
             )
