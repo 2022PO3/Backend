@@ -1,10 +1,15 @@
+from collections import OrderedDict
 import os
+import json
+
 from functools import reduce
 from typing import Callable, TypeVar, Any
 
 from django.db import models
 from django.http import Http404, JsonResponse
+from django.utils.safestring import SafeString
 from django.contrib.auth.hashers import check_password
+from jwt.exceptions import DecodeError, ExpiredSignatureError
 
 from rest_framework import status
 from rest_framework import serializers
@@ -12,7 +17,10 @@ from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 
+from src.core.utils import to_camel_case, to_snake_case, decode_jwt
+from src.core.exceptions import BackendException
 from src.core.utils import to_camel_case, to_snake_case
 from src.core.exceptions import OriginValidationException
 
@@ -55,11 +63,39 @@ class BackendResponse(Response):
             {"errors": data}
             if status >= 400
             else {
-                "data": _dict_key_to_case(data, to_camel_case)
+                "data": BackendResponse.__escape_data(
+                    _dict_key_to_case(data, to_camel_case)
+                )
                 if isinstance(data, dict)
-                else list(map(lambda d: _dict_key_to_case(d, to_camel_case), data))  # type: ignore
+                else list(map(lambda d: BackendResponse.__escape_data(_dict_key_to_case(d, to_camel_case)), data))  # type: ignore
             }
         )
+
+    @staticmethod
+    def __escape_data(data: str | list[str] | dict[str, Any]):
+        """
+        Escapes given data to be safely transmitted via the API. This means that special characters, like accents are escaped.
+        """
+        if isinstance(data, str):
+            return BackendResponse.__escape_string(data)
+        elif isinstance(data, list):
+            print(data)
+            return [BackendResponse.__escape_data(d) for d in data]
+        elif isinstance(data, OrderedDict):
+            escaped_data = {}
+            for k, v in data.items():
+                if isinstance(v, OrderedDict):
+                    escaped_data |= {k: BackendResponse.__escape_data(v)}
+                elif isinstance(v, str):
+                    escaped_data |= {k: BackendResponse.__escape_string(v)}
+                else:
+                    escaped_data |= {k: v}
+            return escaped_data
+
+    @staticmethod
+    def __escape_string(string: str) -> str:
+        print(string)
+        return json.dumps(string).replace('"', "")
 
     @staticmethod
     def __set_content_type(content_type: str | None) -> str | None:
@@ -117,24 +153,30 @@ class _ValidateOrigin:
         """
 
         try:
-            sent_key: str = request.headers[header_name]
+            encoded_jwt: str = request.headers[header_name]
         except KeyError:
-            raise OriginValidationException(
-                "The secret key of the frontend application is not sent.",
+            raise _OriginValidationException(
+                f"The secret key of the {origin_name} is not sent.",
                 status.HTTP_400_BAD_REQUEST,
             )
-        else:
-            hashed_pi_key = os.environ[env_name].replace("\\", "")
-            if hashed_pi_key is None:
-                raise OriginValidationException(
-                    "Cannot validate the secret key, as none is installed on the server.",
-                    status.HTTP_400_BAD_REQUEST,
-                )
-            if not check_password(sent_key, hashed_pi_key):
-                raise OriginValidationException(
-                    f"Validation of the secret key of the {origin_name} failed.",
-                    status.HTTP_403_FORBIDDEN,
-                )
+        try:
+            decoded_data = decode_jwt(encoded_jwt)
+        except (ExpiredSignatureError, DecodeError, BackendException) as e:
+            raise _OriginValidationException(
+                f"{e.__class__.__name__}: {str(e)}",
+                status.HTTP_403_FORBIDDEN,
+            )
+        hashed_pi_key = os.environ[env_name].replace("\\", "")
+        if hashed_pi_key is None:
+            raise _OriginValidationException(
+                "Cannot validate the secret key, as none is installed on the server.",
+                status.HTTP_400_BAD_REQUEST,
+            )
+        if not check_password(decoded_data["key"], hashed_pi_key):
+            raise _OriginValidationException(
+                f"Validation of the secret key of the {origin_name} failed.",
+                status.HTTP_403_FORBIDDEN,
+            )
 
 
 class _OriginAPIView(_ValidateOrigin, APIView):
@@ -148,6 +190,7 @@ class _OriginAPIView(_ValidateOrigin, APIView):
     """
 
     origins: list[str] = []
+    renderer_classes = [JSONRenderer]
 
     def get(self, request: Request, format=None) -> BackendResponse | None:
         return self._validate_origins(request)
