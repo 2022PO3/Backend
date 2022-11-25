@@ -124,7 +124,7 @@ class _ValidateOrigin:
                 status.HTTP_400_BAD_REQUEST,
             )
         else:
-            hashed_pi_key = os.environ[env_name]
+            hashed_pi_key = os.environ[env_name].replace("\\", "")
             if hashed_pi_key is None:
                 raise OriginValidationException(
                     "Cannot validate the secret key, as none is installed on the server.",
