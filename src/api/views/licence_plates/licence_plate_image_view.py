@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
+from src.core.settings import DEBUG
 from src.core.views import BackendResponse, _OriginAPIView
 from src.api.models import Image, LicencePlate
 
@@ -39,14 +40,14 @@ class LicencePlateImageView(_OriginAPIView):
         try:
             lp = perform_ocr(file.name)  # type: ignore
         except Exception as e:
-            delete_file()
+            delete_file(DEBUG)
             return BackendResponse(
                 [f"An error occurred while parsing the licence plate image: {e}."],
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         stripped_lp_string = strip_special_chars(lp)
         out_int = LicencePlate.handle_licence_plate(stripped_lp_string, garage_id)
-        delete_file()
+        delete_file(DEBUG)
         return BackendResponse(
             {"response": f"Successfully registered licence plate {stripped_lp_string}."}
             if out_int == 1
@@ -76,17 +77,18 @@ def strip_special_chars(string: str) -> str:
     return re.sub(r"\W", "", string)
 
 
-def delete_file() -> None:
+def delete_file(debug: bool) -> None:
     """
     Delete the entire directory of the image files, which makes sure that none remain on the
     server.
     """
-    try:
-        shutil.rmtree(os.path.join(os.getcwd(), "src/media/images"))
-    except FileNotFoundError:
-        pass
-    # Delete record from the database.
-    try:
-        Image.objects.all().delete()
-    except Exception as e:
-        print("Image deletion exception:", e)
+    if not debug:
+        try:
+            shutil.rmtree(os.path.join(os.getcwd(), "src/media/images"))
+        except FileNotFoundError:
+            pass
+        # Delete record from the database.
+        try:
+            Image.objects.all().delete()
+        except Exception as e:
+            print("Image deletion exception:", e)
