@@ -34,4 +34,4 @@ class RPIParkingLotSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = ParkingLot
-        fields = ["id", "garage_id", "parking_lot_no"]
+        fields = ["id", "garage_id", "parking_lot_no", "occupied"]
