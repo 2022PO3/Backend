@@ -17,6 +17,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.metadata import BaseMetadata
 from rest_framework.renderers import JSONRenderer
 
 from src.core.utils import to_camel_case, to_snake_case, decode_jwt
@@ -101,6 +102,12 @@ class BackendResponse(Response):
     @staticmethod
     def __set_content_type(content_type: str | None) -> str | None:
         return "application/json" if content_type is None else content_type
+
+    @staticmethod
+    def __set_headers():
+        """
+        Set the appropriate headers for the OPTIONS-request.
+        """
 
 
 class _ValidateOrigin:
