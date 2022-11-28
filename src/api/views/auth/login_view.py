@@ -10,7 +10,6 @@ from rest_framework.permissions import AllowAny
 
 from src.api.serializers import LoginSerializer, UsersSerializer
 from src.core.views import BackendResponse, _OriginAPIView
-from src.core.utils.utils import encode_jwt
 from src.users.models import User
 
 
@@ -24,14 +23,6 @@ class LoginView(_OriginAPIView):
 
     def get_token_limit_per_user(self):
         return knox_settings.TOKEN_LIMIT_PER_USER
-
-    def create_jwt_login_token(self, uid: int) -> str:
-        """
-        In case of the user using two factor authentication, the POST-request should return a
-        JWT-token instead of a authentication token. This token can then be used in the
-        TOTP-request for validating the 2FA-token, which then returns a new token for the user. For enhancing security, this token only lives for 2 minutes.
-        """
-        return encode_jwt({"uid": uid})
 
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
