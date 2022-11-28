@@ -37,7 +37,7 @@ class BackendResponse(Response):
 
     def __init__(
         self,
-        data: str | list[str] | dict[str, Any] | None = None,
+        data: list[str] | dict[str, Any] | None = None,
         status: int | None = None,
         template_name=None,
         headers=None,
@@ -55,14 +55,13 @@ class BackendResponse(Response):
 
     @staticmethod
     def __assign_top_level_key(
-        data: str | list[str] | dict[str, Any] | None | list[dict[str, Any]],
+        data: list[str] | dict[str, Any] | None,
         status: int | None,
     ) -> dict | None:
         if data is None or status is None:
             return None
-        print(data)
         return (
-            {"errors": data}
+            {"errors": BackendResponse.__handle_error_data(data)}
             if status >= 400
             else {
                 "data": BackendResponse.__escape_data(
@@ -81,7 +80,6 @@ class BackendResponse(Response):
         if isinstance(data, str):
             return BackendResponse.__escape_string(data)
         elif isinstance(data, list):
-            print(data)
             return [BackendResponse.__escape_data(d) for d in data]
         elif isinstance(data, OrderedDict) or isinstance(data, dict):
             escaped_data = {}
@@ -96,7 +94,6 @@ class BackendResponse(Response):
 
     @staticmethod
     def __escape_string(string: str) -> str:
-        print(string)
         return json.dumps(string).replace('"', "")
 
     @staticmethod
@@ -104,10 +101,18 @@ class BackendResponse(Response):
         return "application/json" if content_type is None else content_type
 
     @staticmethod
-    def __set_headers():
-        """
-        Set the appropriate headers for the OPTIONS-request.
-        """
+    def __handle_error_data(data: list[str] | dict[str, Any]) -> list[str]:
+        print(data)
+        if isinstance(data, list):
+            return data
+        else:
+            errors: list[str] = []
+            for key in data.keys():
+                if isinstance(data[key], list):
+                    errors.append(data[key][0].capitalize())
+                else:
+                    errors.append(data[key])
+            return errors
 
 
 class _ValidateOrigin:

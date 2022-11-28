@@ -61,7 +61,6 @@ class SignUpView(_OriginAPIView):
         msg_html = render_to_string(
             "activate_user_template.html", {"activation_url": url}
         )
-        print(url)
         send_mail(
             "Activate Your Account",
             msg_plain,
