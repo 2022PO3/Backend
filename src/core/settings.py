@@ -110,11 +110,11 @@ PASSWORD_HASHERS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("knox.auth.TokenAuthentication",),
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
     "EXCEPTION_HANDLER": "src.core.utils.exception_handler.custom_exception_handler",
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "src.core.permissions.IsAuthenticatedAndVerified",
+    ],
 }
 
 # Password validation

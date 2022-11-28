@@ -20,6 +20,8 @@ class LogoutView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         request._auth.delete()
+        request.user.two_factor_validated = False
+        request.user.save()
         user_logged_out.send(
             sender=request.user.__class__, request=request, user=request.user
         )

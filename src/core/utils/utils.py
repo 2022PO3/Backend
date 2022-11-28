@@ -1,5 +1,6 @@
 import jwt
 from datetime import datetime, timedelta
+from time import time
 from typing import Any
 from functools import reduce
 from os import path, getenv
@@ -30,8 +31,8 @@ def encode_jwt(payload: dict[str, Any], algorithm="HS256") -> str:
     load_dotenv(dotenv_path)
     if (secret := getenv("JWT_SECRET_2FA")) is None:
         raise BackendException("No secret key present for encoding the JWT-token.")
-    # Adding expiry
-    payload |= {"exp": (datetime.now() + timedelta(minutes=2)).second}
+    # Adding expiry of 2 minutes.
+    payload |= {"exp": round(time() + 120)  }
     return jwt.encode(payload, secret, algorithm)
 
 
@@ -50,6 +51,5 @@ def decode_jwt(
         encoded_jwt,
         secret,
         algorithms=[algorithm],
-        issuer="https://github.com/jonasroussel/dart_jsonwebtoken",
         leeway=3,
     )

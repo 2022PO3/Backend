@@ -13,6 +13,7 @@ from src.core.views import BackendResponse, _OriginAPIView
 from src.core.utils.utils import encode_jwt
 from src.users.models import User
 
+
 class LoginView(_OriginAPIView):
     """
     A view to log in a user.
@@ -53,9 +54,7 @@ class LoginView(_OriginAPIView):
             return BackendResponse(
                 {
                     "user": UsersSerializer(user).data,
-                    "token": self.create_jwt_login_token(user.pk)
-                    if user.two_factor
-                    else AuthToken.objects.create(user)[1],
+                    "token": AuthToken.objects.create(user)[1],
                 },
                 status=status.HTTP_200_OK,
             )

@@ -20,6 +20,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     role = models.IntegerField(choices=Roles.choices)
     is_active = models.BooleanField(default=True)
     two_factor = models.BooleanField(default=False)
+    two_factor_validated = models.BooleanField(null=True, blank=True)
     fav_garage = models.ForeignKey(
         "api.Garage", on_delete=models.CASCADE, null=True, related_name="fav_garage"
     )

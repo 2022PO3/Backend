@@ -24,4 +24,8 @@ from src.api.views.auth.sign_up_view import SignUpView
 
 from src.api.views.licence_plates.licence_plate_image_view import LicencePlateImageView
 
-from src.api.views.auth.multi_factor.totp_view import TOTPCreateView, TOTPVerifyView
+from src.api.views.auth.multi_factor.totp_view import (
+    TOTPCreateView,
+    TOTPVerifyView,
+    TOTPDeleteView,
+)
