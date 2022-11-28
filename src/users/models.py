@@ -31,6 +31,10 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
 
     objects = UserManager()
 
+    def set_two_factor_validation(self, tf_validated: bool | None) -> None:
+        self.two_factor_validated = tf_validated
+        self.save()
+
     @property
     def is_admin(self) -> bool:
         return self.role == 3
