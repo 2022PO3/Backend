@@ -1,4 +1,5 @@
 import jwt
+from datetime import datetime, timedelta
 from typing import Any
 from functools import reduce
 from os import path, getenv
@@ -20,14 +21,30 @@ def to_camel_case(string: str, *, lower_case: bool = True) -> str:
     )
 
 
-def decode_jwt(encoded_jwt: str, algorithm="HS256") -> dict[str, Any]:
+def encode_jwt(payload: dict[str, Any], algorithm="HS256") -> str:
+    """
+    Helper function to encode JWT-tokens for providing a one-time login token for users who
+    have 2FA installed.
+    """
+    dotenv_path = path.abspath(".env")
+    load_dotenv(dotenv_path)
+    if (secret := getenv("JWT_SECRET_2FA")) is None:
+        raise BackendException("No secret key present for encoding the JWT-token.")
+    # Adding expiry
+    payload |= {"exp": (datetime.now() + timedelta(minutes=2)).second}
+    return jwt.encode(payload, secret, algorithm)
+
+
+def decode_jwt(
+    encoded_jwt: str, secret_env_name: str, algorithm="HS256"
+) -> dict[str, Any]:
     """
     Helper function to decode JWT-tokens coming from the Frontend application.
     """
     # Load the `.env`-file.
     dotenv_path = path.abspath(".env")
     load_dotenv(dotenv_path)
-    if (secret := getenv("JWT_SECRET")) is None:
+    if (secret := getenv(secret_env_name)) is None:
         raise BackendException("No secret key present for decoding the JWT-token.")
     return jwt.decode(
         encoded_jwt,

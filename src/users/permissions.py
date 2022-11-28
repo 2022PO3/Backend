@@ -1,7 +1,12 @@
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from jwt.exceptions import DecodeError, ExpiredSignatureError
+
+from rest_framework.views import APIView
 from rest_framework.request import Request
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 from src.api.models import Garage
+from src.core.utils import decode_jwt
+from src.core.views import BackendException
 
 
 class OnlyGarageOwners(BasePermission):
@@ -30,3 +35,24 @@ class IsGarageOwner(OnlyGarageOwners, BasePermission):
         # Instance must have an attribute named `user`.
         g = Garage.objects.get(pk=pk)
         return g.user == request.user
+
+
+class HasJWTToken(BasePermission):
+    """
+    Global permission to only allow users with a proper JWT-token.
+    """
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        try:
+            jwt_token = request.headers["Authorization"]
+        except KeyError:
+            return False
+        try:
+            decoded_data = decode_jwt(jwt_token, "JWT_SECRET_2FA")
+        except (ExpiredSignatureError, DecodeError, BackendException) as e:
+            return False
+        try:
+            uid = decoded_data["uid"]
+        except KeyError:
+            return False
+        return int(uid) == request.user.pk

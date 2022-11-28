@@ -171,7 +171,7 @@ class _ValidateOrigin:
                 status.HTTP_400_BAD_REQUEST,
             )
         try:
-            decoded_data = decode_jwt(encoded_jwt)
+            decoded_data = decode_jwt(encoded_jwt, "JWT_SECRET_EMAIL_VERIFICATION")
         except (ExpiredSignatureError, DecodeError, BackendException) as e:
             raise OriginValidationException(
                 f"{e.__class__.__name__}: {str(e)}",
