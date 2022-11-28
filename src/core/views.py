@@ -7,7 +7,6 @@ from typing import Callable, TypeVar, Any
 
 from django.db import models
 from django.http import Http404, JsonResponse
-from django.utils.safestring import SafeString
 from django.contrib.auth.hashers import check_password
 from jwt.exceptions import DecodeError, ExpiredSignatureError
 
@@ -17,7 +16,6 @@ from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.metadata import BaseMetadata
 from rest_framework.renderers import JSONRenderer
 
 from src.core.utils import to_camel_case, to_snake_case, decode_jwt
