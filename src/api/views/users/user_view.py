@@ -35,10 +35,10 @@ class UserActivationView(_OriginAPIView):
             return resp
         try:
             user = UserActivationView._get_user_from_email_verification_token(
-                str(uid_b64), str(token)  # str() to prevent type injection attacks 
+                str(uid_b64), str(token)  # str() to prevent type injection attacks
             )
         except BackendException as e:
-            return BackendResponse(str(e), status=status.HTTP_400_BAD_REQUEST)
+            return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
         user.is_active = True
         user.save()
         return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)

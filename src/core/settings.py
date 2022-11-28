@@ -16,7 +16,6 @@ from os import path, getenv
 
 from datetime import timedelta
 
-
 # Load the `.env`-file.
 dotenv_path = path.abspath(".env")
 load_dotenv(dotenv_path)
