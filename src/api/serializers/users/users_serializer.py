@@ -23,6 +23,7 @@ class UsersSerializer(APIForeignKeySerializer):
             "last_name",
             "fav_garage_id",
             "location",
+            "two_factor",
         ]
         extra_kwargs = {
             "password": {"write_only": True},
