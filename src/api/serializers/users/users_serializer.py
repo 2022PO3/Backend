@@ -74,7 +74,6 @@ class LoginSerializer(serializers.ModelSerializer):
     password = serializers.CharField()
 
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
-        print("validating", data)
         user = authenticate(**data)
         if user and user.is_active:
             return user  # type: ignore

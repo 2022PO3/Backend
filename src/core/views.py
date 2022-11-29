@@ -107,7 +107,7 @@ class BackendResponse(Response):
             errors: list[str] = []
             for key in data.keys():
                 if isinstance(data[key], list):
-                    errors.append(data[key][0].capitalize())
+                    errors.append(f"{key}:{data[key][0]}")
                 else:
                     errors.append(data[key])
             return errors
