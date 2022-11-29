@@ -8,7 +8,7 @@ COPY ./docker/seeds.sh /docker/seeds.sh
 RUN chmod +x /docker/run.sh
 
 # Install the MySQL-client for Python and the gcc compiler for C++.
-RUN apt-get update && apt-get install -y libmariadb-dev build-essential netcat libpq-dev
+RUN apt-get update && apt-get install -y libmariadb-dev gcc libpq-dev
 
 # Update pip
 RUN pip3 install --upgrade pip

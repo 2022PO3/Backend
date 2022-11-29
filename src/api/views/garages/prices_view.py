@@ -9,6 +9,7 @@ from src.core.utils.stripe_endpoints import update_stripe_price, create_stripe_p
 from src.core.views import BackendResponse, _OriginAPIView, PkAPIView, _dict_key_to_case
 from src.api.models import Price
 from src.api.serializers import PriceSerializer
+from src.users.permissions import IsGarageOwner
 
 from src.users.permissions import IsGarageOwner
 

@@ -32,11 +32,19 @@ class GarageSerializer(APIForeignKeySerializer):
         )
         return garage
 
+    def update(self, instance: Garage, validated_data: dict[str, Any]) -> Garage:
+        settings_data = validated_data.pop("garage_settings")
+        location_data = settings_data.pop("location")
+        super().update(instance.garage_settings.location, location_data)
+        super().update(instance.garage_settings, settings_data)
+        return super().update(instance, validated_data)
+
     class Meta:
         model = Garage
         fields = [
             "id",
             "name",
+            "user_id",
             "is_full",
             "unoccupied_lots",
             "parking_lots",

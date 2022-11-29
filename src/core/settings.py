@@ -16,7 +16,6 @@ from os import path, getenv
 
 from datetime import timedelta
 
-
 # Load the `.env`-file.
 dotenv_path = path.abspath(".env")
 load_dotenv(dotenv_path)
@@ -31,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(getenv("DEBUG"))
 
 ALLOWED_HOSTS = ["*"]
 
@@ -66,7 +65,7 @@ ROOT_URLCONF = "src.core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["src/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -112,6 +111,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "EXCEPTION_HANDLER": "src.core.utils.exception_handler.custom_exception_handler",
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
 }
 
 # Password validation
@@ -168,3 +168,17 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 STATIC_URL = "static/"
+
+# Base url to serve media files
+MEDIA_URL = "media/"
+
+# Path where media is stored
+MEDIA_ROOT = path.join(BASE_DIR, "media/")
+
+# Email configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = getenv("EMAIL_HOST_PASSWORD")

@@ -1,25 +1,56 @@
-from src.core.views import  BaseAPIView
-from src.api.models import Reservation
-from src.api.serializers import PostReservationSerializer, GetReservationSerializer
+from random import randint
+from rest_framework import status
+from rest_framework.request import Request
+from rest_framework.parsers import JSONParser
+
+from src.api.models import ParkingLot, Reservation
+from src.api.serializers import (
+    ParkingLotSerializer,
+    AssignReservationSerializer,
+    GetReservationSerializer,
+    PostReservationSerializer,
+)
+from src.core.utils import to_snake_case
+from src.core.views import _OriginAPIView, _dict_key_to_case, BackendResponse
+from src.core.views import BaseAPIView
 
 
-class GetReservationsView(BaseAPIView):
+class ReservationsView(BaseAPIView):
     """
-    A view class to get all reservations from the currently logged in user.
+    A view class to get all reservations from the currently logged in user and to post new one.
+    The post method is overwritten as a
     """
 
     origins = ["app", "web"]
-    serializer = GetReservationSerializer
+    serializer = {"get": GetReservationSerializer, "post": PostReservationSerializer}
     get_user_id = True
-    model = Reservation
-
-
-class PostReservationsView(BaseAPIView):
-    """
-    A view class to post new reservations for the currently logged in user.
-    """
-
-    origins = ["app", "web"]
-    serializer = PostReservationSerializer
     post_user_id = True
     model = Reservation
+
+
+class AssignReservationView(_OriginAPIView):
+    origins = ["web", "app"]
+
+    def get(self, request: Request, format=None) -> BackendResponse:
+        if (resp := _OriginAPIView.get(self, request, format)) is not None:
+            return resp
+        request_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        assignment_serializer = AssignReservationSerializer(data=request_data)  # type: ignore
+        if assignment_serializer.is_valid():
+            valid_data = assignment_serializer.validated_data
+            pls = list(
+                filter(
+                    lambda pl: not pl.booked,
+                    ParkingLot.objects.is_available(
+                        valid_data["garage_id"],  # type: ignore
+                        valid_data["from_date"],  # type: ignore
+                        valid_data["to_date"],  # type: ignore
+                    ),
+                )
+            )
+            pl = pls[randint(0, len(pls))]
+            serializer = ParkingLotSerializer(pl)
+            return BackendResponse(serializer.data, status=status.HTTP_200_OK)
+        return BackendResponse(
+            assignment_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )

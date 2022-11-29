@@ -15,9 +15,10 @@ services:
       context: .
     volumes:
       - .:/backend
+      - ./google_vision_api_credentials.json:/google_vision_api_credentials.json
     ports:
       - 8000:8000
-    image: backend:django
+    image: python1002/django:backend
     container_name: django_backend_container
     entrypoint: /docker/run.sh
     depends_on:
@@ -28,6 +29,7 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
       - ${NGINX_CONFIG_PATH}:${NGINX_SERVER_CONFIG_PATH}
+      - ./flutter/build/web:/var/www/html/po3backend.ddns.net
     ports:
       - 80:80
       - 443:443

@@ -12,7 +12,7 @@ class PriceSerializer(APIForeignKeySerializer):
     Serializer for serializing requests for prices.
     """
 
-    garage_id = serializers.IntegerField(source="garage_id")
+    garage_id = serializers.IntegerField()
 
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
         """Check if the data on the Stripe server is the same as on ours"""

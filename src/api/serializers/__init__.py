@@ -16,7 +16,10 @@ from src.api.serializers.licence_plate_serializer import (
     PostLicencePlateSerializer,
 )
 
-from src.api.serializers.garages.parking_lot_serializer import ParkingLotSerializer
+from src.api.serializers.garages.parking_lot_serializer import (
+    ParkingLotSerializer,
+    RPIParkingLotSerializer,
+)
 
 from src.api.serializers.users.users_serializer import (
     UsersSerializer,
@@ -26,4 +29,5 @@ from src.api.serializers.users.users_serializer import (
 from src.api.serializers.users.reservation_serializer import (
     GetReservationSerializer,
     PostReservationSerializer,
+    AssignReservationSerializer,
 )
