@@ -31,6 +31,8 @@ from src.api.views import (
     LogoutView,
     SignUpView,
 )
+from src.api.views.payment.checkout_session_view import CreateCheckoutSessionView
+from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView
 
 handler500 = "src.core.views.server_error"
 
@@ -55,4 +57,10 @@ urlpatterns += [
     path("api/auth/login", LoginView.as_view()),  # type: ignore
     path("api/auth/logout", LogoutView.as_view()),  # type: ignore
     path("api/auth/sign-up", SignUpView.as_view()),  # type: ignore
+]
+
+# Payment
+urlpatterns += [
+    path("api/checkout/create-session", CreateCheckoutSessionView.as_view()),
+    path("api/checkout/webhook", CheckoutWebhookView.as_view())
 ]
