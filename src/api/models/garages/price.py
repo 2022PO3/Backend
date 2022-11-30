@@ -8,7 +8,7 @@ from src.core.models import TimeStampMixin
 class Price(TimeStampMixin, models.Model):
     garage = models.ForeignKey("api.Garage", on_delete=models.CASCADE)
     price_string = models.CharField(max_length=192)
-    duration = models.TimeField(default=datetime.time(0, 0, 0))
+    duration = models.DurationField(default=datetime.timedelta(hours=1))
     price = models.FloatField()
     valuta = models.CharField(
         max_length=3, choices=ValutasEnum.choices, default=ValutasEnum.EURO

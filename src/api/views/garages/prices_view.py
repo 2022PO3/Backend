@@ -36,7 +36,7 @@ class PricesView(PkAPIView):
             try:
                 price = create_stripe_price(create_price_serializer.data)
             except Exception as e:
-                return BackendResponse(f"Failed to create price on Stripe servers: {e}", status=status.HTTP_400_BAD_REQUEST)
+                return BackendResponse([f"Failed to create price on Stripe servers: {e}"], status=status.HTTP_400_BAD_REQUEST)
 
             # Add price to database
             price_data = JSONParser().parse(price)
@@ -80,7 +80,7 @@ class PutPricesView(_OriginAPIView):
             try:
                 update_stripe_price(serializer.data)
             except Exception as e:
-                return BackendResponse(f"Failed to update price on Stripe servers: {e}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return BackendResponse([f"Failed to update price on Stripe servers: {e}"], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             serializer.save()
 

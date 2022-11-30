@@ -8,23 +8,45 @@ from rest_framework.permissions import AllowAny
 from src.api.models import LicencePlate
 from src.api.models.garages.price import Price
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
-from src.api.views.payment.checkout_preview_view import _get_prices_to_pay
 from src.core.views import BackendResponse, _OriginAPIView
-from src.users.models import User
-
-from django.shortcuts import redirect
 
 from django.utils import timezone
 
 
-import stripe
+def _get_prices_to_pay(licence_plate: LicencePlate):
+    # Fetch garage prices from database
+    prices = Price.objects.filter(garage=licence_plate.garage)
+    prices = sorted(prices, key=lambda p: p.duration, reverse=True)
 
-# Set your secret key. Remember to switch to your live secret key in production.
-# See your keys here: https://dashboard.stripe.com/apikeys
-endpoint_secret = ''
+    if len(prices) == 0:
+        return []
+
+    # Get time the user has to pay for
+    updated_at = licence_plate.updated_at
+    time_to_pay = (timezone.now() - updated_at)
+
+    # Go over each and reduce te time to pay by the largest possible amount
+    preview_items = []
+    for price in prices:
+
+        item = {
+            # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+            'price': price,
+            'quantity': 0,
+        }
+
+        if price.duration >= datetime.timedelta(0):  # Make sure the loop completes
+            while time_to_pay > price.duration:
+                time_to_pay -= price.duration
+                item['quantity'] += 1
+
+        if item['quantity'] > 0:
+            preview_items.append(item)
+
+    return preview_items
 
 
-class CreateCheckoutSessionView(_OriginAPIView):
+class CheckoutPreviewView(_OriginAPIView):
     """
     A view to create a payment session
     """
@@ -41,39 +63,24 @@ class CreateCheckoutSessionView(_OriginAPIView):
         if checkout_serializer.is_valid():
             licence_plate = LicencePlate.objects.get(user=request.user,
                                                      licence_plate=checkout_serializer.validated_data['licence_plate'])
-
-            line_items = [
+            print(_get_prices_to_pay(licence_plate))
+            preview_items = [
                 {
-                    'price': price['price'].stripe_identifier,
+                    'price': price['price'].price,
+                    'duration': price['price'].duration,
+                    'price_string': price['price'].price_string,
                     'quantity': price['quantity'],
                 }
                 for price in _get_prices_to_pay(licence_plate)
             ]
 
-            if len(line_items) == 0:
+            if len(preview_items) == 0:
                 # No payment is needed
-                pass
                 return BackendResponse(["No payment required"], status=status.HTTP_200_OK)
 
-            WEBSITE_URL = 'https://po3backend.ddns.net/app'
-
-            try:
-                # Maak betaalpagina
-                checkout_session = stripe.checkout.Session.create(
-                    line_items=line_items,
-                    mode='payment',
-                    success_url=WEBSITE_URL + '/checkout-session-succes',  # Add id to find payment intent and user
-                    cancel_url=WEBSITE_URL + '/checkout-session-canceled',
-                )
-            except Exception as e:
-                return BackendResponse(
-                    ['Failed to create payment session.'],
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-
             return BackendResponse({
-                'url': checkout_session.url,
-            }, status=status.HTTP_201_CREATED)
+                'items': preview_items,
+            }, status=status.HTTP_200_OK)
 
         return BackendResponse(
             ["Invalid licence plate entered."],

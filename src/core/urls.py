@@ -29,12 +29,13 @@ from src.api.views import (
     RPiParkingLotView,
     AssignReservationView,
     PricesView,
-    PostPricesView,
+    PutPricesView,
     LoginView,
     LogoutView,
     SignUpView,
     LicencePlateImageView,
 )
+from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
 from src.api.views.payment.checkout_session_view import CreateCheckoutSessionView
 from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView
 
@@ -52,8 +53,8 @@ urlpatterns = [
     path("api/reservations", ReservationsView.as_view()),
     path("api/opening-hours/<int:pk>", GetOpeningHoursView.as_view()),
     path("api/opening-hours", PostOpeningHoursView.as_view()),
-    path("api/prices/<int:pk>", PricesView.as_view()),
-    path("api/prices", PostPricesView.as_view()),
+    path("api/prices/<int:pk>", PutPricesView.as_view()),
+    path("api/prices", PricesView.as_view()),
 ]
 
 # User authentication
@@ -76,5 +77,6 @@ urlpatterns += [
 # Payment
 urlpatterns += [
     path("api/checkout/create-session", CreateCheckoutSessionView.as_view()),
+    path("api/checkout/preview", CheckoutPreviewView.as_view()),
     path("api/checkout/webhook", CheckoutWebhookView.as_view())
 ]

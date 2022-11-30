@@ -66,7 +66,9 @@ class BackendResponse(Response):
                     _dict_key_to_case(data, to_camel_case)
                 )
                 if isinstance(data, dict)
-                else list(map(lambda d: BackendResponse.__escape_data(_dict_key_to_case(d, to_camel_case)), data))  # type: ignore
+                else
+                list(map(lambda d: BackendResponse.__escape_data(_dict_key_to_case(d, to_camel_case)), data))
+
             }
         )
 
@@ -343,15 +345,19 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def _dict_key_to_case(d: dict[str, Any], f: Callable) -> dict[str, Any]:
-    d_copy = d.copy()
-    for key in d.keys():
-        case_key = f(key)
-        if isinstance(d_copy[key], dict):
+def _dict_key_to_case(d: dict[str, Any] | list[Any] | str, f: Callable) -> dict[str, Any] | list[Any] | str:
+
+    if isinstance(d, dict):
+        d_copy = d.copy()
+        for key in d.keys():
+            case_key = f(key)
             d_copy[case_key] = _dict_key_to_case(d_copy.pop(key), f)
-        else:
-            d_copy[case_key] = d_copy.pop(key)
-    return d_copy
+
+        return d_copy
+    if isinstance(d, list):
+        return [_dict_key_to_case(item, f) for item in d]
+    else:
+        return d
 
 
 def server_error(request: Request, *args, **kwargs):

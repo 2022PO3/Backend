@@ -1,3 +1,4 @@
+import datetime
 from collections import OrderedDict
 from typing import Any
 
@@ -18,10 +19,12 @@ class PriceSerializer(APIForeignKeySerializer):
         """Check if the data on the Stripe server is the same as on ours"""
         stripe_price = get_stripe_price(data['stripe_identifier'])
 
+        if data['duration'] <= datetime.timedelta(0):
+            raise serializers.ValidationError("The duration to charge for should be positive.")
         if stripe_price is None:
             raise serializers.ValidationError("This price id doesn't exist in the Stripe database, so we can't use it for payments.")
         if stripe_price['unit_amount']/100 != data['price']:
-            serializers.ValidationError("The price amount does not match the one in the Stripe database.")
+            raise serializers.ValidationError("The price amount does not match the one in the Stripe database.")
         if stripe_price['currency'] != data['valuta']:
             raise serializers.ValidationError("The currency does not match the one in the Stripe database.")
 

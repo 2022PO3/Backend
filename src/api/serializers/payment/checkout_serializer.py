@@ -7,7 +7,6 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     """
 
     licence_plate = serializers.CharField()
-    password = serializers.CharField()
 
     class Meta:
         model = LicencePlate

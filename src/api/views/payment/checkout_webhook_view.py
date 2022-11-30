@@ -15,7 +15,7 @@ import stripe
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
 stripe.api_key = 'sk_test_51Lf1SsGRh96C3wQGfjc1BuPw2AhNPQpteJ0fz3JXRiD8QzpOb5nVKeNDSOKyLpfw6qcVUZ9936duVmrylnAqWf1t00kkRqidz1'
-endpoint_secret = ''
+endpoint_secret = 'whsec_cbc3c8904ec1b2bcd029776f6217f81b9d11da0c4c06b472b574b529c6cf220c'
 
 
 def email_customer_about_failed_payment(session):
@@ -34,11 +34,16 @@ class CheckoutWebhookView(APIView):
     """
     A view to listen for checkout updates from the stripe servers.
     """
+
+    permission_classes = [AllowAny]
+
     def post(self, request: Request, format=None) -> BackendResponse:
 
+        if 'STRIPE_SIGNATURE' not in request.headers:
+            return BackendResponse(['This endpoint is only accessible by Stripe.'], status=status.HTTP_403_FORBIDDEN)
+
+        sig_header = request.headers['STRIPE_SIGNATURE']
         payload = request.body
-        sig_header = request.headers['HTTP_STRIPE_SIGNATURE']
-        event = None
 
         try:
             event = stripe.Webhook.construct_event(
@@ -46,10 +51,10 @@ class CheckoutWebhookView(APIView):
             )
         except ValueError as e:
             # Invalid payload
-            return BackendResponse(status=status.HTTP_400_BAD_REQUEST)
+            return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
         except stripe.error.SignatureVerificationError as e:
             # Invalid signature
-            return BackendResponse(status=status.HTTP_400_BAD_REQUEST)
+            return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
 
         # Handle the checkout.session.completed event
         if event['type'] == 'checkout.session.completed':
@@ -86,7 +91,4 @@ class CheckoutWebhookView(APIView):
             email_customer_about_failed_payment(session)
 
         # Passed signature verification
-        return BackendResponse(
-            ["Invalid credentials entered."],
-            status=status.HTTP_200_OK,
-        )
+        return BackendResponse(["Order is fulfilled."], status=status.HTTP_200_OK, )

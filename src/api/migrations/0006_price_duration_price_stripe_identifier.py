@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0005_remove_location_garage'),
+        ('api', '0004_alter_parkinglot_unique_together'),
     ]
 
     operations = [

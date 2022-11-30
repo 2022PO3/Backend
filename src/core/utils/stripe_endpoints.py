@@ -15,7 +15,7 @@ def update_stripe_price(price_data):
         price_data['stripe_identifier'],
         currency=price_data['valuta'],
         unit_amount=price_data['price'] * 100,
-        nickname=f'price for staying {price_data["duration"]} at {price_data["garage_id"]}.',
+        nickname=price_data['price_string'],
         product_data={
             'name': f'{price_data["duration"]} at {Garage.objects.get(garage_id=price_data["garage_id"]).name}'
         }
@@ -26,7 +26,7 @@ def create_stripe_price(price_data):
     return stripe.Price.create(
         currency=price_data['valuta'],
         unit_amount=price_data['price'] * 100,
-        nickname=f'price for staying {price_data["duration"]} at {price_data["garage_id"]}.',
+        nickname=price_data['price_string'],  # f'price for staying {price_data["duration"]} at {price_data["garage_id"]}.'
         product_data={
             'name': f'{price_data["duration"]} at {Garage.objects.get(garage_id=price_data["garage_id"]).name}'
         }
