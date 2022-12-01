@@ -12,7 +12,7 @@ def create_fixtures(
     number: int,
 ) -> None:
     if not len(set(map(len, values.values()))) == 1:
-        raise Exception("Lengths of list values are not equal.")
+        raise Exception(f"Lengths of list values of {number} are not equal.")
     values_len = len(list(values.values())[0])
     if "created_at" in fields:
         values |= {
@@ -104,7 +104,7 @@ if __name__ == "__main__":
         ["user", "name", "garage_settings", "updated_at", "created_at"],
         {
             "user": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 3],
-            "name": list(map(lambda city: f"QPark {city}", cities)) + ["Parking Boys"],
+            "name": list(map(lambda city: f"QPark {city}", cities)),
             "garage_settings": [i for i in range(1, 11)] + [11],
         },
         4,
