@@ -57,7 +57,7 @@ def model_to_snake_case(model_name: str) -> str:
 
 if __name__ == "__main__":
     faker = Faker(["nl-BE"])
-    cities = [faker.city() for _ in range(10)]
+    cities = [faker.city() for _ in range(10)] + ["Leuven"]
     create_fixtures(
         "api.location",
         [
@@ -71,14 +71,13 @@ if __name__ == "__main__":
             "created_at",
         ],
         {
-            "country": ["België"] * 10,
-            "province": [
-                choice(["LIM", "ANT", "WVL", "OVL", "VBR"]) for _ in range(10)
-            ],
+            "country": ["België"] * 11,
+            "province": [choice(["LIM", "ANT", "WVL", "OVL", "VBR"]) for _ in range(10)]
+            + ["VBR"],
             "municipality": cities,
-            "post_code": [randint(2000, 4000) for _ in range(10)],
-            "street": [faker.street_name() for _ in range(10)],
-            "number": [randint(2, 200) for _ in range(10)],
+            "post_code": [randint(2000, 4000) for _ in range(10)] + [3000],
+            "street": [faker.street_name() for _ in range(10)] + ["Celestijnenlaan"],
+            "number": [randint(2, 200) for _ in range(10)] + [200],
         },
         2,
     )
@@ -93,10 +92,10 @@ if __name__ == "__main__":
             "updated_at",
         ],
         {
-            "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
-            "location": [i for i in range(1, 11)],
-            "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
-            "max_handicapped_lots": [randint(2, 10) for _ in range(10)],
+            "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(11)],
+            "location": [i for i in range(1, 12)],
+            "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(11)],
+            "max_handicapped_lots": [randint(2, 10) for _ in range(11)],
         },
         3,
     )
