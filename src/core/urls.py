@@ -37,6 +37,7 @@ from src.api.views import (
     TOTPVerifyView,
     TOTPCreateView,
     TOTPDeleteView,
+    TOTPView,
 )
 
 handler500 = "src.core.views.server_error"
@@ -69,6 +70,7 @@ urlpatterns += [
     path("api/auth/totp/create", TOTPCreateView.as_view()),
     re_path(r"^api/auth/totp/login/(?P<token>[0-9]{6})$", TOTPVerifyView.as_view()),
     path("api/auth/totp/<int:pk>", TOTPDeleteView.as_view()),
+    path("api/auth/totp", TOTPView.as_view()),
 ]
 
 # Raspberry Pi

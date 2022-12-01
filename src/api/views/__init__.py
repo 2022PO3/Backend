@@ -28,4 +28,5 @@ from src.api.views.auth.multi_factor.totp_view import (
     TOTPCreateView,
     TOTPVerifyView,
     TOTPDeleteView,
+    TOTPView,
 )

@@ -2,7 +2,6 @@ from collections import OrderedDict
 import os
 import json
 
-from functools import reduce
 from typing import Callable, TypeVar, Any
 
 from django.db import models
@@ -56,6 +55,7 @@ class BackendResponse(Response):
         data: list[str] | dict[str, Any] | None,
         status: int | None,
     ) -> dict | None:
+        print(data)
         if data is None or status is None:
             return None
         return (
@@ -100,14 +100,13 @@ class BackendResponse(Response):
 
     @staticmethod
     def __handle_error_data(data: list[str] | dict[str, Any]) -> list[str]:
-        print(data)
         if isinstance(data, list):
             return data
         else:
             errors: list[str] = []
             for key in data.keys():
                 if isinstance(data[key], list):
-                    errors.append(f"{key}:{data[key][0]}")
+                    errors.append(f"{key}: {data[key][0].lower()}")
                 else:
                     errors.append(data[key])
             return errors
@@ -256,7 +255,7 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
             serializer = self.serializer["get"](objects, many=True)  # type: ignore
         else:
             objects = self.model.objects.filter(**{"user_id": request.user.pk})  # type: ignore
-            serializer = self.serializer(objects, many=True)  # type: ignore
+            serializer = self.serializer["get"](objects, many=True)  # type: ignore
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request, format=None) -> BackendResponse | None:

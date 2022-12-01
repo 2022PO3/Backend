@@ -31,9 +31,4 @@ def decode_jwt(
     load_dotenv(dotenv_path)
     if (secret := getenv(secret_env_name)) is None:
         raise BackendException("No secret key present for decoding the JWT-token.")
-    return jwt.decode(
-        encoded_jwt,
-        secret,
-        algorithms=[algorithm],
-        leeway=3,
-    )
+    return jwt.decode(encoded_jwt, secret, algorithms=[algorithm], leeway=5)

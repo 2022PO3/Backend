@@ -4,9 +4,18 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from rest_framework import status
 from rest_framework.request import Request
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 
-from src.core.views import _OriginAPIView, BackendResponse, GetObjectMixin
+from src.api.serializers import GetTOTPSerializer, PostTOTPSerializer
+from src.core.utils.utils import to_snake_case
+from src.core.views import (
+    _OriginAPIView,
+    BackendResponse,
+    GetObjectMixin,
+    BaseAPIView,
+    _dict_key_to_case,
+)
 from src.users.models import User
 from src.users.permissions import IsUserDevice
 
@@ -26,16 +35,25 @@ class TOTPCreateView(_OriginAPIView):
 
     origins = ["web", "app"]
 
-    def get(self, request: Request, format=None) -> BackendResponse:
-        if (resp := super().get(request, format)) is not None:
+    def post(self, request: Request, format=None) -> BackendResponse:
+        if (resp := super().post(request, format)) is not None:
             return resp
+        data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        serializer = PostTOTPSerializer(data=data)  # type: ignore
         user = request.user
         device = get_user_totp_device(user)
-        if not device:
-            device = user.totpdevice_set.create(confirmed=False)
-        url = device.config_url
-        user.set_two_factor_validated(False)
-        return BackendResponse({"oauth_url": url}, status=status.HTTP_201_CREATED)
+        if device:
+            return BackendResponse(
+                ["You already have a 2FA device registered."],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if serializer.is_valid():
+            device = user.totpdevice_set.create(
+                name=serializer.validated_data["name"], confirmed=False  # type: ignore
+            )
+            url = device.config_url  # type: ignore
+            return BackendResponse({"oauth_url": url}, status=status.HTTP_201_CREATED)
+        return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TOTPVerifyView(_OriginAPIView):
@@ -88,3 +106,10 @@ class TOTPDeleteView(GetObjectMixin, _OriginAPIView):
         device.delete()  # type: ignore
         request.user.set_two_factor_validated(None)
         return BackendResponse(status=status.HTTP_204_NO_CONTENT)
+
+
+class TOTPView(BaseAPIView):
+    origins = ["web", "app"]
+    serializer = {"get": GetTOTPSerializer}
+    model = TOTPDevice
+    get_user_id = True
