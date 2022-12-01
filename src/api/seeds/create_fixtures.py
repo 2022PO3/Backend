@@ -104,9 +104,9 @@ if __name__ == "__main__":
         "api.garage",
         ["user", "name", "garage_settings", "updated_at", "created_at"],
         {
-            "user": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
-            "name": list(map(lambda city: f"QPark {city}", cities)),
-            "garage_settings": [i for i in range(1, 11)],
+            "user": [1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
+            "name": ["Parking Boys"] + list(map(lambda city: f"QPark {city}", cities)),
+            "garage_settings": [i for i in range(1, 12)],
         },
         4,
     )
@@ -122,11 +122,13 @@ if __name__ == "__main__":
             "parking_lot_no",
         ],
         {
-            "garage": list(map(lambda x: x // 30 + 1, list(range(300)))),
-            "floor_number": [randint(-2, 2) for _ in range(300)],
-            "occupied": [randint(0, 1) for _ in range(300)],
-            "disabled": [choices([0, 1], [0.95, 0.05])[0] for _ in range(300)],
-            "parking_lot_no": list(map(lambda x: x % 30 + 1, list(range(300)))),
+            "garage": [1] * 6 + list(map(lambda x: x // 30 + 1, list(range(300)))),
+            "floor_number": [0] * 6 + [randint(-2, 2) for _ in range(300)],
+            "occupied": [0] * 6 + [randint(0, 1) for _ in range(300)],
+            "disabled": [0] * 6
+            + [choices([0, 1], [0.95, 0.05])[0] for _ in range(300)],
+            "parking_lot_no": list(range(1, 7))
+            + list(map(lambda x: x % 30 + 1, list(range(300)))),
         },
         5,
     )
@@ -144,7 +146,7 @@ if __name__ == "__main__":
                 "1KPX789",
                 "1FKO392",
             ],
-            "garage": [1, None, 3, 4, 5, None, None],
+            "garage": [2, None, 3, 4, 5, None, None],
         },
         6,
     )
