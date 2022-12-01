@@ -33,6 +33,5 @@ def decode_jwt(encoded_jwt: str, algorithm="HS256") -> dict[str, Any]:
         encoded_jwt,
         secret,
         algorithms=[algorithm],
-        issuer="https://github.com/jonasroussel/dart_jsonwebtoken",
-        leeway=3,
+        leeway=5,
     )
