@@ -170,7 +170,7 @@ class _ValidateOrigin:
                 status.HTTP_400_BAD_REQUEST,
             )
         try:
-            decoded_data = decode_jwt(encoded_jwt, "JWT_SECRET_EMAIL_VERIFICATION")
+            decoded_data = decode_jwt(encoded_jwt, "JWT_SECRET")
         except (ExpiredSignatureError, DecodeError, BackendException) as e:
             raise OriginValidationException(
                 f"{e.__class__.__name__}: {str(e)}",
@@ -341,7 +341,9 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request: Request, pk: int, format=None) -> BackendResponse | None:
+    def delete(
+        self, request: Request, pk: int | None = None, format=None
+    ) -> BackendResponse | None:
         try:
             if pk is None:
                 data = request.user  # type: ignore
@@ -355,6 +357,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
         try:
+            print(data)
             data.delete()
         except DeletionException as e:
             return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)

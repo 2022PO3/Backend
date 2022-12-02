@@ -35,9 +35,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
 
     objects = UserManager()
 
-    def delete(
-        self, using: Any = ..., keep_parents: bool = ...
-    ) -> tuple[int, dict[str, int]]:
+    def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import LicencePlate, Reservation
 
         if self.is_garage_owner:
@@ -51,7 +49,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         user_tokens = AuthToken.objects.filter(user_id=self.pk)
         for token in user_tokens:
             token.delete()
-        return super().delete(using, keep_parents)
+        return super().delete()
 
     def set_two_factor_validation(self, tf_validated: bool | None) -> None:
         self.two_factor_validated = tf_validated
