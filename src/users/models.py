@@ -1,10 +1,14 @@
 from secrets import token_hex
+from typing import Any
+from knox.models import AuthToken
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
 from src.users.managers import UserManager
 from src.api.models import ProvincesEnum
 from src.core.models import TimeStampMixin
+from src.core.exceptions import DeletionException
 
 
 class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
@@ -30,6 +34,24 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     REQUIRED_FIELDS = ["role"]
 
     objects = UserManager()
+
+    def delete(
+        self, using: Any = ..., keep_parents: bool = ...
+    ) -> tuple[int, dict[str, int]]:
+        from src.api.models import LicencePlate, Reservation
+
+        if self.is_garage_owner:
+            raise DeletionException("")
+        user_lps = LicencePlate.objects.filter(user_id=self.pk)
+        for lp in user_lps:
+            lp.delete()
+        user_reservations = Reservation.objects.filter(user_id=self.pk)
+        for reservation in user_reservations:
+            reservation.delete()
+        user_tokens = AuthToken.objects.filter(user_id=self.pk)
+        for token in user_tokens:
+            token.delete()
+        return super().delete(using, keep_parents)
 
     def set_two_factor_validation(self, tf_validated: bool | None) -> None:
         self.two_factor_validated = tf_validated
