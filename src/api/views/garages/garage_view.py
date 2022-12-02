@@ -11,7 +11,7 @@ class GarageDetailView(PkAPIView):
     garage on `pk`.
     """
 
-    origins = ["app", "web"]
+    origins = ["app", "web", "rpi"]
     permission_classes = [IsGarageOwner]
     model = Garage
     serializer = GarageSerializer
