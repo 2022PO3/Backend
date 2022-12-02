@@ -19,6 +19,8 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     email = models.EmailField(unique=True)
     role = models.IntegerField(choices=Roles.choices)
     is_active = models.BooleanField(default=True)
+    two_factor = models.BooleanField(default=False)
+    two_factor_validated = models.BooleanField(null=True, blank=True)
     fav_garage = models.ForeignKey(
         "api.Garage", on_delete=models.CASCADE, null=True, related_name="fav_garage"
     )
@@ -28,6 +30,10 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     REQUIRED_FIELDS = ["role"]
 
     objects = UserManager()
+
+    def set_two_factor_validation(self, tf_validated: bool | None) -> None:
+        self.two_factor_validated = tf_validated
+        self.save()
 
     @property
     def is_admin(self) -> bool:

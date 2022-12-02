@@ -4,14 +4,13 @@ from knox.models import AuthToken
 from knox.settings import knox_settings
 
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
+from src.api.serializers import LoginSerializer, UsersSerializer
 from src.core.views import BackendResponse, _OriginAPIView
 from src.users.models import User
-from src.api.serializers import LoginSerializer, UsersSerializer
 
 
 class LoginView(_OriginAPIView):
@@ -32,11 +31,11 @@ class LoginView(_OriginAPIView):
         login_serializer = LoginSerializer(data=login_data)
         if login_serializer.is_valid():
             token_limit_per_user = self.get_token_limit_per_user()
-            user = User.objects.get(email=login_serializer.validated_data)
+            user: User = User.objects.get(email=login_serializer.validated_data)
 
             if token_limit_per_user is not None:
                 now = timezone.now()
-                token = user.auth_token_set.filter(expiry__gt=now)
+                token = user.auth_token_set.filter(expiry__gt=now)  # type: ignore
                 if token.count() >= token_limit_per_user:
                     return BackendResponse(
                         ["Maximum amount of tokens allowed per user exceeded."],

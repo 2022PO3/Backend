@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import path, re_path
 from src.api.views import (
     GarageDetailView,
     GarageListView,
@@ -34,6 +34,10 @@ from src.api.views import (
     LogoutView,
     SignUpView,
     LicencePlateImageView,
+    TOTPVerifyView,
+    TOTPCreateView,
+    TOTPDeleteView,
+    TOTPView,
 )
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
 from src.api.views.payment.checkout_session_view import CreateCheckoutSessionView
@@ -66,6 +70,10 @@ urlpatterns += [
         "api/auth/activate-account/<str:uid_b64>/<str:token>",
         UserActivationView.as_view(),
     ),
+    path("api/auth/totp/create", TOTPCreateView.as_view()),
+    re_path(r"^api/auth/totp/login/(?P<token>[0-9]{6})$", TOTPVerifyView.as_view()),
+    path("api/auth/totp/<int:pk>", TOTPDeleteView.as_view()),
+    path("api/auth/totp", TOTPView.as_view()),
 ]
 
 # Raspberry Pi

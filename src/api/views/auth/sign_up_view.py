@@ -42,9 +42,10 @@ class SignUpView(_OriginAPIView):
                     last_name=user_serializer.data["last_name"],
                 )
                 SignUpView._send_email_verification(user)
-                return BackendResponse(
-                    user_serializer.data, status=status.HTTP_201_CREATED
-                )
+                serializer_data = user_serializer.data
+                # Do not show the `password_confirmation` in the response of the API.
+                serializer_data.pop("password_confirmation")
+                return BackendResponse(serializer_data, status=status.HTTP_201_CREATED)
             except ValidationError as e:
                 return BackendResponse(e.error_list, status=status.HTTP_400_BAD_REQUEST)
         return BackendResponse(
