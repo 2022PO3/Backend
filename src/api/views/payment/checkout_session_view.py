@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate
 from src.api.models.garages.price import Price
+from src.api.serializers import LicencePlateSerializer
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
 from src.api.views.payment.checkout_preview_view import _get_prices_to_pay
 from src.core.views import BackendResponse, _OriginAPIView
@@ -16,12 +17,11 @@ from django.shortcuts import redirect
 
 from django.utils import timezone
 
-
 import stripe
 
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
-endpoint_secret = ''
+WEBSITE_URL = 'https://po3backend.ddns.net/app'
 
 
 class CreateCheckoutSessionView(_OriginAPIView):
@@ -52,10 +52,7 @@ class CreateCheckoutSessionView(_OriginAPIView):
 
             if len(line_items) == 0:
                 # No payment is needed
-                pass
                 return BackendResponse(["No payment required"], status=status.HTTP_200_OK)
-
-            WEBSITE_URL = 'https://po3backend.ddns.net/app'
 
             try:
                 # Maak betaalpagina
@@ -64,10 +61,14 @@ class CreateCheckoutSessionView(_OriginAPIView):
                     mode='payment',
                     success_url=WEBSITE_URL + '/checkout-session-succes',  # Add id to find payment intent and user
                     cancel_url=WEBSITE_URL + '/checkout-session-canceled',
+                    metadata={
+                        'user_id': request.user.pk,
+                        'licence_plate': licence_plate.licence_plate
+                    }
                 )
             except Exception as e:
                 return BackendResponse(
-                    ['Failed to create payment session.'],
+                    ['Failed to create payment session.', str(e)],
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
