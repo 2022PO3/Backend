@@ -10,9 +10,7 @@ class Garage(TimeStampMixin, models.Model):
     garage_settings = models.ForeignKey("api.GarageSettings", on_delete=models.CASCADE)
     name = models.CharField(max_length=192)
 
-    def delete(
-        self, using: Any = ..., keep_parents: bool = ...
-    ) -> tuple[int, dict[str, int]]:
+    def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import (
             OpeningHour,
             Price,
@@ -38,7 +36,7 @@ class Garage(TimeStampMixin, models.Model):
         garage_parking_lots = ParkingLot.objects.filter(garage_id=self.pk)
         for parking_lot in garage_parking_lots:
             parking_lot.delete()
-        return super().delete(using, keep_parents)
+        return super().delete()
 
     @property
     def is_full(self) -> bool:
