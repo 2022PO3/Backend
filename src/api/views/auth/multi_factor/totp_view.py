@@ -14,7 +14,6 @@ from src.core.views import (
     BackendResponse,
     GetObjectMixin,
     BaseAPIView,
-    PkAPIView,
     _dict_key_to_case,
 )
 from src.users.models import User
@@ -80,7 +79,7 @@ class TOTPVerifyView(_OriginAPIView):
         return BackendResponse({"response": False}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class TOTPDeleteView(PkAPIView):
+class TOTPDeleteView(GetObjectMixin, _OriginAPIView):
     """
     A view class to delete a TOTP device on pk.
     """
