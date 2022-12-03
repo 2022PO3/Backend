@@ -53,8 +53,18 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
             token.delete()
         return super().delete()
 
-    def set_two_factor_validated(self, tf_validated: bool | None) -> None:
-        self.two_factor_validated = tf_validated
+    def enable_2fa(self) -> None:
+        self.two_factor = True
+        self.two_factor_validated = False
+        self.save()
+
+    def disable_2fa(self) -> None:
+        self.two_factor = False
+        self.two_factor_validated = None
+        self.save()
+
+    def validated_2fa(self) -> None:
+        self.two_factor_validated = True
         self.save()
 
     @property
