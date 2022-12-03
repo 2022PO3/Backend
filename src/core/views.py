@@ -316,6 +316,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         if (resp := super().put(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        print(data)
         # For the UserView, no model has to be defined.
         if self.model is not None:
             try:
@@ -356,8 +357,8 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
                 ],
                 status=status.HTTP_404_NOT_FOUND,
             )
+        self.check_object_permissions(request, pk)
         try:
-            print(data)
             data.delete()
         except DeletionException as e:
             return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)

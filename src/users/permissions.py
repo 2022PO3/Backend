@@ -1,6 +1,7 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 from src.api.models import Garage
+from src.api.models import Reservation
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 
@@ -43,3 +44,16 @@ class IsUserDevice(BasePermission):
             return True
         d = TOTPDevice.objects.get(pk=pk)
         return d.user_id == request.user.pk
+
+
+class IsUserReservation(BasePermission):
+    """
+    Object-level  permission to only allow owners of a reservation to edit and/or delete it.
+    Assumes the Reservation has an `user-id`-attribute.
+    """
+
+    def has_object_permission(self, request, view, pk: int):
+        if request.method in SAFE_METHODS:
+            return True
+        r = Reservation.objects.get(pk=pk)
+        return r.user.pk == request.user.pk

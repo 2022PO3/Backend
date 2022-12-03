@@ -39,7 +39,9 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         from src.api.models import LicencePlate, Reservation
 
         if self.is_garage_owner:
-            raise DeletionException("")
+            raise DeletionException(
+                "You're a garage owner, thus your account cannot be directly deleted. Please contact support if you wish to continue."
+            )
         user_lps = LicencePlate.objects.filter(user_id=self.pk)
         for lp in user_lps:
             lp.delete()
