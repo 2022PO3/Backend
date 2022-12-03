@@ -93,7 +93,7 @@ class TOTPDeleteView(PkAPIView):
             return resp
         if not isinstance(pk, int):
             return BackendResponse(
-                ["The value of `pk` has be an integer."],
+                ["The value of `pk` has to be an integer."],
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
