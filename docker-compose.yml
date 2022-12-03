@@ -29,7 +29,8 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
       - ${NGINX_CONFIG_PATH}:${NGINX_SERVER_CONFIG_PATH}
-      - ./flutter/build/web:/var/www/html/po3backend.ddns.net
+      - ./flutter/build/web:/var/www/html/po3backend.ddns.net/app
+      - ./flutter/build/user_activation:/var/www/html/po3backend.ddns.net/web
     ports:
       - 80:80
       - 443:443
