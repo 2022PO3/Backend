@@ -39,6 +39,7 @@ from src.api.views import (
     TOTPDeleteView,
     TOTPView,
 )
+from src.api.views.licence_plates.licence_plate_view import LicencePlateListView
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
 from src.api.views.payment.checkout_session_view import CreateCheckoutSessionView
 from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView
@@ -53,6 +54,7 @@ urlpatterns = [
     path("api/assign-parking-lot", AssignReservationView.as_view()),
     path("api/user", UserDetailView.as_view()),
     path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
+    path("api/licence-plates", LicencePlateListView.as_view()),
     path("api/garage-settings/<int:pk>", GetGarageSettingsView.as_view()),
     path("api/reservations", ReservationsView.as_view()),
     path("api/opening-hours/<int:pk>", GetOpeningHoursView.as_view()),

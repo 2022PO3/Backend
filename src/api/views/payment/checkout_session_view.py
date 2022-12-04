@@ -35,19 +35,26 @@ class CreateCheckoutSessionView(_OriginAPIView):
     def get(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
-        checkout_data = JSONParser().parse(request)
+        checkout_data = {'licence_plate': request.query_params['licence_plate']}
         checkout_serializer = CheckoutSessionSerializer(data=checkout_data)
 
         if checkout_serializer.is_valid():
-            licence_plate = LicencePlate.objects.get(user=request.user,
-                                                     licence_plate=checkout_serializer.validated_data['licence_plate'])
-
+            try:
+                licence_plate = LicencePlate.objects.get(user=request.user,
+                                                         licence_plate=checkout_serializer.validated_data[
+                                                             'licence_plate'])
+            except:
+                return BackendResponse(
+                    ["Licence plate does not exist for this user."],
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            items, _ = _get_prices_to_pay(licence_plate)
             line_items = [
                 {
-                    'price': price['price'].stripe_identifier,
-                    'quantity': price['quantity'],
+                    'price': item['price'].stripe_identifier,
+                    'quantity': item['quantity'],
                 }
-                for price in _get_prices_to_pay(licence_plate)
+                for item in items
             ]
 
             if len(line_items) == 0:

@@ -34,7 +34,6 @@ def _get_prices_to_pay(licence_plate: LicencePlate):
             'price': price,
             'quantity': 0,
         }
-
         if price.duration >= datetime.timedelta(0):  # Make sure the loop completes
             while time_to_pay > price.duration:
                 time_to_pay -= price.duration
@@ -43,7 +42,10 @@ def _get_prices_to_pay(licence_plate: LicencePlate):
         if item['quantity'] > 0:
             preview_items.append(item)
 
-    return preview_items
+    # Calculate time in which app has to refresh
+    refresh_time = prices[-1].duration - time_to_pay
+
+    return preview_items, refresh_time
 
 
 class CheckoutPreviewView(_OriginAPIView):
@@ -57,21 +59,32 @@ class CheckoutPreviewView(_OriginAPIView):
     def get(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
-        checkout_data = JSONParser().parse(request)
+        checkout_data = {'licence_plate': request.query_params['licence_plate']}
         checkout_serializer = CheckoutSessionSerializer(data=checkout_data)
 
         if checkout_serializer.is_valid():
-            licence_plate = LicencePlate.objects.get(user=request.user,
-                                                     licence_plate=checkout_serializer.validated_data['licence_plate'])
-            print(_get_prices_to_pay(licence_plate))
+            try:
+                licence_plate = LicencePlate.objects.get(user=request.user,
+                                                         licence_plate=checkout_serializer.validated_data['licence_plate'])
+            except:
+                return BackendResponse(
+                    ["Licence plate does not exist for this user."],
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            items, refresh_time = _get_prices_to_pay(licence_plate)
+
             preview_items = [
                 {
-                    'price': price['price'].price,
-                    'duration': price['price'].duration,
-                    'price_string': price['price'].price_string,
-                    'quantity': price['quantity'],
+                    'id': item['price'].pk,
+                    'garage_id': item['price'].garage_id,
+                    'price': item['price'].price,
+                    'valuta': item['price'].valuta,
+                    'duration': int(item['price'].duration.total_seconds()),
+                    'price_string': item['price'].price_string,
+                    'quantity': item['quantity'],
                 }
-                for price in _get_prices_to_pay(licence_plate)
+                for item in items
             ]
 
             if len(preview_items) == 0:
@@ -80,6 +93,7 @@ class CheckoutPreviewView(_OriginAPIView):
 
             return BackendResponse({
                 'items': preview_items,
+                'refresh_time': int(refresh_time.total_seconds())
             }, status=status.HTTP_200_OK)
 
         return BackendResponse(
