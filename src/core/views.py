@@ -256,7 +256,7 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
             serializer = self.serializer["get"](objects, many=True)  # type: ignore
         else:
             objects = self.model.objects.filter(**{"user_id": request.user.pk})  # type: ignore
-            serializer = self.serializer(objects, many=True)  # type: ignore
+            serializer = self.serializer["get"](objects, many=True)  # type: ignore
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request: Request, format=None) -> BackendResponse | None:
