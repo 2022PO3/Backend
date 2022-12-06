@@ -1,8 +1,10 @@
+from os import getenv
+
 import stripe
 
 from src.api.models.garages.garage import Garage
 
-stripe.api_key = 'sk_test_51Lf1SsGRh96C3wQGfjc1BuPw2AhNPQpteJ0fz3JXRiD8QzpOb5nVKeNDSOKyLpfw6qcVUZ9936duVmrylnAqWf1t00kkRqidz1'
+stripe.api_key = getenv('STRIPE_KEY')
 publishableKey = 'pk_test_51Lf1SsGRh96C3wQGiqIisWUuj9dpkWtvEaoeZMJdBU7auHaj9cpW1v9KJEtP3atr5Ws3gcLJOeKMmiNJkRvQqbX200sC5tZ7CE'
 
 

@@ -1,3 +1,5 @@
+from os import getenv
+
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.views import APIView
@@ -16,9 +18,6 @@ import stripe
 
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
-stripe.api_key = 'sk_test_51Lf1SsGRh96C3wQGfjc1BuPw2AhNPQpteJ0fz3JXRiD8QzpOb5nVKeNDSOKyLpfw6qcVUZ9936duVmrylnAqWf1t00kkRqidz1'
-endpoint_secret = 'whsec_cbc3c8904ec1b2bcd029776f6217f81b9d11da0c4c06b472b574b529c6cf220c'
-
 
 def complete_order(session: stripe.checkout.Session) -> BackendResponse:
     metadata = session.metadata
@@ -58,7 +57,7 @@ class CheckoutWebhookView(APIView):
 
         try:
             event = stripe.Webhook.construct_event(
-                payload, sig_header, endpoint_secret
+                payload, sig_header, getenv('STRIPE_WEBHOOK_KEY')
             )
         except ValueError as e:
             # Invalid payload
