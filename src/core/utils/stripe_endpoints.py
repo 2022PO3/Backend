@@ -4,15 +4,15 @@ import stripe
 
 from src.api.models.garages.garage import Garage
 
-stripe.api_key = getenv('STRIPE_KEY')
-publishableKey = 'pk_test_51Lf1SsGRh96C3wQGiqIisWUuj9dpkWtvEaoeZMJdBU7auHaj9cpW1v9KJEtP3atr5Ws3gcLJOeKMmiNJkRvQqbX200sC5tZ7CE'
+stripe.api_key = getenv('STRIPE_SECRET_KEY')
+publishableKey = getenv('STRIPE_PUBLISHABLE_KEY')
 
 
-def get_stripe_price(price_id):
+def get_stripe_price(price_id) -> stripe.Price:
     return stripe.Price.retrieve(price_id)
 
 
-def update_stripe_price(price_data):
+def update_stripe_price(price_data) -> stripe.Price:
     return stripe.Price.modify(
         price_data['stripe_identifier'],
         currency=price_data['valuta'],
@@ -24,7 +24,7 @@ def update_stripe_price(price_data):
     )
 
 
-def create_stripe_price(price_data):
+def create_stripe_price(price_data) -> stripe.Price:
     return stripe.Price.create(
         currency=price_data['valuta'],
         unit_amount=price_data['price'] * 100,

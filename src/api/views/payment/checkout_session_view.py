@@ -1,21 +1,11 @@
-import datetime
-
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
-from rest_framework.permissions import AllowAny
-
 from src.api.models import LicencePlate
-from src.api.models.garages.price import Price
-from src.api.serializers import LicencePlateSerializer
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
 from src.api.views.payment.checkout_preview_view import _get_prices_to_pay
 from src.core.views import BackendResponse, _OriginAPIView
-from src.users.models import User
 
-from django.shortcuts import redirect
-
-from django.utils import timezone
 
 import stripe
 
@@ -29,13 +19,12 @@ class CreateCheckoutSessionView(_OriginAPIView):
     A view to create a payment session
     """
 
-    permission_classes = [AllowAny]
     origins = ["web", "app"]
 
-    def get(self, request: Request, format=None) -> BackendResponse:
+    def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
-        checkout_data = {'licence_plate': request.query_params['licence_plate']}
+        checkout_data = JSONParser().parse(request)
         checkout_serializer = CheckoutSessionSerializer(data=checkout_data)
 
         if checkout_serializer.is_valid():
@@ -43,10 +32,10 @@ class CreateCheckoutSessionView(_OriginAPIView):
                 licence_plate = LicencePlate.objects.get(user=request.user,
                                                          licence_plate=checkout_serializer.validated_data[
                                                              'licence_plate'])
-            except:
+            except LicencePlate.DoestNotExist:
                 return BackendResponse(
                     ["Licence plate does not exist for this user."],
-                    status=status.HTTP_400_BAD_REQUEST,
+                    status=status.HTTP_404_NOT_FOUND,
                 )
             items, _ = _get_prices_to_pay(licence_plate)
             line_items = [
@@ -59,7 +48,7 @@ class CreateCheckoutSessionView(_OriginAPIView):
 
             if len(line_items) == 0:
                 # No payment is needed
-                return BackendResponse(["No payment required"], status=status.HTTP_200_OK)
+                return BackendResponse("No payment required", status=status.HTTP_200_OK)
 
             try:
                 # Maak betaalpagina

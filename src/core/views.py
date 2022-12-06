@@ -34,7 +34,7 @@ class BackendResponse(Response):
 
     def __init__(
         self,
-        data: list[str] | dict[str, Any] | None = None,
+        data: list[str] | dict[str, Any] | str | None = None,
         status: int | None = None,
         template_name=None,
         headers=None,

@@ -4,20 +4,14 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.request import Request
-from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate
-from src.core.views import BackendResponse, _OriginAPIView
+from src.core.views import BackendResponse
 from src.users.models import User
-from src.api.serializers import LoginSerializer, UsersSerializer, LicencePlateSerializer
 
-from src.core.views import _OriginAPIView
 
 import stripe
-
-# Set your secret key. Remember to switch to your live secret key in production.
-# See your keys here: https://dashboard.stripe.com/apikeys
 
 def complete_order(session: stripe.checkout.Session) -> BackendResponse:
     metadata = session.metadata
@@ -33,11 +27,9 @@ def complete_order(session: stripe.checkout.Session) -> BackendResponse:
 
     licence_plate.updated_at = timezone.now()
 
-    try:
-        licence_plate.save()
-        return BackendResponse(['Completed order'], status=status.HTTP_200_OK)
-    except:
-        return BackendResponse(['Failed to save new updated_at time.'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    licence_plate.save()
+    return BackendResponse('Completed order', status=status.HTTP_200_OK)
+
 
 
 class CheckoutWebhookView(APIView):
@@ -45,7 +37,7 @@ class CheckoutWebhookView(APIView):
     A view to listen for checkout updates from the stripe servers.
     """
 
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # The post request checks if the request comes from Stripe
 
     def post(self, request: Request, format=None) -> BackendResponse:
 
@@ -99,4 +91,4 @@ class CheckoutWebhookView(APIView):
             session = event['data']['object']
 
         # Passed signature verification
-        return BackendResponse(["Order is fulfilled."], status=status.HTTP_200_OK, )
+        return BackendResponse("Order is fulfilled.", status=status.HTTP_200_OK, )

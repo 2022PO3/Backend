@@ -2,7 +2,6 @@ import datetime
 
 from rest_framework import status
 from rest_framework.request import Request
-from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate
@@ -13,7 +12,7 @@ from src.core.views import BackendResponse, _OriginAPIView
 from django.utils import timezone
 
 
-def _get_prices_to_pay(licence_plate: LicencePlate):
+def _get_prices_to_pay(licence_plate: LicencePlate) -> (list[dict[str, str | int]], int):
     # Fetch garage prices from database
     prices = Price.objects.filter(garage=licence_plate.garage)
     prices = sorted(prices, key=lambda p: p.duration, reverse=True)
@@ -59,17 +58,18 @@ class CheckoutPreviewView(_OriginAPIView):
     def get(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
-        checkout_data = {'licence_plate': request.query_params['licence_plate']}
+        checkout_data = {'licence_plate': str(request.query_params['licence_plate'])}
         checkout_serializer = CheckoutSessionSerializer(data=checkout_data)
 
         if checkout_serializer.is_valid():
             try:
                 licence_plate = LicencePlate.objects.get(user=request.user,
-                                                         licence_plate=checkout_serializer.validated_data['licence_plate'])
-            except:
+                                                         licence_plate=checkout_serializer.validated_data[
+                                                             'licence_plate'])
+            except LicencePlate.DoestNotExist:
                 return BackendResponse(
                     ["Licence plate does not exist for this user."],
-                    status=status.HTTP_400_BAD_REQUEST,
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             items, refresh_time = _get_prices_to_pay(licence_plate)
@@ -89,7 +89,7 @@ class CheckoutPreviewView(_OriginAPIView):
 
             if len(preview_items) == 0:
                 # No payment is needed
-                return BackendResponse(["No payment required"], status=status.HTTP_200_OK)
+                return BackendResponse("No payment required", status=status.HTTP_200_OK)
 
             return BackendResponse({
                 'items': preview_items,
