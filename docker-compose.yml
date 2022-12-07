@@ -16,6 +16,7 @@ services:
     volumes:
       - .:/backend
       - ./google_vision_api_credentials.json:/google_vision_api_credentials.json
+      - ./backend_logger.log:/backend/backend_logger.log
     ports:
       - 8000:8000
     image: python1002/django:backend
