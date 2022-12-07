@@ -1,5 +1,4 @@
 import datetime
-from typing import Any
 from django.db import models
 
 from src.users.models import User
@@ -106,6 +105,17 @@ class LicencePlate(TimeStampMixin, models.Model):
                 if lp.in_garage
                 else LicencePlate._sign_out_licence_plate(lp)
             )
+
+    @staticmethod
+    def generate_qr_code(email: str, password: str) -> None:
+        """
+        Generate a QR-code for logging into the Frontend application given a generated user's email and password.
+        The QR-code is saved in the folder qr_codes.
+        """
+        pass
+
+    @staticmethod
+    def print_qr_code()
 
     class Meta:
         db_table = "licence_plates"

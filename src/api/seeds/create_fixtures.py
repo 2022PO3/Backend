@@ -87,12 +87,14 @@ if __name__ == "__main__":
         [
             "max_height",
             "location",
+            "electric_cars",
             "max_width",
             "max_handicapped_lots",
             "created_at",
             "updated_at",
         ],
         {
+            "electric_cars": [randint(2, 10) for _ in range(10)],
             "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
             "location": [i for i in range(1, 11)],
             "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
