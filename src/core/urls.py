@@ -33,6 +33,7 @@ from src.api.views import (
     LoginView,
     LogoutView,
     SignUpView,
+    ChangePasswordView,
     LicencePlateImageView,
     TOTPVerifyView,
     TOTPCreateView,
@@ -61,6 +62,7 @@ urlpatterns = [
     path("api/opening-hours", PostOpeningHoursView.as_view()),
     path("api/prices/<int:pk>", PutPricesView.as_view()),
     path("api/prices", PricesView.as_view()),
+    path("api/user/change-password", ChangePasswordView.as_view()),
 ]
 
 # User authentication
