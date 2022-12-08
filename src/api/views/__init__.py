@@ -12,7 +12,11 @@ from src.api.views.garages.parking_lots_view import (
 )
 from src.api.views.licence_plates.licence_plate_view import LicencePlateDetailView
 
-from src.api.views.users.user_view import UserDetailView, UserActivationView
+from src.api.views.users.user_view import (
+    UserDetailView,
+    UserActivationView,
+    ChangePasswordView,
+)
 from src.api.views.users.reservations_view import (
     ReservationsView,
     PutReservationsView,

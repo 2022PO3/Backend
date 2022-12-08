@@ -25,6 +25,7 @@ from src.api.serializers.users.users_serializer import (
     UsersSerializer,
     SignUpSerializer,
     LoginSerializer,
+    ChangePasswordSerializer,
 )
 from src.api.serializers.users.reservation_serializer import (
     GetReservationSerializer,

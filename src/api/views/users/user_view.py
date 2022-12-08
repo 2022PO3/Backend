@@ -1,12 +1,15 @@
 from base64 import urlsafe_b64decode
 from django.utils.encoding import force_str
+from django.contrib.auth.hashers import check_password
 
 from rest_framework import status
 from rest_framework.request import Request
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
-from src.api.serializers import UsersSerializer
-from src.core.views import PkAPIView, _OriginAPIView, BackendResponse
+from src.api.serializers import UsersSerializer, ChangePasswordSerializer
+from src.core.utils.utils import to_snake_case
+from src.core.views import PkAPIView, _OriginAPIView, BackendResponse, _dict_key_to_case
 from src.core.exceptions import BackendException
 from src.users.models import User
 from src.users.backends import EmailVerificationTokenGenerator
@@ -55,3 +58,26 @@ class UserActivationView(_OriginAPIView):
         ):
             return user
         raise BackendException("Validation of the activation token failed.")
+
+
+class ChangePasswordView(_OriginAPIView):
+    origins = ["app", "web"]
+
+    def put(self, request: Request, format=None) -> BackendResponse | None:
+        if (resp := super().put(request, format)) is not None:
+            return resp
+        request_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        serializer = ChangePasswordSerializer(data=request_data)  # type: ignore
+        if serializer.is_valid():
+            user = request.user
+            if not check_password(
+                serializer.validated_data["old_password"], user.password  # type: ignore
+            ):
+                return BackendResponse(
+                    ["The entered password is incorrect"],
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+            user.set_password(serializer.validated_data["new_password"])  # type: ignore
+            user.save()
+            return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)
+        return BackendResponse([serializer.errors], status=status.HTTP_400_BAD_REQUEST)

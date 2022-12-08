@@ -49,7 +49,7 @@ class Garage(TimeStampMixin, models.Model):
     def unoccupied_lots(self) -> int:
         from src.api.models.garages.parking_lot import ParkingLot
 
-        return len(ParkingLot.objects.filter(garage_id=self.pk).filter(occupied=True))
+        return len(ParkingLot.objects.filter(garage_id=self.pk).filter(occupied=False))
 
     @property
     def parking_lots(self) -> int:

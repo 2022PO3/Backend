@@ -78,4 +78,4 @@ class SignUpView(_OriginAPIView):
         the Backend. This to prevent direct unauthorized access to the Backend.
         """
         encoded = urlsafe_b64encode(force_bytes(user_id))
-        return f"https://po3backend.ddns.net/user-activation?uidB64={str(encoded)[2:-1]}&token={token}"
+        return f"https://po3backend.ddns.net/web/user-activation?uidB64={str(encoded)[2:-1]}&token={token}"

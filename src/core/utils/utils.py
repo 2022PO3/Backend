@@ -1,5 +1,5 @@
 import jwt
-
+import logging
 from typing import Any
 from functools import reduce
 from os import path, getenv
@@ -33,4 +33,17 @@ def decode_jwt(
     load_dotenv(dotenv_path)
     if (secret := getenv(secret_env_name)) is None:
         raise BackendException("No secret key present for decoding the JWT-token.")
-    return jwt.decode(encoded_jwt, secret, algorithms=[algorithm], leeway=5)
+    return jwt.decode(
+        encoded_jwt,
+        secret,
+        algorithms=[algorithm],
+        leeway=5,
+    )
+
+
+def get_logger(name: str) -> logging.Logger:
+    log_format = "%(asctime)s: %(message)s (%(name)8s)"
+    logging.basicConfig(
+        level=logging.INFO, format=log_format, filename="rpi_garage.log", filemode="w"
+    )
+    return logging.getLogger(name)

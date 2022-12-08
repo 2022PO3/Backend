@@ -12,7 +12,7 @@ def create_fixtures(
     number: int,
 ) -> None:
     if not len(set(map(len, values.values()))) == 1:
-        raise Exception("Lengths of list values are not equal.")
+        raise Exception(f"Lengths of list values of {number} are not equal.")
     values_len = len(list(values.values())[0])
     if "created_at" in fields:
         values |= {
@@ -57,7 +57,7 @@ def model_to_snake_case(model_name: str) -> str:
 
 if __name__ == "__main__":
     faker = Faker(["nl-BE"])
-    cities = [faker.city() for _ in range(10)]
+    cities = [faker.city() for _ in range(10)] + ["Leuven"]
     create_fixtures(
         "api.location",
         [
@@ -71,14 +71,13 @@ if __name__ == "__main__":
             "created_at",
         ],
         {
-            "country": ["België"] * 10,
-            "province": [
-                choice(["LIM", "ANT", "WVL", "OVL", "VBR"]) for _ in range(10)
-            ],
+            "country": ["België"] * 11,
+            "province": [choice(["LIM", "ANT", "WVL", "OVL", "VBR"]) for _ in range(10)]
+            + ["VBR"],
             "municipality": cities,
-            "post_code": [randint(2000, 4000) for _ in range(10)],
-            "street": [faker.street_name() for _ in range(10)],
-            "number": [randint(2, 200) for _ in range(10)],
+            "post_code": [randint(2000, 4000) for _ in range(10)] + [3000],
+            "street": [faker.street_name() for _ in range(10)] + ["Celestijnenlaan"],
+            "number": [randint(2, 200) for _ in range(10)] + [200],
         },
         2,
     )
@@ -106,9 +105,9 @@ if __name__ == "__main__":
         "api.garage",
         ["user", "name", "garage_settings", "updated_at", "created_at"],
         {
-            "user": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
+            "user": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 3],
             "name": list(map(lambda city: f"QPark {city}", cities)),
-            "garage_settings": [i for i in range(1, 11)],
+            "garage_settings": [i for i in range(1, 11)] + [11],
         },
         4,
     )
@@ -124,11 +123,13 @@ if __name__ == "__main__":
             "parking_lot_no",
         ],
         {
-            "garage": list(map(lambda x: x // 30 + 1, list(range(300)))),
-            "floor_number": [randint(-2, 2) for _ in range(300)],
-            "occupied": [randint(0, 1) for _ in range(300)],
-            "disabled": [choices([0, 1], [0.95, 0.05])[0] for _ in range(300)],
-            "parking_lot_no": list(map(lambda x: x % 30 + 1, list(range(300)))),
+            "garage": list(map(lambda x: x // 30 + 1, list(range(300)))) + [11] * 6,
+            "floor_number": [randint(-2, 2) for _ in range(300)] + [0] * 6,
+            "occupied": [randint(0, 1) for _ in range(300)] + [0] * 6,
+            "disabled": [choices([0, 1], [0.95, 0.05])[0] for _ in range(300)]
+            + [0] * 6,
+            "parking_lot_no": list(map(lambda x: x % 30 + 1, list(range(300))))
+            + list(range(1, 7)),
         },
         5,
     )
@@ -146,7 +147,7 @@ if __name__ == "__main__":
                 "1KPX789",
                 "1FKO392",
             ],
-            "garage": [1, None, 3, 4, 5, None, None],
+            "garage": [2, None, 3, 4, 5, None, None],
         },
         6,
     )

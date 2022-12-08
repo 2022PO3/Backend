@@ -82,3 +82,24 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["email", "password"]
+
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    """
+    Serializer for serializing the change password requests for users.
+    """
+
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()
+    new_password_confirmation = serializers.CharField()
+
+    def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
+        if data["new_password"] != data["new_password_confirmation"]:  # type: ignore
+            raise serializers.ValidationError(
+                {"errors": ["newPassword and newPasswordConfirmation do not match."]}
+            )
+        return data
+
+    class Meta:
+        model = User
+        fields = ["old_password", "new_password", "new_password_confirmation"]
