@@ -3,7 +3,11 @@ from collections import OrderedDict
 
 from rest_framework import serializers
 from src.api.models import Reservation, parking_lot_is_available, ParkingLot
-from src.api.serializers import GarageSerializer, ParkingLotSerializer
+from src.api.serializers import (
+    GarageSerializer,
+    ParkingLotSerializer,
+    LicencePlateSerializer,
+)
 from src.core.serializers import APIForeignKeySerializer
 
 
@@ -13,24 +17,30 @@ class GetReservationSerializer(serializers.ModelSerializer):
     """
 
     garage = GarageSerializer()
-    user_id = serializers.IntegerField()
+    licence_plate = LicencePlateSerializer()
     parking_lot = ParkingLotSerializer()
 
     class Meta:
         model = Reservation
-        fields = ["id", "garage", "user_id", "parking_lot", "from_date", "to_date"]
-        readonly_field = ["user_id"]
+        fields = [
+            "id",
+            "garage",
+            "licence_plate",
+            "parking_lot",
+            "from_date",
+            "to_date",
+        ]
 
 
 class PostReservationSerializer(APIForeignKeySerializer):
     garage_id = serializers.IntegerField()
+    licence_plate_id = serializers.IntegerField()
     parking_lot_id = serializers.IntegerField()
 
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
         """
         Check that `fromDate` is before `finish`.
         """
-        super().validate(data)
         if data["from_date"] > data["to_date"]:
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
         if not parking_lot_is_available(
@@ -45,7 +55,14 @@ class PostReservationSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = Reservation
-        fields = ["id", "garage_id", "parking_lot_id", "from_date", "to_date"]
+        fields = [
+            "id",
+            "garage_id",
+            "licence_plate_id",
+            "parking_lot_id",
+            "from_date",
+            "to_date",
+        ]
 
 
 class AssignReservationSerializer(APIForeignKeySerializer):

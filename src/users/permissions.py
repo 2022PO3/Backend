@@ -57,4 +57,4 @@ class IsUserReservation(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         r = Reservation.objects.get(pk=pk)
-        return r.user.pk == request.user.pk
+        return r.licence_plate.user.pk == request.user.pk

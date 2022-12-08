@@ -25,8 +25,6 @@ class ReservationsView(BaseAPIView):
 
     origins = ["app", "web"]
     serializer = {"get": GetReservationSerializer, "post": PostReservationSerializer}
-    get_user_id = True
-    post_user_id = True
     model = Reservation
 
 
@@ -35,7 +33,6 @@ class PutReservationsView(PkAPIView):
     permission_classes = [IsUserReservation]
     serializer = PostReservationSerializer
     model = Reservation
-    user_id = True
 
 
 class AssignReservationView(_OriginAPIView):
