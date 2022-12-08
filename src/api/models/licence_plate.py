@@ -47,6 +47,7 @@ class LicencePlate(TimeStampMixin, models.Model):
                 email=email,
                 password=password,
                 role=0,
+                is_active=1,
             )
             LicencePlate.objects.create(
                 user=generated_user,

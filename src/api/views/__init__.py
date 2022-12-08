@@ -34,6 +34,7 @@ from src.api.views.auth.multi_factor.totp_view import (
     TOTPVerifyView,
     TOTPDeleteView,
     TOTPView,
+    Disable2FA,
 )
 
 

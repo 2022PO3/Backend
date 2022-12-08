@@ -114,3 +114,13 @@ class TOTPView(BaseAPIView):
     serializer = {"get": GetTOTPSerializer}
     model = TOTPDevice
     get_user_id = True
+
+
+class Disable2FA(_OriginAPIView):
+    origins = ["web", "app"]
+
+    def post(self, request: Request, format=None) -> BackendResponse | None:
+        if (resp := super().post(request, format)) is not None:
+            return resp
+        request.user.disable_2fa()
+        return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)

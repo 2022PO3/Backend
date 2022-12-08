@@ -64,6 +64,15 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         self.two_factor_validated = False
         self.save()
 
+    def disable_2fa(self) -> None:
+        self.two_factor = False
+        self.two_factor_validated = None
+        self.save()
+
+    def validated_2fa(self) -> None:
+        self.two_factor_validated = True
+        self.save()
+
     def _generate_log_in_url(self, password: str) -> str:
         """
         Generates a url for logging into the Frontend application given a generated user's email and password.
@@ -114,15 +123,6 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         )
         if os.path.exists(path):
             os.remove(path)
-
-    def disable_2fa(self) -> None:
-        self.two_factor = False
-        self.two_factor_validated = None
-        self.save()
-
-    def validated_2fa(self) -> None:
-        self.two_factor_validated = True
-        self.save()
 
     @property
     def is_admin(self) -> bool:

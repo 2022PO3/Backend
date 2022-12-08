@@ -40,6 +40,7 @@ from src.api.views import (
     TOTPCreateView,
     TOTPDeleteView,
     TOTPView,
+    Disable2FA,
 )
 from src.api.views.licence_plates.licence_plate_view import LicencePlateListView
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
@@ -80,6 +81,7 @@ urlpatterns += [
     re_path(r"^api/auth/totp/login/(?P<token>[0-9]{6})$", TOTPVerifyView.as_view()),
     path("api/auth/totp/<int:pk>", TOTPDeleteView.as_view()),
     path("api/auth/totp", TOTPView.as_view()),
+    path("api/auth/totp/disable", Disable2FA.as_view()),
 ]
 
 # Raspberry Pi
@@ -92,5 +94,5 @@ urlpatterns += [
 urlpatterns += [
     path("api/checkout/create-session", CreateCheckoutSessionView.as_view()),
     path("api/checkout/preview", CheckoutPreviewView.as_view()),
-    path("api/checkout/webhook", CheckoutWebhookView.as_view())
+    path("api/checkout/webhook", CheckoutWebhookView.as_view()),
 ]

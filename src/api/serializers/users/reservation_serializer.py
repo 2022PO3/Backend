@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 from rest_framework import serializers
 from src.api.models import Reservation, parking_lot_is_available, ParkingLot
-from src.api.serializers import GarageSerializer
+from src.api.serializers import GarageSerializer, ParkingLotSerializer
 from src.core.serializers import APIForeignKeySerializer
 
 
@@ -14,11 +14,11 @@ class GetReservationSerializer(serializers.ModelSerializer):
 
     garage = GarageSerializer()
     user_id = serializers.IntegerField()
-    parking_lot_id = serializers.IntegerField()
+    parking_lot = ParkingLotSerializer()
 
     class Meta:
         model = Reservation
-        fields = ["id", "garage", "user_id", "parking_lot_id", "from_date", "to_date"]
+        fields = ["id", "garage", "user_id", "parking_lot", "from_date", "to_date"]
         readonly_field = ["user_id"]
 
 
