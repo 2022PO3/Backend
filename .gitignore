@@ -11,4 +11,4 @@ google_vision_api_credentials.json
 *.jpg
 *.png
 flutter/
-
+media
