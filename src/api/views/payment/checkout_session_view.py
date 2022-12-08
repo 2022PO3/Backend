@@ -2,6 +2,7 @@ import stripe
 
 from rest_framework import status
 from rest_framework.request import Request
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate
@@ -23,13 +24,13 @@ class CreateCheckoutSessionView(_OriginAPIView):
     permission_classes = [AllowAny]
     origins = ["web", "app"]
 
-    def get(self, request: Request, format=None) -> BackendResponse:
+    def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
-        checkout_data = {"licence_plate": request.query_params["licence_plate"]}
+        checkout_data = JSONParser().parse(request)
         checkout_serializer = CheckoutSessionSerializer(data=checkout_data)  # type: ignore
 
-        if checkout_serializer.is_valid():
+        if checkout_serializer.is_valid():  
             try:
                 licence_plate = LicencePlate.objects.get(
                     user=request.user,
