@@ -6,24 +6,23 @@ from rest_framework.parsers import JSONParser
 from src.api.serializers.garages.price_serializer import CreatePriceSerializer
 from src.core.utils import to_snake_case
 from src.core.utils import update_stripe_price, create_stripe_price
-from src.core.views import BackendResponse, _OriginAPIView, PkAPIView, _dict_key_to_case
+from src.core.views import (
+    BackendResponse,
+    _OriginAPIView,
+    GetObjectMixin,
+    _dict_key_to_case,
+)
 from src.api.models import Price
 from src.api.serializers import PriceSerializer
 from src.users.permissions import IsGarageOwner
 
-from src.users.permissions import IsGarageOwner
 
-
-class PricesView(PkAPIView):
+class PricesView(_OriginAPIView):
     """
     A view class which renders all the prices for a given garage with `pk`.
     """
 
     origins = ["app", "web"]
-    column = "garage_id"
-    serializer = PriceSerializer
-    model = Price
-    list = True
 
     def post(self, request: Request, format=None) -> BackendResponse | None:
         if (resp := super().post(request, format)) is not None:
@@ -56,14 +55,27 @@ class PricesView(PkAPIView):
         )
 
 
-class PutPricesView(_OriginAPIView):
+class PutPricesView(GetObjectMixin, _OriginAPIView):
 
     permission_classes = [IsGarageOwner]
     origins = ["web", "app"]
 
-    def put(
-        self, request: Request, pk: int | None = None, format=None
-    ) -> BackendResponse:
+    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
+        if (resp := super().get(request, format)) is not None:
+            return resp
+        try:
+            data = Price.objects.filter(garage_id=pk)  # type: ignore
+        except Http404:
+            return BackendResponse(
+                [
+                    f"The corresponding price with 'pk' `{pk}` does not exist.",  # type: ignore
+                ],
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = PriceSerializer(data, many=True)  # type: ignore
+        return BackendResponse(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := super().put(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
