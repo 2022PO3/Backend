@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 from dotenv import load_dotenv
 from os import path, getenv
@@ -90,7 +90,7 @@ WSGI_APPLICATION = "src.core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "backend_database",
+        "NAME": getenv('DATABASE_NAME'),
         "USER": "root",
         "PASSWORD": getenv("DATABASE_PASSWORD"),
         "HOST": "db",
