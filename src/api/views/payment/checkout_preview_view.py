@@ -56,7 +56,7 @@ class CheckoutPreviewView(_OriginAPIView):
     origins = ["web", "app"]
 
     def get(self, request: Request, format=None) -> BackendResponse:
-        if (resp := super().post(request, format)) is not None:
+        if (resp := super().get(request, format)) is not None:
             return resp
         checkout_data = {'licence_plate': str(request.query_params['licence_plate'])}
         checkout_serializer = CheckoutSessionSerializer(data=checkout_data)

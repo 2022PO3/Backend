@@ -24,6 +24,7 @@ class UsersSerializer(APIForeignKeySerializer):
             "fav_garage_id",
             "location",
             "two_factor",
+            "stripe_identifier",
         ]
         extra_kwargs = {
             "password": {"write_only": True},

@@ -1,11 +1,7 @@
-import datetime
-from typing import Any
 from django.db import models
-
-from src.users.models import User
+from django.utils import timezone
+from src.api.models.garages.price import Price
 from src.core.models import TimeStampMixin
-
-from django.views.decorators.http import require_http_methods
 
 
 class LicencePlate(TimeStampMixin, models.Model):
@@ -30,82 +26,13 @@ class LicencePlate(TimeStampMixin, models.Model):
     def in_garage(self) -> bool:
         return self.garage == None
 
-    @staticmethod
-    def _register_licence_plate(licence_plate: str, garage_id: int) -> int:
-        """
-        This registers that a `LicencePlate` is entering a `Garage`. If the `LicencePlate`
-        exists in the database, the `garage_id` is updated.
-
-        If the `LicencePlate` doesn't exist in the database, a new dummy `User` with role 0
-        is created, which is linked to the given `LicencePlate`.
-        """
-        queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
-        if not queryset:
-            email = User.email_generator()
-            password = User.objects.make_random_password(
-                length=30,
-                allowed_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*();,./<>",
-            )
-            generated_user = User.objects.create_user(
-                email=email,
-                password=password,
-                role=0,
-            )
-            LicencePlate.objects.create(
-                user=generated_user,
-                licence_plate=licence_plate,
-                garage_id=garage_id,
-                updated_at=datetime.datetime.now().astimezone().isoformat(),
-            )
-        else:
-            queryset.update(
-                garage_id=garage_id,
-                updated_at=datetime.datetime.now().astimezone().isoformat(),
-            )
-        return 1
-
-    @staticmethod
-    def _sign_out_licence_plate(licence_plate: "LicencePlate") -> int:
-        """
-        This signs out the `LicencePlate` from a `Garage`, setting its `garage_id` to `null`
-        in the database. If the `LicencePlate` is associated with a dummy `User` of role 0,
-        the `User` is also deleted from the database.
-        """
-        user = licence_plate.user
-        if user.is_generated_user:
-            licence_plate.delete()
-            user.delete()
-        else:
-            licence_plate.garage = None
-            licence_plate.save()
-        return 0
-
-    @staticmethod
-    def handle_licence_plate(licence_plate: str, garage_id: int) -> int:
-        """
-        This function handles the business logic for incoming licence plates.
-
-        There are two main flows: the flow for entering vehicles and the flow for exiting
-        vehicles. The flow itself is determined by the presence of the `garage_id` field in
-        the database. If it's `null`, the `LicencePlate` is considered NOT in the garage,
-        thus the `_register_licence_plate()` is called.
-
-        The variable `params` contains the fields `garageId` and `licencePlate` from the
-        `LicencePlateSerializer`.
-
-        The output int-variable indicates if the licence plate is registered (1) or is signed
-        out (0).
-        """
-        queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
-        if not queryset:
-            return LicencePlate._register_licence_plate(licence_plate, garage_id)
-        else:
-            lp = queryset[0]
-            return (
-                LicencePlate._register_licence_plate(licence_plate, garage_id)
-                if lp.in_garage
-                else LicencePlate._sign_out_licence_plate(lp)
-            )
+    @property
+    def was_paid_for(self) -> bool:
+        prices: list[Price] = Price.objects.filter(garage=self.garage)
+        prices = sorted(prices, key=lambda p: p.duration)
+        if len(prices) == 0:
+            return True
+        return (timezone.now() - self.updated_at) > prices[0].duration
 
     class Meta:
         db_table = "licence_plates"

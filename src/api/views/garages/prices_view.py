@@ -1,3 +1,4 @@
+import stripe
 from django.http import Http404
 from rest_framework import status
 from rest_framework.request import Request
@@ -35,6 +36,11 @@ class PricesView(PkAPIView):
             # Create price on stripe servers
             try:
                 price = create_stripe_price(create_price_serializer.data)
+            except stripe.error.InvalidRequestError as e:
+                return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
+            except stripe.error.StripeError as e:
+                return BackendResponse(['Something went wrong communicating with Stripe.', str(e)], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
             except Exception as e:
                 return BackendResponse([f"Failed to create price on Stripe servers: {e}"], status=status.HTTP_400_BAD_REQUEST)
 
@@ -79,6 +85,10 @@ class PutPricesView(_OriginAPIView):
 
             try:
                 update_stripe_price(serializer.data)
+            except stripe.error.InvalidRequestError as e:
+                return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
+            except stripe.error.StripeError as e:
+                return BackendResponse(['Something went wrong communicating with Stripe.', str(e)], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             except Exception as e:
                 return BackendResponse([f"Failed to update price on Stripe servers: {e}"], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

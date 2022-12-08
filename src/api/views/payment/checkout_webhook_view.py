@@ -49,7 +49,7 @@ class CheckoutWebhookView(APIView):
 
         try:
             event = stripe.Webhook.construct_event(
-                payload, sig_header, getenv('STRIPE_WEBHOOK_KEY')
+                payload, sig_header, getenv('STRIPE_CHECKOUT_WEBHOOK_KEY')
             )
         except ValueError as e:
             # Invalid payload
@@ -57,6 +57,9 @@ class CheckoutWebhookView(APIView):
         except stripe.error.SignatureVerificationError as e:
             # Invalid signature
             return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
+        except stripe.error.StripeError as e:
+            print(str(e))
+            BackendResponse(['Something went wrong communicating with Stripe.', str(e)], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Handle the checkout.session.completed event
         if event['type'] == 'checkout.session.completed':
