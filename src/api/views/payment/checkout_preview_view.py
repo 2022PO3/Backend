@@ -80,7 +80,7 @@ class CheckoutPreviewView(_OriginAPIView):
                     "garage_id": item["price"].garage_id,
                     "price": item["price"].price,
                     "valuta": item["price"].valuta,
-                    "duration": int(item["price"].duration.total_seconds()),
+                    "duration": str(item["price"].duration),
                     "price_string": item["price"].price_string,
                     "quantity": item["quantity"],
                 }
