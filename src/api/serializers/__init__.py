@@ -36,3 +36,5 @@ from src.api.serializers.users.totp_serializer import (
     GetTOTPSerializer,
     PostTOTPSerializer,
 )
+
+from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer

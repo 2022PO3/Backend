@@ -5,13 +5,14 @@ from rest_framework.parsers import JSONParser
 
 from src.api.serializers.garages.price_serializer import CreatePriceSerializer
 from src.core.utils import to_snake_case
-from src.core.utils.stripe_endpoints import update_stripe_price, create_stripe_price
+from src.core.utils import update_stripe_price, create_stripe_price
 from src.core.views import BackendResponse, _OriginAPIView, PkAPIView, _dict_key_to_case
 from src.api.models import Price
 from src.api.serializers import PriceSerializer
 from src.users.permissions import IsGarageOwner
 
 from src.users.permissions import IsGarageOwner
+
 
 class PricesView(PkAPIView):
     """
@@ -36,7 +37,10 @@ class PricesView(PkAPIView):
             try:
                 price = create_stripe_price(create_price_serializer.data)
             except Exception as e:
-                return BackendResponse([f"Failed to create price on Stripe servers: {e}"], status=status.HTTP_400_BAD_REQUEST)
+                return BackendResponse(
+                    [f"Failed to create price on Stripe servers: {e}"],
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             # Add price to database
             price_data = JSONParser().parse(price)
@@ -51,12 +55,15 @@ class PricesView(PkAPIView):
             create_price_serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )
 
+
 class PutPricesView(_OriginAPIView):
 
     permission_classes = [IsGarageOwner]
     origins = ["web", "app"]
 
-    def put(self, request: Request, pk: int | None = None, format=None) -> BackendResponse:
+    def put(
+        self, request: Request, pk: int | None = None, format=None
+    ) -> BackendResponse:
         if (resp := super().put(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
@@ -72,7 +79,7 @@ class PutPricesView(_OriginAPIView):
         if serializer.is_valid():
             try:
                 self.check_object_permissions(
-                    request, serializer.validated_data["garage_id"]
+                    request, serializer.validated_data["garage_id"]  #  type: ignore
                 )
             except KeyError:
                 pass
@@ -80,7 +87,10 @@ class PutPricesView(_OriginAPIView):
             try:
                 update_stripe_price(serializer.data)
             except Exception as e:
-                return BackendResponse([f"Failed to update price on Stripe servers: {e}"], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return BackendResponse(
+                    [f"Failed to update price on Stripe servers: {e}"],
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
 
             serializer.save()
 

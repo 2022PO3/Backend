@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from src.api.models import LicencePlate
 
+
 class CheckoutSessionSerializer(serializers.ModelSerializer):
     """
     Serializer for serializing the login POST-requests for logging in users.

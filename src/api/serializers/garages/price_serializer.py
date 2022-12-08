@@ -5,7 +5,7 @@ from typing import Any
 from rest_framework import serializers
 from src.api.models import Price
 from src.core.serializers import APIForeignKeySerializer
-from src.core.utils.stripe_endpoints import get_stripe_price
+from src.core.utils import get_stripe_price
 
 
 class PriceSerializer(APIForeignKeySerializer):
@@ -41,4 +41,3 @@ class CreatePriceSerializer(APIForeignKeySerializer):
     class Meta:
         model = Price
         fields = ["id", "garage_id", "price_string", "duration", "price", "valuta"]
-
