@@ -161,7 +161,7 @@ if __name__ == "__main__":
         ],
         {
             "garage": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
-            "price_string": [f"{randint(1, 10)} uur parkeren" for _ in range(20)],
+            "price_string": [f"parking {randint(1, 10)} hours " for _ in range(20)],
             "price": [round(uniform(4.0, 15.0), 1) for _ in range(20)],
             "valuta": ["EUR"] * 20,
         },
