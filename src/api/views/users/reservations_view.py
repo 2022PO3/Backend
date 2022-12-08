@@ -12,7 +12,8 @@ from src.api.serializers import (
 )
 from src.core.utils import to_snake_case
 from src.core.views import _OriginAPIView, _dict_key_to_case, BackendResponse
-from src.core.views import BaseAPIView
+from src.core.views import BaseAPIView, PkAPIView
+from src.users.permissions import IsUserReservation
 
 
 class ReservationsView(BaseAPIView):
@@ -26,6 +27,14 @@ class ReservationsView(BaseAPIView):
     get_user_id = True
     post_user_id = True
     model = Reservation
+
+
+class PutReservationsView(PkAPIView):
+    origins = ["app", "web"]
+    permission_classes = [IsUserReservation]
+    serializer = PostReservationSerializer
+    model = Reservation
+    user_id = True
 
 
 class AssignReservationView(_OriginAPIView):

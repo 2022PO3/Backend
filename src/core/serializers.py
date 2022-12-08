@@ -23,8 +23,7 @@ class APIForeignKeySerializer(serializers.ModelSerializer):
 
     def _validate_key(self, key: str, value: Any):
         """
-        Validates a single field with suffix "_id" and validates that the corresponding object with
-        `pk=value` is present in the database.
+        Validates a single field with suffix "_id" and validates that the corresponding object with `pk=value` is present in the database.
         """
         class_name = to_camel_case(
             key.replace("_id", "").replace("fav_", ""), lower_case=False

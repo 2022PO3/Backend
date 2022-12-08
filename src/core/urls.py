@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import path, re_path
 from src.api.views import (
     GarageDetailView,
     GarageListView,
@@ -28,6 +28,7 @@ from src.api.views import (
     ParkingLotPutView,
     RPiParkingLotView,
     AssignReservationView,
+    PutReservationsView,
     PricesView,
     PostPricesView,
     LoginView,
@@ -35,6 +36,10 @@ from src.api.views import (
     SignUpView,
     ChangePasswordView,
     LicencePlateImageView,
+    TOTPVerifyView,
+    TOTPCreateView,
+    TOTPDeleteView,
+    TOTPView,
 )
 
 handler500 = "src.core.views.server_error"
@@ -49,6 +54,7 @@ urlpatterns = [
     path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/garage-settings/<int:pk>", GetGarageSettingsView.as_view()),
     path("api/reservations", ReservationsView.as_view()),
+    path("api/reservation/<int:pk>", PutReservationsView.as_view()),
     path("api/opening-hours/<int:pk>", GetOpeningHoursView.as_view()),
     path("api/opening-hours", PostOpeningHoursView.as_view()),
     path("api/prices/<int:pk>", PricesView.as_view()),
@@ -65,6 +71,10 @@ urlpatterns += [
         "api/auth/activate-account/<str:uid_b64>/<str:token>",
         UserActivationView.as_view(),
     ),
+    path("api/auth/totp/create", TOTPCreateView.as_view()),
+    re_path(r"^api/auth/totp/login/(?P<token>[0-9]{6})$", TOTPVerifyView.as_view()),
+    path("api/auth/totp/<int:pk>", TOTPDeleteView.as_view()),
+    path("api/auth/totp", TOTPView.as_view()),
 ]
 
 # Raspberry Pi
