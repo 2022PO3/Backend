@@ -270,7 +270,7 @@ class ANPR:
             ocr_results = self.result_ocr.get_text_from_image_path(image_path)  # type: ignore
 
             lp_results = [
-                LicensePlateResult(result.text, result.location)
+                LicensePlateResult(re.sub(r"\s", "", result.text), result.location)
                 for result in ocr_results
             ]
 
@@ -281,7 +281,7 @@ class ANPR:
                     new_results = result.match_format(self.formats)
                     formatted_results += new_results
                 lp_results = formatted_results
-
+            print(lp_results)
             self._debug_print([lp.text for lp in lp_results], 0)
             return lp_results
 

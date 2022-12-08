@@ -1,3 +1,8 @@
+import io
+import os
+import cv2
+from qrcode import make, QRCode
+
 from secrets import token_hex
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
@@ -5,6 +10,7 @@ from django.db import models
 from src.users.managers import UserManager
 from src.api.models import ProvincesEnum
 from src.core.models import TimeStampMixin
+from src.core.exceptions import BackendException
 
 
 class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
@@ -35,6 +41,57 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         self.two_factor_validated = tf_validated
         self.save()
 
+    def _generate_log_in_url(self, password: str) -> str:
+        """
+        Generates a url for logging into the Frontend application given a generated user's email and password.
+        Returns the URL.
+        """
+        return f"https://po3backend.ddns.net?email={self.email}&password={password}"
+
+    def generate_qr_code(self, password: str) -> None:
+        """
+        Generates a QR-code for logging into the Frontend application given a generated user's email and password.
+        The QR-code is saved in the folder qr_codes.
+        """
+        img = make(self._generate_log_in_url(password))
+        img.save(
+            os.path.join(
+                os.getcwd(), f"src/api/qr_codes/{self.email.split('@')[0]}.png"
+            )
+        )
+
+    def print_qr_code(self) -> None:
+        """
+        Prints a QR code to stdout from a generated user.
+        """
+        if not self.is_generated_user:
+            raise BackendException(
+                "User is not a generated user, thus no QR code exists."
+            )
+        else:
+            f = io.StringIO()
+            _read_qr_code(
+                os.path.join(
+                    os.getcwd(), f"src/api/qr_codes/{self.email.split('@')[0]}.png"
+                )
+            ).print_ascii(out=f)
+            f.seek(0)
+            print(f.read())
+
+    def delete_qr_code(self) -> None:
+        """
+        Delete the QR code associated with the generated user.
+        """
+        if not self.is_generated_user:
+            raise BackendException(
+                "User is not a generated user, thus no QR code exists."
+            )
+        path = os.path.join(
+            os.getcwd(), f"src/api/qr_codes/{self.email.split('@')[0]}.png"
+        )
+        if os.path.exists(path):
+            os.remove(path)
+
     @property
     def is_admin(self) -> bool:
         return self.role == 3
@@ -61,3 +118,19 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         Generates a random email address.
         """
         return f"{token_hex(8)}@generated.com"
+
+
+def _read_qr_code(qr_code_path: str) -> QRCode:
+    """
+    Reads a QR-code from an local image path and returns a QR-code object.
+    """
+    image = cv2.imread(qr_code_path)
+    detector = cv2.QRCodeDetector()
+    data, vertices_array, _ = detector.detectAndDecode(image)
+
+    if vertices_array is not None:
+        qr_code = QRCode()
+        qr_code.add_data(data)
+        return qr_code
+    else:
+        raise BackendException("QR-code could not be read.")
