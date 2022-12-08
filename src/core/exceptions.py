@@ -15,3 +15,12 @@ class BackendException(Exception):
 
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
+
+
+class DeletionException(Exception):
+    """
+    Exception thrown when an object cannot be deleted due to foreign key relationships.
+    """
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)

@@ -9,6 +9,24 @@ from src.api.serializers import LicencePlateSerializer, PostLicencePlateSerializ
 from src.core.views import BackendResponse, GetObjectMixin, _OriginAPIView
 
 
+class LicencePlateListView(_OriginAPIView, GetObjectMixin):
+    """
+    Returns a list of the licence plates belonging to a user.
+    """
+
+    origins = ["app", "web"]
+
+    def get(self, request: Request, format=None) -> BackendResponse:
+        if (resp := super().put(request, format)) is not None:
+            return resp
+
+        licence_plates = LicencePlate.objects.filter(user=request.user)
+
+        serializer = LicencePlateSerializer(licence_plates, many=True)
+        return BackendResponse(serializer.data, status=status.HTTP_200_OK)
+
+
+
 class LicencePlateDetailView(_OriginAPIView, GetObjectMixin):
     """
     Update a `LicencePlate` with the given `pk`.

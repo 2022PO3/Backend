@@ -1,11 +1,8 @@
 import datetime
-from typing import Any
 from django.db import models
 
 from src.users.models import User
 from src.core.models import TimeStampMixin
-
-from django.views.decorators.http import require_http_methods
 
 
 class LicencePlate(TimeStampMixin, models.Model):
@@ -57,6 +54,8 @@ class LicencePlate(TimeStampMixin, models.Model):
                 garage_id=garage_id,
                 updated_at=datetime.datetime.now().astimezone().isoformat(),
             )
+            generated_user.generate_qr_code(password)
+            generated_user.print_qr_code()
         else:
             queryset.update(
                 garage_id=garage_id,
@@ -71,9 +70,10 @@ class LicencePlate(TimeStampMixin, models.Model):
         in the database. If the `LicencePlate` is associated with a dummy `User` of role 0,
         the `User` is also deleted from the database.
         """
-        user = licence_plate.user
+        user: User = licence_plate.user
         if user.is_generated_user:
             licence_plate.delete()
+            user.delete_qr_code()
             user.delete()
         else:
             licence_plate.garage = None

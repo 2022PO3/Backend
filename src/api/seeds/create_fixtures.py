@@ -86,16 +86,18 @@ if __name__ == "__main__":
         [
             "max_height",
             "location",
+            "electric_cars",
             "max_width",
             "max_handicapped_lots",
             "created_at",
             "updated_at",
         ],
         {
-            "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(11)],
-            "location": [i for i in range(1, 12)],
-            "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(11)],
-            "max_handicapped_lots": [randint(2, 10) for _ in range(11)],
+            "electric_cars": [randint(2, 10) for _ in range(10)],
+            "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
+            "location": [i for i in range(1, 11)],
+            "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
+            "max_handicapped_lots": [randint(2, 10) for _ in range(10)],
         },
         3,
     )
@@ -154,6 +156,7 @@ if __name__ == "__main__":
         [
             "garage",
             "price_string",
+            "duration",
             "price",
             "valuta",
             "created_at",
@@ -161,7 +164,8 @@ if __name__ == "__main__":
         ],
         {
             "garage": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
-            "price_string": [f"parking {randint(1, 10)} hours " for _ in range(20)],
+            "price_string": [f"{randint(1, 10)} uur parkeren" for _ in range(20)],
+            "duration": [str(datetime.timedelta(hours=1)), str(datetime.timedelta(minutes=15))] * 10,
             "price": [round(uniform(4.0, 15.0), 1) for _ in range(20)],
             "valuta": ["EUR"] * 20,
         },

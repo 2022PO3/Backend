@@ -1,4 +1,4 @@
 {
   "python.analysis.typeCheckingMode": "basic",
-  "cSpell.words": ["anpr"]
+  "cSpell.words": ["anpr", "qrcode"]
 }
