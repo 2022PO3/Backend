@@ -54,7 +54,7 @@ urlpatterns = [
     path("api/garages", GarageListView.as_view()),
     path("api/parking-lots/<int:pk>", ParkingLotView.as_view()),
     path("api/parking-lot/<int:pk>", ParkingLotPutView.as_view()),
-    path("api/assign-parking-lot", AssignReservationView.as_view()),
+    path("api/assign-parking-lot/<int:pk>", AssignReservationView.as_view()),
     path("api/user", UserDetailView.as_view()),
     path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/licence-plates", LicencePlateListView.as_view()),

@@ -11,6 +11,7 @@ class ParkingLotManager(models.Manager):
     def is_available(self, pk: int, start_time: datetime, end_time: datetime):
         for pl in (pls := super().get_queryset().filter(garage_id=pk)):
             pl.booked = pl.booked(start_time, end_time)
+            pl.save()
         return pls
 
 

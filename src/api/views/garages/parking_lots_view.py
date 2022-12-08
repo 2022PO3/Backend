@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny
 
 from src.api.models import ParkingLot
 from src.api.serializers import ParkingLotSerializer, RPIParkingLotSerializer
+from src.api.serializers import AssignReservationSerializer
 from src.core.utils import to_snake_case
 from src.core.views import PkAPIView, _OriginAPIView, _dict_key_to_case, BackendResponse
 from src.users.permissions import IsGarageOwner
@@ -28,16 +29,23 @@ class ParkingLotView(PkAPIView):
         if (resp := _OriginAPIView.get(self, request, format)) is not None:
             return resp
         try:
-            request_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
-            pls = ParkingLot.objects.is_available(
-                int(pk),
-                parse(request_data["from_date"]),  # type: ignore
-                parse(request_data["to_date"]),  # type: ignore
+            request_data = {
+                "from_date": parse(str(request.query_params["fromDate"])),
+                "to_date": parse(str(request.query_params["toDate"])),
+            }
+            serializer = AssignReservationSerializer(data=request_data)  # type: ignore
+            if serializer.is_valid():
+                pls = ParkingLot.objects.is_available(
+                    int(pk),
+                    serializer.validated_data["from_date"],  # type: ignore
+                    serializer.validated_data["to_date"],  # type: ignore
+                )
+                serializer = ParkingLotSerializer(pls, many=True)  # type: ignore
+                return BackendResponse(serializer.data, status=status.HTTP_200_OK)
+            return BackendResponse(
+                [serializer.errors], status=status.HTTP_400_BAD_REQUEST  # type: ignore
             )
-            pls = ParkingLot.objects.filter(garage_id=pk)
-            serializer = ParkingLotSerializer(pls, many=True)  # type: ignore
-            return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-        except ParseError:
+        except KeyError:
             serializer = ParkingLotSerializer(
                 ParkingLot.objects.filter(garage_id=pk), many=True
             )

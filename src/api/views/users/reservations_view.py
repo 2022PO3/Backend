@@ -1,3 +1,4 @@
+from dateutil.parser import parse
 from random import randint
 from rest_framework import status
 from rest_framework.request import Request
@@ -40,10 +41,13 @@ class PutReservationsView(PkAPIView):
 class AssignReservationView(_OriginAPIView):
     origins = ["web", "app"]
 
-    def get(self, request: Request, format=None) -> BackendResponse:
+    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := _OriginAPIView.get(self, request, format)) is not None:
             return resp
-        request_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        request_data = {
+            "from_date": str(request.query_params["fromDate"]).replace(" ", "+"),
+            "to_date": str(request.query_params["toDate"]).replace(" ", "+"),
+        }
         assignment_serializer = AssignReservationSerializer(data=request_data)  # type: ignore
         if assignment_serializer.is_valid():
             valid_data = assignment_serializer.validated_data
@@ -51,7 +55,7 @@ class AssignReservationView(_OriginAPIView):
                 filter(
                     lambda pl: not pl.booked,
                     ParkingLot.objects.is_available(
-                        valid_data["garage_id"],  # type: ignore
+                        int(pk),
                         valid_data["from_date"],  # type: ignore
                         valid_data["to_date"],  # type: ignore
                     ),
