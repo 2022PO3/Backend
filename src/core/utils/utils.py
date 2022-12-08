@@ -4,6 +4,7 @@ from typing import Any
 from functools import reduce
 from os import path, getenv
 from dotenv import load_dotenv
+
 from src.core.exceptions import BackendException
 
 

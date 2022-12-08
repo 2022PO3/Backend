@@ -19,6 +19,7 @@ class GarageSettingsSerializer(APIForeignKeySerializer):
         fields = [
             "id",
             "location",
+            "electric_cars",
             "max_height",
             "max_width",
             "max_handicapped_lots",

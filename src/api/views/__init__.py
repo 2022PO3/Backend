@@ -19,6 +19,7 @@ from src.api.views.users.user_view import (
 )
 from src.api.views.users.reservations_view import (
     ReservationsView,
+    PutReservationsView,
     AssignReservationView,
 )
 
