@@ -1,0 +1,9 @@
+The Parking Boys
+
+
+The automatic payment of your parking lot failed, please pay using the payment link below.
+
+­{{ checkout_url }}
+­
+
+If you did not create an account, no further action is required.

@@ -4,6 +4,7 @@ import stripe
 
 from src.api.models import LicencePlate
 from src.api.models.garages.garage import Garage
+from src.api.models.garages.price import Price
 from src.users.models import User
 
 stripe.api_key = getenv('STRIPE_SECRET_KEY')
@@ -30,17 +31,17 @@ def create_stripe_price(price_data) -> stripe.Price:
     return stripe.Price.create(
         currency=price_data['valuta'],
         unit_amount=price_data['price'] * 100,
-        nickname=price_data['price_string'],  # f'price for staying {price_data["duration"]} at {price_data["garage_id"]}.'
+        nickname=price_data['price_string'],
+        # f'price for staying {price_data["duration"]} at {price_data["garage_id"]}.'
         product_data={
             'name': f'{price_data["duration"]} at {Garage.objects.get(garage_id=price_data["garage_id"]).name}'
         }
     )
 
 
-def create_stripe_customer(user: User, card_data:dict) -> str:
-
+def create_stripe_customer(user: User, card_data: dict) -> str:
     customer: stripe.Customer = stripe.Customer.create(
-        email=user.email, # Use your email address for testing purposes
+        email=user.email,  # Use your email address for testing purposes
         description="",
     )
     # Store the customer ID in your database for future purchases
@@ -57,13 +58,10 @@ def create_stripe_customer(user: User, card_data:dict) -> str:
 
     return customer_id
 
-def remove_stripe_customer(user: User):
 
+def remove_stripe_customer(user: User):
     if user.stripe_identifier is not None:
         stripe.Customer.delete(user.stripe_identifier)
-
-    # TODO: Check if payment method should be removed too, or if this is done automatically
-
 
 def send_invoice(user: User, licence_plate: LicencePlate) -> None:
     # Look up a customer in your database
@@ -71,23 +69,31 @@ def send_invoice(user: User, licence_plate: LicencePlate) -> None:
     if user.is_connected_to_stripe:
         stripe_identifier = user.stripe_identifier
         # Get items to pay for licence plate
-        items, _ = licence_plate.get_prices_to_pay(licence_plate)
+        items, _ = licence_plate.get_prices_to_pay()
 
         # Create an Invoice
         invoice = stripe.Invoice.create(
             customer=stripe_identifier,
-            collection_method='send_invoice',
-            days_until_due=30,
+            auto_advance=True,
+            metadata={
+                'user_id': user.pk,
+                'licence_plate': licence_plate.licence_plate,
+            },
         )
 
         for item in items:
-            for _ in range(item['quantity']):
-                # Create an Invoice Item with the Price and Customer you want to charge
-                stripe.InvoiceItem.create(
-                    customer=stripe_identifier,
-                    price=item['price'].stripe_identifier,
-                    invoice=invoice.id,
-                )
+            price: Price = item['price']
+            # Create an Invoice Item with the Price and Customer you want to charge
+            stripe.InvoiceItem.create(
+                customer=stripe_identifier,
+                amount=int(price.price * 100 * item['quantity']),
+                description=f'{price.price_string} x{item["quantity"]}',
+                # price=item['price'].stripe_identifier,
+                invoice=invoice.id,
+            )
 
         # Send the Invoice
-        stripe.Invoice.send_invoice(invoice.id)
+        # stripe.Invoice.send_invoice(invoice.id)
+        invoice.finalize_invoice()
+    else:
+        raise Exception('User is not connected to stripe')

@@ -37,6 +37,7 @@ class CheckoutPreviewView(_OriginAPIView):
 
             items, refresh_time = licence_plate.get_prices_to_pay()
 
+            print("Sending invoice")
             send_invoice(request.user, licence_plate)
 
             preview_items = [
