@@ -7,7 +7,7 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
-from src.api.serializers import UsersSerializer, ChangePasswordSerializer
+from src.api.serializers import UserSerializer, ChangePasswordSerializer
 from src.core.utils.utils import to_snake_case
 from src.core.views import PkAPIView, _OriginAPIView, BackendResponse, _dict_key_to_case
 from src.core.exceptions import BackendException
@@ -22,7 +22,7 @@ class UserDetailView(PkAPIView):
 
     origins = ["app", "web"]
 
-    serializer = UsersSerializer
+    serializer = UserSerializer
 
 
 class UserActivationView(_OriginAPIView):
@@ -80,4 +80,4 @@ class ChangePasswordView(_OriginAPIView):
             user.set_password(serializer.validated_data["new_password"])  # type: ignore
             user.save()
             return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)
-        return BackendResponse([serializer.errors], status=status.HTTP_400_BAD_REQUEST)
+        return BackendResponse([serializer.errors], status=status.HTTP_400_BAD_REQUEST)  # type: ignore

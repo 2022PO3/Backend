@@ -27,6 +27,14 @@ class LicencePlate(TimeStampMixin, models.Model):
     def in_garage(self) -> bool:
         return self.garage == None
 
+    def delete(self) -> tuple[int, dict[str, int]]:
+        from src.api.models import Reservation
+
+        reservations = Reservation.objects.filter(licence_plate=self.licence_plate)
+        for reservation in reservations:
+            reservation.delete()
+        return super().delete()
+
     @staticmethod
     def _register_licence_plate(licence_plate: str, garage_id: int) -> int:
         """

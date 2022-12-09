@@ -6,12 +6,12 @@ from django.contrib.auth import authenticate
 from src.core.serializers import APIForeignKeySerializer
 
 
-class UsersSerializer(APIForeignKeySerializer):
+class UserSerializer(APIForeignKeySerializer):
     """
     Serializer for serializing GET and PUT request for retrieving and updating the users's data, respectively.
     """
 
-    fav_garage_id = serializers.IntegerField()
+    fav_garage_id = serializers.IntegerField(allow_null=True)
 
     class Meta:
         model = User
@@ -30,6 +30,9 @@ class UsersSerializer(APIForeignKeySerializer):
             "password": {"write_only": True},
             "first_name": {"allow_null": True},
             "last_name": {"allow_null": True},
+            "fav_garage_id": {"allow_null": True},
+            "two_factor": {"read_only": True},
+            "two_factor_validated": {"read_only": True},
         }
 
 

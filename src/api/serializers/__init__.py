@@ -22,7 +22,7 @@ from src.api.serializers.garages.parking_lot_serializer import (
 )
 
 from src.api.serializers.users.users_serializer import (
-    UsersSerializer,
+    UserSerializer,
     SignUpSerializer,
     LoginSerializer,
     ChangePasswordSerializer,

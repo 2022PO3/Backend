@@ -48,7 +48,9 @@ class PostReservationSerializer(APIForeignKeySerializer):
         """
         Check that `fromDate` is before `finish`.
         """
-        user_reservations = Reservation.objects.filter(user=data["user_id"])
+        user_reservations = Reservation.objects.filter(
+            licence_plate=data["licence_plate_id"]
+        )
         if data["from_date"] > data["to_date"]:
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
         if not parking_lot_is_available(

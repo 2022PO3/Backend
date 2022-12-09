@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
-from src.api.serializers import LoginSerializer, UsersSerializer
+from src.api.serializers import LoginSerializer, UserSerializer
 from src.core.views import BackendResponse, _OriginAPIView
 from src.users.models import User
 
@@ -44,7 +44,7 @@ class LoginView(_OriginAPIView):
 
             return BackendResponse(
                 {
-                    "user": UsersSerializer(user).data,
+                    "user": UserSerializer(user).data,
                     "token": AuthToken.objects.create(user)[1],
                 },
                 status=status.HTTP_200_OK,
