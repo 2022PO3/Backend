@@ -5,46 +5,9 @@ from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate
-from src.api.models.garages.price import Price
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
+from src.core.utils.stripe_endpoints import send_invoice
 from src.core.views import BackendResponse, _OriginAPIView
-
-from django.utils import timezone
-
-
-def _get_prices_to_pay(licence_plate: LicencePlate) -> (list[dict[str, str | int]], int):
-    # Fetch garage prices from database
-    prices = Price.objects.filter(garage=licence_plate.garage)
-    prices = sorted(prices, key=lambda p: p.duration, reverse=True)
-
-    if len(prices) == 0:
-        return []
-
-    # Get time the user has to pay for
-    updated_at = licence_plate.updated_at
-    time_to_pay = (timezone.now() - updated_at)
-
-    # Go over each and reduce te time to pay by the largest possible amount
-    preview_items = []
-    for price in prices:
-
-        item = {
-            # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-            'price': price,
-            'quantity': 0,
-        }
-        if price.duration >= datetime.timedelta(0):  # Make sure the loop completes
-            while time_to_pay > price.duration:
-                time_to_pay -= price.duration
-                item['quantity'] += 1
-
-        if item['quantity'] > 0:
-            preview_items.append(item)
-
-    # Calculate time in which app has to refresh
-    refresh_time = prices[-1].duration - time_to_pay
-
-    return preview_items, refresh_time
 
 
 class CheckoutPreviewView(_OriginAPIView):
@@ -72,7 +35,9 @@ class CheckoutPreviewView(_OriginAPIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            items, refresh_time = _get_prices_to_pay(licence_plate)
+            items, refresh_time = licence_plate.get_prices_to_pay()
+
+            send_invoice(request.user, licence_plate)
 
             preview_items = [
                 {

@@ -4,7 +4,6 @@ import stripe
 
 from src.api.models import LicencePlate
 from src.api.models.garages.garage import Garage
-from src.api.views.payment.checkout_preview_view import _get_prices_to_pay
 from src.users.models import User
 
 stripe.api_key = getenv('STRIPE_SECRET_KEY')
@@ -72,7 +71,7 @@ def send_invoice(user: User, licence_plate: LicencePlate) -> None:
     if user.is_connected_to_stripe:
         stripe_identifier = user.stripe_identifier
         # Get items to pay for licence plate
-        items, _ = _get_prices_to_pay(licence_plate)
+        items, _ = licence_plate.get_prices_to_pay(licence_plate)
 
         # Create an Invoice
         invoice = stripe.Invoice.create(

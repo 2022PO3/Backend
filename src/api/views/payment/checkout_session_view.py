@@ -3,7 +3,6 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 from src.api.models import LicencePlate
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
-from src.api.views.payment.checkout_preview_view import _get_prices_to_pay
 from src.core.views import BackendResponse, _OriginAPIView
 
 
@@ -37,7 +36,7 @@ class CreateCheckoutSessionView(_OriginAPIView):
                     ["Licence plate does not exist for this user."],
                     status=status.HTTP_404_NOT_FOUND,
                 )
-            items, _ = _get_prices_to_pay(licence_plate)
+            items, _ = licence_plate.get_prices_to_pay()
             line_items = [
                 {
                     'price': item['price'].stripe_identifier,

@@ -39,7 +39,8 @@ class InvoiceWebhookView(APIView):
             print(str(e))
             BackendResponse(['Something went wrong communicating with Stripe.', str(e)], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            # Handle the event
+
+# Handle the event
         if event['type'] == 'invoice.created':
             invoice = event['data']['object']
         elif event['type'] == 'invoice.deleted':
