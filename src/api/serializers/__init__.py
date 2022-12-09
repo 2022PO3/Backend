@@ -22,9 +22,10 @@ from src.api.serializers.garages.parking_lot_serializer import (
 )
 
 from src.api.serializers.users.users_serializer import (
-    UsersSerializer,
+    UserSerializer,
     SignUpSerializer,
     LoginSerializer,
+    ChangePasswordSerializer,
 )
 from src.api.serializers.users.reservation_serializer import (
     GetReservationSerializer,
@@ -35,3 +36,5 @@ from src.api.serializers.users.totp_serializer import (
     GetTOTPSerializer,
     PostTOTPSerializer,
 )
+
+from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer

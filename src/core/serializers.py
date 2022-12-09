@@ -17,15 +17,16 @@ class APIForeignKeySerializer(serializers.ModelSerializer):
         Validates if all fields with suffix "_id" have an pk which exist in the database.
         """
         for key in data.keys():
-            if "_id" in key:
+            if "_id" in key and not "user" in key:
                 self._validate_key(key, data[key])
         return super().validate(data)
 
-    def _validate_key(self, key: str, value: Any):
+    def _validate_key(self, key: str, value: Any) -> None:
         """
-        Validates a single field with suffix "_id" and validates that the corresponding object with
-        `pk=value` is present in the database.
+        Validates a single field with suffix "_id" and validates that the corresponding object with `pk=value` is present in the database.
         """
+        if value is None:
+            return
         class_name = to_camel_case(
             key.replace("_id", "").replace("fav_", ""), lower_case=False
         )

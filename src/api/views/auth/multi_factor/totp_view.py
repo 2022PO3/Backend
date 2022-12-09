@@ -40,7 +40,7 @@ class TOTPCreateView(_OriginAPIView):
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
         serializer = PostTOTPSerializer(data=data)  # type: ignore
-        user = request.user
+        user: User = request.user
         device = get_user_totp_device(user)
         if device:
             return BackendResponse(
@@ -48,9 +48,10 @@ class TOTPCreateView(_OriginAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if serializer.is_valid():
-            device = user.totpdevice_set.create(
+            device = user.totpdevice_set.create(  # type: ignore
                 name=serializer.validated_data["name"], confirmed=False  # type: ignore
             )
+            user.enable_2fa()
             url = device.config_url  # type: ignore
             return BackendResponse({"oauth_url": url}, status=status.HTTP_201_CREATED)
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -67,13 +68,13 @@ class TOTPVerifyView(_OriginAPIView):
     def post(self, request: Request, token: str, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
-        user = request.user
+        user: User = request.user
         device = get_user_totp_device(user)
         if not device == None and device.verify_token(token):
             if not device.confirmed:
                 device.confirmed = True
                 device.save()
-            user.set_two_factor_validated(True)
+            user.validated_2fa()
             return BackendResponse({"response": True}, status=status.HTTP_200_OK)
         return BackendResponse({"response": False}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -91,7 +92,7 @@ class TOTPDeleteView(GetObjectMixin, _OriginAPIView):
             return resp
         if not isinstance(pk, int):
             return BackendResponse(
-                ["The value of `pk` has be an integer."],
+                ["The value of `pk` has to be an integer."],
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
@@ -104,7 +105,7 @@ class TOTPDeleteView(GetObjectMixin, _OriginAPIView):
         self.check_object_permissions(request, int(pk))
 
         device.delete()  # type: ignore
-        request.user.set_two_factor_validated(None)
+        request.user.disable_2fa()
         return BackendResponse(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -113,3 +114,13 @@ class TOTPView(BaseAPIView):
     serializer = {"get": GetTOTPSerializer}
     model = TOTPDevice
     get_user_id = True
+
+
+class Disable2FA(_OriginAPIView):
+    origins = ["web", "app"]
+
+    def post(self, request: Request, format=None) -> BackendResponse | None:
+        if (resp := super().post(request, format)) is not None:
+            return resp
+        request.user.disable_2fa()
+        return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)

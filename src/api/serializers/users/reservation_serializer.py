@@ -2,8 +2,17 @@ from typing import Any
 from collections import OrderedDict
 
 from rest_framework import serializers
-from src.api.models import Reservation, parking_lot_is_available, ParkingLot
-from src.api.serializers import GarageSerializer
+from src.api.models import (
+    Reservation,
+    parking_lot_is_available,
+    ParkingLot,
+    LicencePlate,
+)
+from src.api.serializers import (
+    GarageSerializer,
+    ParkingLotSerializer,
+    LicencePlateSerializer,
+)
 from src.core.serializers import APIForeignKeySerializer
 
 
@@ -13,23 +22,35 @@ class GetReservationSerializer(serializers.ModelSerializer):
     """
 
     garage = GarageSerializer()
-    user_id = serializers.IntegerField()
-    parking_lot_id = serializers.IntegerField()
+    licence_plate = LicencePlateSerializer()
+    parking_lot = ParkingLotSerializer()
 
     class Meta:
         model = Reservation
-        fields = ["id", "garage", "user_id", "parking_lot_id", "from_date", "to_date"]
-        readonly_field = ["user_id"]
+        fields = [
+            "id",
+            "user_id",
+            "garage",
+            "licence_plate",
+            "parking_lot",
+            "from_date",
+            "to_date",
+        ]
 
 
 class PostReservationSerializer(APIForeignKeySerializer):
+    user_id = serializers.IntegerField()
     garage_id = serializers.IntegerField()
+    licence_plate_id = serializers.IntegerField()
     parking_lot_id = serializers.IntegerField()
 
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
         """
         Check that `fromDate` is before `finish`.
         """
+        user_reservations = Reservation.objects.filter(
+            licence_plate=data["licence_plate_id"]
+        )
         if data["from_date"] > data["to_date"]:
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
         if not parking_lot_is_available(
@@ -44,15 +65,21 @@ class PostReservationSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = Reservation
-        fields = ["id", "garage_id", "parking_lot_id", "from_date", "to_date"]
+        fields = [
+            "id",
+            "user_id",
+            "garage_id",
+            "licence_plate_id",
+            "parking_lot_id",
+            "from_date",
+            "to_date",
+        ]
 
 
 class AssignReservationSerializer(APIForeignKeySerializer):
     """
     Serializer class which serializes responses which assign a random free parking lot to the user. Note that the reservation will not be recorded  before they made a call to the reservations view.
     """
-
-    garage_id = serializers.IntegerField()
 
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
         if data["from_date"] > data["to_date"]:
@@ -61,4 +88,4 @@ class AssignReservationSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = Reservation
-        fields = ["garage_id", "from_date", "to_date"]
+        fields = ["from_date", "to_date"]

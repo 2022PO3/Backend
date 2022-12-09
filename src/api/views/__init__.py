@@ -12,9 +12,14 @@ from src.api.views.garages.parking_lots_view import (
 )
 from src.api.views.licence_plates.licence_plate_view import LicencePlateDetailView
 
-from src.api.views.users.user_view import UserDetailView, UserActivationView
+from src.api.views.users.user_view import (
+    UserDetailView,
+    UserActivationView,
+    ChangePasswordView,
+)
 from src.api.views.users.reservations_view import (
     ReservationsView,
+    PutReservationsView,
     AssignReservationView,
 )
 
@@ -29,4 +34,13 @@ from src.api.views.auth.multi_factor.totp_view import (
     TOTPVerifyView,
     TOTPDeleteView,
     TOTPView,
+    Disable2FA,
 )
+
+
+from src.api.views.payment.checkout_preview_view import (
+    CheckoutPreviewView,
+    _get_prices_to_pay,
+)
+from src.api.views.payment.checkout_session_view import CheckoutSessionSerializer
+from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView

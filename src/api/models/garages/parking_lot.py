@@ -11,6 +11,8 @@ class ParkingLotManager(models.Manager):
     def is_available(self, pk: int, start_time: datetime, end_time: datetime):
         for pl in (pls := super().get_queryset().filter(garage_id=pk)):
             pl.booked = pl.booked(start_time, end_time)
+            pl.save()
+            print(pl.booked)
         return pls
 
 
@@ -69,9 +71,7 @@ def parking_lot_is_available(
     ):
         return False
     elif pl.occupied and (
-        start_time.timestamp()
-        <= (datetime.utcnow() + OFFSET).timestamp()
-        <= end_time.timestamp()
+        start_time.timestamp() <= (datetime.utcnow() + OFFSET).timestamp()
     ):
         return False
     return True

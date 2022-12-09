@@ -20,7 +20,7 @@ from rest_framework.renderers import JSONRenderer
 from src.core.utils import to_camel_case, to_snake_case, decode_jwt
 from src.core.exceptions import BackendException
 from src.core.utils import to_camel_case, to_snake_case
-from src.core.exceptions import OriginValidationException
+from src.core.exceptions import OriginValidationException, DeletionException
 
 T = TypeVar("T")
 U = TypeVar("U", bound=serializers.ModelSerializer)
@@ -320,6 +320,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         if (resp := super().put(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        print(data)
         # For the UserView, no model has to be defined.
         if self.model is not None:
             try:
@@ -344,6 +345,28 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
             serializer.save(user=request.user) if self.user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(
+        self, request: Request, pk: int | None = None, format=None
+    ) -> BackendResponse | None:
+        try:
+            if pk is None:
+                data = request.user  # type: ignore
+            else:
+                data: V = self.get_object(self.model, pk)  # type: ignore
+        except Http404:
+            return BackendResponse(
+                [
+                    f"The corresponding {self.model.__name__} with 'pk' `{pk}` does not exist."  # type: ignore
+                ],
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        self.check_object_permissions(request, pk)
+        try:
+            data.delete()
+        except DeletionException as e:
+            return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
+        return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)
 
 
 def _dict_key_to_case(d: str | dict[str, Any] | list[Any], f: Callable) -> dict[str, Any] | list[Any] | str:

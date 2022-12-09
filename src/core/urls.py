@@ -28,16 +28,19 @@ from src.api.views import (
     ParkingLotPutView,
     RPiParkingLotView,
     AssignReservationView,
+    PutReservationsView,
     PricesView,
     PutPricesView,
     LoginView,
     LogoutView,
     SignUpView,
+    ChangePasswordView,
     LicencePlateImageView,
     TOTPVerifyView,
     TOTPCreateView,
     TOTPDeleteView,
     TOTPView,
+    Disable2FA,
 )
 from src.api.views.licence_plates.licence_plate_view import LicencePlateListView
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
@@ -53,16 +56,18 @@ urlpatterns = [
     path("api/garages", GarageListView.as_view()),
     path("api/parking-lots/<int:pk>", ParkingLotView.as_view()),
     path("api/parking-lot/<int:pk>", ParkingLotPutView.as_view()),
-    path("api/assign-parking-lot", AssignReservationView.as_view()),
+    path("api/assign-parking-lot/<int:pk>", AssignReservationView.as_view()),
     path("api/user", UserDetailView.as_view()),
     path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/licence-plates", LicencePlateListView.as_view()),
     path("api/garage-settings/<int:pk>", GetGarageSettingsView.as_view()),
     path("api/reservations", ReservationsView.as_view()),
+    path("api/reservation/<int:pk>", PutReservationsView.as_view()),
     path("api/opening-hours/<int:pk>", GetOpeningHoursView.as_view()),
     path("api/opening-hours", PostOpeningHoursView.as_view()),
     path("api/prices/<int:pk>", PutPricesView.as_view()),
     path("api/prices", PricesView.as_view()),
+    path("api/user/change-password", ChangePasswordView.as_view()),
 ]
 
 # User authentication
@@ -78,6 +83,7 @@ urlpatterns += [
     re_path(r"^api/auth/totp/login/(?P<token>[0-9]{6})$", TOTPVerifyView.as_view()),
     path("api/auth/totp/<int:pk>", TOTPDeleteView.as_view()),
     path("api/auth/totp", TOTPView.as_view()),
+    path("api/auth/totp/disable", Disable2FA.as_view()),
 ]
 
 # Raspberry Pi

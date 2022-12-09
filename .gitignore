@@ -11,4 +11,5 @@ google_vision_api_credentials.json
 *.jpg
 *.png
 flutter/
-
+src/media/
+*.DS_Store
