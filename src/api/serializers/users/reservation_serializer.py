@@ -2,7 +2,12 @@ from typing import Any
 from collections import OrderedDict
 
 from rest_framework import serializers
-from src.api.models import Reservation, parking_lot_is_available, ParkingLot
+from src.api.models import (
+    Reservation,
+    parking_lot_is_available,
+    ParkingLot,
+    LicencePlate,
+)
 from src.api.serializers import (
     GarageSerializer,
     ParkingLotSerializer,
@@ -24,6 +29,7 @@ class GetReservationSerializer(serializers.ModelSerializer):
         model = Reservation
         fields = [
             "id",
+            "user_id",
             "garage",
             "licence_plate",
             "parking_lot",
@@ -33,6 +39,7 @@ class GetReservationSerializer(serializers.ModelSerializer):
 
 
 class PostReservationSerializer(APIForeignKeySerializer):
+    user_id = serializers.IntegerField()
     garage_id = serializers.IntegerField()
     licence_plate_id = serializers.IntegerField()
     parking_lot_id = serializers.IntegerField()
@@ -41,6 +48,7 @@ class PostReservationSerializer(APIForeignKeySerializer):
         """
         Check that `fromDate` is before `finish`.
         """
+        user_reservations = Reservation.objects.filter(user=data["user_id"])
         if data["from_date"] > data["to_date"]:
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
         if not parking_lot_is_available(
@@ -57,6 +65,7 @@ class PostReservationSerializer(APIForeignKeySerializer):
         model = Reservation
         fields = [
             "id",
+            "user_id",
             "garage_id",
             "licence_plate_id",
             "parking_lot_id",

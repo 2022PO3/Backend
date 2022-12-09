@@ -165,7 +165,11 @@ if __name__ == "__main__":
         {
             "garage": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
             "price_string": [f"{randint(1, 10)} uur parkeren" for _ in range(20)],
-            "duration": [str(datetime.timedelta(hours=1)), str(datetime.timedelta(minutes=15))] * 10,
+            "duration": [
+                str(datetime.timedelta(hours=1)),
+                str(datetime.timedelta(minutes=15)),
+            ]
+            * 10,
             "price": [round(uniform(4.0, 15.0), 1) for _ in range(20)],
             "valuta": ["EUR"] * 20,
         },
@@ -198,6 +202,7 @@ if __name__ == "__main__":
         [
             "garage",
             "user",
+            "licence_plate",
             "parking_lot",
             "from_date",
             "to_date",
@@ -206,7 +211,8 @@ if __name__ == "__main__":
         ],
         {
             "garage": [randint(1, 10) for _ in range(10)],
-            "user": [randint(1, 5) for _ in range(10)],
+            "user": [1, 1, 2, 2, 3, 4, 5, 1, 1, 2],
+            "licence_plate": [1, 2, 3, 4, 5, 6, 7, 1, 2, 3],
             "parking_lot": [randint(1, 100) for _ in range(10)],
             "from_date": [
                 datetime.datetime(2022, 12, randint(20, 21), randint(0, 12))

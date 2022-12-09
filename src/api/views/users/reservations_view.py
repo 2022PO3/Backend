@@ -18,12 +18,16 @@ from src.users.permissions import IsUserReservation
 class ReservationsView(BaseAPIView):
     """
     A view class to get all reservations from the currently logged in user and to post new one.
-    The post method is overwritten as a
     """
 
     origins = ["app", "web"]
-    serializer = {"get": GetReservationSerializer, "post": PostReservationSerializer}
+    serializer = {
+        "get": GetReservationSerializer,
+        "post": PostReservationSerializer,
+    }
     model = Reservation
+    get_user_id = True
+    post_user_id = True
 
 
 class PutReservationsView(PkAPIView):
