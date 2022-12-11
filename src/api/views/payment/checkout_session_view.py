@@ -55,6 +55,8 @@ class CreateCheckoutSessionView(_OriginAPIView):
             try:
                 # Maak betaalpagina
                 checkout_session = stripe.checkout.Session.create(
+                    # customer=request.user.stripe_identifier,  # can be added to automatically fill in some details
+                    # but the user won't be able to change their email
                     line_items=line_items,
                     mode="payment",
                     success_url=WEBSITE_URL + "/checkout/succes",
