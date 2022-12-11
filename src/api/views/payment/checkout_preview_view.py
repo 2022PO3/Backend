@@ -14,7 +14,7 @@ from src.core.views import BackendResponse, _OriginAPIView
 
 class CheckoutPreviewView(_OriginAPIView):
     """
-    A view to create a payment session
+    A view to get a list of items the user has to pay for before leaving the garage with a given licence plate.
     """
 
     permission_classes = [AllowAny]

@@ -18,7 +18,7 @@ from src.users.models import User
 
 class InvoiceWebhookView(APIView):
     """
-    A view to listen for checkout updates from the stripe servers.
+    A view to listen for invoice updates from the stripe servers.
     """
 
     permission_classes = [AllowAny]  # The post request checks if the request comes from Stripe

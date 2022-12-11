@@ -69,7 +69,6 @@ def create_stripe_customer(user: User, card_data: dict) -> str:
     return customer_id
 
 
-
 def remove_stripe_customer(user: User):
     if user.stripe_identifier is not None:
         stripe.Customer.delete(user.stripe_identifier)
@@ -106,8 +105,8 @@ def send_invoice(user: User, licence_plate: LicencePlate) -> None:
                 currency=price.valuta
             )
 
-        # Send the Invoice
-        # stripe.Invoice.send_invoice(invoice.id)
+        # Complete invoice, this will send a request to the webhook view which then can use invoice.pay() to charge
+        # the user.
         invoice.finalize_invoice()
     else:
         raise Exception('User is not connected to stripe')
