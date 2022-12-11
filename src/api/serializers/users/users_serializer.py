@@ -23,8 +23,8 @@ class UserSerializer(APIForeignKeySerializer):
             "last_name",
             "fav_garage_id",
             "location",
+            "has_automatic_payment",
             "two_factor",
-            "stripe_identifier",
             "two_factor_validated",
         ]
         extra_kwargs = {
@@ -32,6 +32,7 @@ class UserSerializer(APIForeignKeySerializer):
             "first_name": {"allow_null": True},
             "last_name": {"allow_null": True},
             "fav_garage_id": {"allow_null": True},
+            "has_automatic_payment": {"read_only": True},
             "two_factor": {"read_only": True},
             "two_factor_validated": {"read_only": True},
         }

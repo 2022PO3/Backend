@@ -49,24 +49,36 @@ def create_stripe_customer(user: User, card_data: dict) -> str:
     # Read the Customer ID from your database
     customer_id = customer.id
 
-    payment_method: stripe.PaymentMethod = stripe.PaymentMethod.create(
-        type='card',
-        card=card_data,
-    )
+    try:
+        payment_method: stripe.PaymentMethod = stripe.PaymentMethod.create(
+            type='card',
+            card=card_data,
+        )
 
-    payment_method.attach(customer=customer_id)
+        payment_method.attach(customer=customer_id)
+
+        stripe.Customer.modify(customer_id,
+                               invoice_settings={
+                                   'default_payment_method': payment_method.stripe_id
+                               }
+                               )
+    except Exception as e:
+        customer.delete()
+        raise e
 
     return customer_id
+
 
 
 def remove_stripe_customer(user: User):
     if user.stripe_identifier is not None:
         stripe.Customer.delete(user.stripe_identifier)
 
+
 def send_invoice(user: User, licence_plate: LicencePlate) -> None:
     # Look up a customer in your database
 
-    if user.is_connected_to_stripe:
+    if user.has_automatic_payment:
         stripe_identifier = user.stripe_identifier
         # Get items to pay for licence plate
         items, _ = licence_plate.get_prices_to_pay()
@@ -75,6 +87,7 @@ def send_invoice(user: User, licence_plate: LicencePlate) -> None:
         invoice = stripe.Invoice.create(
             customer=stripe_identifier,
             auto_advance=True,
+            collection_method='charge_automatically',
             metadata={
                 'user_id': user.pk,
                 'licence_plate': licence_plate.licence_plate,
@@ -90,6 +103,7 @@ def send_invoice(user: User, licence_plate: LicencePlate) -> None:
                 description=f'{price.price_string} x{item["quantity"]}',
                 # price=item['price'].stripe_identifier,
                 invoice=invoice.id,
+                currency=price.valuta
             )
 
         # Send the Invoice

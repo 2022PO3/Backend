@@ -13,8 +13,11 @@ from src.core.views import _OriginAPIView, BackendResponse, _dict_key_to_case
 
 class UserStripeConnectionView(_OriginAPIView):
     """
-    General sign up view for new users. An `email`, `password` and `role` have to be
-    provided to create a user. The `first_name` and `last_name` fields are optional.
+    View for adding or removing a customer for stripe. The customers are necessary to make automatic charges. Each user
+    automatically is assigned a default payment method using the provided card details.
+
+    Stripe has some default testing cards to recreate successful and failed payment attempts:
+    https://stripe.com/docs/testing
     """
 
     origins = ["web", "app"]
@@ -23,7 +26,7 @@ class UserStripeConnectionView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
 
-        if not request.user.is_connected_to_stripe:
+        if not request.user.has_automatic_payment:
             card_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
 
             serializer: CardSerializer = CardSerializer(data=card_data)
@@ -56,7 +59,7 @@ class UserStripeConnectionView(_OriginAPIView):
         if (resp := super().delete(request, format)) is not None:
             return resp
 
-        if request.user.is_connected_to_stripe:
+        if request.user.has_automatic_payment:
             try:
                 remove_stripe_customer(request.user)
                 request.user.stripe_identifier = None

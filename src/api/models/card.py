@@ -7,7 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Card(TimeStampMixin, models.Model):
 
-    number = models.CharField(max_length=16)
+    number = models.CharField(max_length=19)
     exp_month = models.IntegerField(validators=[MaxValueValidator(12), MinValueValidator(0)])
     exp_year = models.IntegerField(validators=[MinValueValidator(timezone.now().year - 1)])
     cvc = models.CharField(max_length=3)

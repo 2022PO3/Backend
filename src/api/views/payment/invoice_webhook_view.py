@@ -46,6 +46,8 @@ class InvoiceWebhookView(APIView):
             BackendResponse(['Something went wrong communicating with Stripe.', str(e)],
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+        print(event['type'])
+
         if event['type'] == 'invoice.finalization_failed':
             # Retry?
             invoice = event['data']['object']
@@ -53,10 +55,14 @@ class InvoiceWebhookView(APIView):
         if event['type'] == 'invoice.finalized':
             # Stripe is now trying to collect the money so the user can leave the garage
             invoice = event['data']['object']
+            try:
+                invoice.pay()
+            except stripe.error.CardError:
+                # Error gets handled by a 'invoice.payment_failed' event
+                pass
             return complete_order(invoice.metadata)
 
-        if event['type'] in ['invoice.marked_uncollectible', 'invoice.payment_action_required',
-                             'invoice.payment_failed', 'invoice.voided']:
+        if event['type'] == 'invoice.payment_failed':
             # These events correspond to a failed automatic charge, we have to send an email with another payment option
             # to the user
             invoice = event['data']['object']
@@ -68,7 +74,7 @@ class InvoiceWebhookView(APIView):
             send_invoice_mail(True, invoice)
             return BackendResponse(f"Payment succeeded, sent email to user.", status=status.HTTP_200_OK, )
 
-        print(event['type'])
+
 
         return BackendResponse(f"Processed event {event['type']}", status=status.HTTP_200_OK, )
 

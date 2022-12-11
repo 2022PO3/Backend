@@ -103,7 +103,7 @@ def _sign_out_licence_plate(licence_plate: LicencePlate) -> BackendResponse:
             licence_plate.garage = None
             licence_plate.save()
         return BackendResponse(f"Successfully signed out licence plate {licence_plate}.", status=status.HTTP_200_OK)
-    elif user.is_connected_to_stripe:
+    elif user.has_automatic_payment:
         try:
             send_invoice(user, licence_plate)
             return BackendResponse(f"Sent invoice to user of {licence_plate}.", status=status.HTTP_200_OK)

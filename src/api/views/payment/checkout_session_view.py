@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 from src.api.models import LicencePlate
-from src.api.views import _get_prices_to_pay
 from src.api.serializers import CheckoutSessionSerializer
 from src.core.views import BackendResponse, _OriginAPIView
 
@@ -33,7 +32,7 @@ class CreateCheckoutSessionView(_OriginAPIView):
                     user=request.user,
                     licence_plate=checkout_serializer.validated_data["licence_plate"],  # type: ignore
                 )
-            except:
+            except LicencePlate.NotFoundError:
                 return BackendResponse(
                     ["Licence plate does not exist for this user."],
                     status=status.HTTP_404_NOT_FOUND,
@@ -58,9 +57,8 @@ class CreateCheckoutSessionView(_OriginAPIView):
                 checkout_session = stripe.checkout.Session.create(
                     line_items=line_items,
                     mode="payment",
-                    success_url=WEBSITE_URL
-                    + "/checkout-session-succes",  # Add id to find payment intent and user
-                    cancel_url=WEBSITE_URL + "/checkout-session-canceled",
+                    success_url=WEBSITE_URL + "/checkout/succes",
+                    cancel_url=WEBSITE_URL + "/checkout/failed",
                     metadata={
                         "user_id": request.user.pk,
                         "licence_plate": licence_plate.licence_plate,

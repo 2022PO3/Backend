@@ -146,7 +146,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         return f"{self.first_name} {self.last_name}"
 
     @property
-    def is_connected_to_stripe(self) -> bool:
+    def has_automatic_payment(self) -> bool:
         return self.stripe_identifier is not None
 
     @staticmethod
