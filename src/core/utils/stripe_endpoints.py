@@ -5,6 +5,7 @@ import stripe
 from src.api.models import LicencePlate
 from src.api.models.garages.garage import Garage
 from src.api.models.garages.price import Price
+from src.core.exceptions import BackendException
 from src.users.models import User
 
 stripe.api_key = getenv('STRIPE_SECRET_KEY')
@@ -109,4 +110,4 @@ def send_invoice(user: User, licence_plate: LicencePlate) -> None:
         # the user.
         invoice.finalize_invoice()
     else:
-        raise Exception('User is not connected to stripe')
+        raise BackendException('User is not connected to stripe')
