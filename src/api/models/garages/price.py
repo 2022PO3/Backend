@@ -13,8 +13,10 @@ class Price(TimeStampMixin, models.Model):
     valuta = models.CharField(
         max_length=3, choices=ValutasEnum.choices, default=ValutasEnum.EURO
     )
-    stripe_identifier = models.CharField(max_length=30, default="price_1M5XwcGRh96C3wQGkqJqXCmi")
+    stripe_identifier = models.CharField(
+        max_length=30, default="price_1M5XwcGRh96C3wQGkqJqXCmi"
+    )
 
     class Meta:
         db_table = "prices"
-        app_label = 'api'
+        app_label = "api"
