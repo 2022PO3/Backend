@@ -110,7 +110,9 @@ class LicencePlate(TimeStampMixin, models.Model):
         """
         licence_plate = data["licence_plate"]
         garage_id = data["garage_id"]
+        print(licence_plate)
         queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
+        print(queryset)
         if not queryset:
             return LicencePlate._register_licence_plate(licence_plate, garage_id)
         else:

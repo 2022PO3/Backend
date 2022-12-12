@@ -27,6 +27,7 @@ class PostLicencePlateSerializer(APIForeignKeySerializer):
     """
 
     garage_id = serializers.IntegerField()
+    licence_plate = serializers.CharField(max_length=7)
 
     class Meta:
         model = LicencePlate

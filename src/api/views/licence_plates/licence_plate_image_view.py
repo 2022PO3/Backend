@@ -97,6 +97,8 @@ class LicencePlateImageView(_OriginAPIView):
     #             print("Image deletion exception:", e)
 
     def post(self, request: Request, format=None) -> BackendResponse:
+        # if (resp := super().post(request, format)) is not None:
+        ##   return resp
         licence_plate_data = _dict_key_to_case(
             JSONParser().parse(request), to_snake_case
         )
