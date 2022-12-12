@@ -32,7 +32,7 @@ class LicencePlate(TimeStampMixin, models.Model):
     def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import Reservation
 
-        reservations = Reservation.objects.filter(licence_plate=self.licence_plate)
+        reservations = Reservation.objects.filter(licence_plate=self.pk)
         for reservation in reservations:
             reservation.delete()
         return super().delete()
