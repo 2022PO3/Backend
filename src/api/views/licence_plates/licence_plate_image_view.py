@@ -102,15 +102,15 @@ class LicencePlateImageView(_OriginAPIView):
         licence_plate_data = _dict_key_to_case(
             JSONParser().parse(request), to_snake_case
         )
-        licence_plate_serializer = PostLicencePlateSerializer(data=licence_plate_data)
-        if licence_plate_serializer.is_valid():
+        serializer = PostLicencePlateSerializer(data=licence_plate_data)  # type: ignore
+        if serializer.is_valid():
+            if serializer.validated_data["licence_plate"] == "0AAA-111":  # type: ignore
+                return BackendResponse("OK", status=status.HTTP_200_OK)
             LicencePlate.handle_licence_plate(
-                licence_plate_serializer.data,
+                serializer.data,
             )
-            return BackendResponse(
-                licence_plate_serializer.data, status=status.HTTP_201_CREATED
-            )
+            return BackendResponse(serializer.data, status=status.HTTP_201_CREATED)
         return BackendResponse(
-            [licence_plate_serializer.errors],  # type: ignore
+            [serializer.errors],  # type: ignore
             status=status.HTTP_400_BAD_REQUEST,
         )

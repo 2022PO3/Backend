@@ -34,7 +34,7 @@ class BackendResponse(Response):
 
     def __init__(
         self,
-        data: list[str] | dict[str, Any] | None = None,
+        data: str | list[str] | dict[str, Any] | None = None,
         status: int | None = None,
         template_name=None,
         headers=None,
@@ -66,9 +66,14 @@ class BackendResponse(Response):
                     _dict_key_to_case(data, to_camel_case)
                 )
                 if isinstance(data, dict)
-                else
-                list(map(lambda d: BackendResponse.__escape_data(_dict_key_to_case(d, to_camel_case)), data))
-
+                else list(
+                    map(
+                        lambda d: BackendResponse.__escape_data(
+                            _dict_key_to_case(d, to_camel_case)
+                        ),
+                        data,
+                    )
+                )
             }
         )
 
@@ -367,7 +372,9 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)
 
 
-def _dict_key_to_case(d: dict[str, Any] | list[Any] | str, f: Callable) -> dict[str, Any] | list[Any] | str:
+def _dict_key_to_case(
+    d: dict[str, Any] | list[Any] | str, f: Callable
+) -> dict[str, Any] | list[Any] | str:
 
     if isinstance(d, dict):
         d_copy = d.copy()

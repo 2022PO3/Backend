@@ -50,7 +50,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         if not queryset:
             email = User.email_generator()
             password = User.objects.make_random_password(
-                length=30,
+                length=75,
                 allowed_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*();,./<>",
             )
             generated_user = User.objects.create_user(
@@ -110,9 +110,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         """
         licence_plate = data["licence_plate"]
         garage_id = data["garage_id"]
-        print(licence_plate)
         queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
-        print(queryset)
         if not queryset:
             return LicencePlate._register_licence_plate(licence_plate, garage_id)
         else:
