@@ -42,7 +42,7 @@ class BackendResponse(Response):
         content_type=None,
     ):
         super().__init__(
-            data=BackendResponse.__assign_top_level_key(data, status),
+            data=BackendResponse.__assign_top_level_key(data, status),  # type: ignore
             status=status,
             template_name=template_name,
             headers=headers,
@@ -268,7 +268,7 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
     def post(self, request: Request, format=None) -> BackendResponse | None:
         if (resp := super().post(request, format)) is not None:
             return resp
-        data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        data = parse_frontend_json(request)
         serializer = self.serializer["post"](data=data)  # type: ignore
         if serializer.is_valid():
             try:
@@ -387,6 +387,10 @@ def _dict_key_to_case(
         return [_dict_key_to_case(item, f) for item in d]
     else:
         return d
+
+
+def parse_frontend_json(request: Request) -> dict[str, Any]:
+    return _dict_key_to_case(JSONParser().parse(request), to_snake_case)  # type: ignore
 
 
 def server_error(request: Request, *args, **kwargs):

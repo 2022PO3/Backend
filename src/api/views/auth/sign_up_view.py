@@ -6,12 +6,10 @@ from django.template.loader import render_to_string
 
 from rest_framework import status
 from rest_framework.request import Request
-from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 
 from src.api.serializers import SignUpSerializer
-from src.core.views import BackendResponse, _OriginAPIView, _dict_key_to_case
-from src.core.utils import to_snake_case
+from src.core.views import BackendResponse, _OriginAPIView, parse_frontend_json
 from src.core.settings import EMAIL_HOST_USER
 from src.users.models import User
 from src.users.backends import EmailVerificationTokenGenerator
@@ -29,7 +27,7 @@ class SignUpView(_OriginAPIView):
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
-        user_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        user_data = parse_frontend_json(request)
         user_serializer = SignUpSerializer(data=user_data)  # type:ignore
         if user_serializer.is_valid():
             try:

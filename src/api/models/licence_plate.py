@@ -93,7 +93,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         return 0
 
     @staticmethod
-    def handle_licence_plate(data: dict[str, Any]) -> int:
+    def handle_licence_plate(licence_plate: str, garage_id: int) -> int:
         """
         This function handles the business logic for incoming licence plates.
 
@@ -108,8 +108,6 @@ class LicencePlate(TimeStampMixin, models.Model):
         The output int-variable indicates if the licence plate is registered (1) or is signed
         out (0).
         """
-        licence_plate = data["licence_plate"]
-        garage_id = data["garage_id"]
         queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
         if not queryset:
             return LicencePlate._register_licence_plate(licence_plate, garage_id)

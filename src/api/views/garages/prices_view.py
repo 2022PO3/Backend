@@ -4,13 +4,12 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 
 from src.api.serializers.garages.price_serializer import CreatePriceSerializer
-from src.core.utils import to_snake_case
 from src.core.utils import update_stripe_price, create_stripe_price
 from src.core.views import (
     BackendResponse,
     _OriginAPIView,
     GetObjectMixin,
-    _dict_key_to_case,
+    parse_frontend_json,
 )
 from src.api.models import Price
 from src.api.serializers import PriceSerializer
@@ -28,8 +27,8 @@ class PricesView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
 
-        price_data = JSONParser().parse(request)
-        create_price_serializer = CreatePriceSerializer(data=price_data)
+        price_data = parse_frontend_json(request)
+        create_price_serializer = CreatePriceSerializer(data=price_data)  # type: ignore
 
         if create_price_serializer.is_valid():
             # Create price on stripe servers
@@ -78,7 +77,7 @@ class PutPricesView(GetObjectMixin, _OriginAPIView):
     def put(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := super().put(request, format)) is not None:
             return resp
-        data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        data = parse_frontend_json(request)
 
         try:
             object = self.get_object(Price, pk)  # type: ignore
