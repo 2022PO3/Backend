@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 from django.db import models
 
 from src.users.models import User
@@ -56,13 +57,14 @@ class LicencePlate(TimeStampMixin, models.Model):
                 email=email,
                 password=password,
                 role=0,
-                is_active=1,
+                is_active=True,
             )
             LicencePlate.objects.create(
                 user=generated_user,
                 licence_plate=licence_plate,
                 garage_id=garage_id,
                 updated_at=datetime.datetime.now().astimezone().isoformat(),
+                enabled=True,
             )
             generated_user.generate_qr_code(password)
             generated_user.print_qr_code()
@@ -91,7 +93,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         return 0
 
     @staticmethod
-    def handle_licence_plate(licence_plate: str, garage_id: int) -> int:
+    def handle_licence_plate(data: dict[str, Any]) -> int:
         """
         This function handles the business logic for incoming licence plates.
 
@@ -106,6 +108,8 @@ class LicencePlate(TimeStampMixin, models.Model):
         The output int-variable indicates if the licence plate is registered (1) or is signed
         out (0).
         """
+        licence_plate = data["licence_plate"]
+        garage_id = data["garage_id"]
         queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
         if not queryset:
             return LicencePlate._register_licence_plate(licence_plate, garage_id)
