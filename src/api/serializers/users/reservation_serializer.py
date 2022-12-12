@@ -51,6 +51,9 @@ class PostReservationSerializer(APIForeignKeySerializer):
         user_reservations = Reservation.objects.filter(
             licence_plate=data["licence_plate_id"]
         )
+        lp = LicencePlate.objects.get(pk=data["licence_plate_id"])
+        if not lp.enabled:
+            raise serializers.ValidationError("Licence plate is not confirmed.")
         if data["from_date"] > data["to_date"]:
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
         if not parking_lot_is_available(

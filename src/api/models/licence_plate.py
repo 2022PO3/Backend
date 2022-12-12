@@ -22,6 +22,7 @@ class LicencePlate(TimeStampMixin, models.Model):
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     garage = models.ForeignKey("api.Garage", on_delete=models.CASCADE, null=True)
     licence_plate = models.CharField(max_length=192, unique=True)
+    enabled = models.BooleanField(default=False)
 
     @property
     def in_garage(self) -> bool:
