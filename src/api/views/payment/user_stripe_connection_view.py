@@ -29,10 +29,9 @@ class UserStripeConnectionView(_OriginAPIView):
         if not request.user.has_automatic_payment:
             card_data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
 
-            serializer: CardSerializer = CardSerializer(data=card_data)
+            serializer = CardSerializer(data=card_data)
             if serializer.is_valid():
                 try:
-
                     stripe_identifier = create_stripe_customer(request.user, serializer.validated_data)
 
                     request.user.stripe_identifier = stripe_identifier
