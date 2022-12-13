@@ -1,16 +1,12 @@
-import datetime
-from django.utils import timezone
-
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
-from src.core.utils.stripe_endpoints import send_invoice
-from src.api.models import Price
 from src.api.serializers import CheckoutSessionSerializer
 from src.core.views import BackendResponse, _OriginAPIView
+
 
 class CheckoutPreviewView(_OriginAPIView):
     """
@@ -32,7 +28,7 @@ class CheckoutPreviewView(_OriginAPIView):
                     user=request.user,
                     licence_plate=checkout_serializer.validated_data["licence_plate"],  # type: ignore
                 )
-            except LicencePlate.NotFoundError:
+            except LicencePlate.NotFoundError:  # type: ignore
                 return BackendResponse(
                     ["Licence plate does not exist for this user."],
                     status=status.HTTP_404_NOT_FOUND,
@@ -42,12 +38,12 @@ class CheckoutPreviewView(_OriginAPIView):
 
             preview_items = [
                 {
-                    "id": item["price"].pk,
-                    "garage_id": item["price"].garage_id,
-                    "price": item["price"].price,
-                    "valuta": item["price"].valuta,
-                    "duration": str(item["price"].duration),
-                    "price_string": item["price"].price_string,
+                    "id": item["price"].pk,  # type: ignore
+                    "garage_id": item["price"].garage_id,  # type: ignore
+                    "price": item["price"].price,  # type: ignore
+                    "valuta": item["price"].valuta,  # type: ignore
+                    "duration": str(item["price"].duration),  # type: ignore
+                    "price_string": item["price"].price_string,  # type: ignore
                     "quantity": item["quantity"],
                 }
                 for item in items
@@ -62,7 +58,7 @@ class CheckoutPreviewView(_OriginAPIView):
             return BackendResponse(
                 {
                     "items": preview_items,
-                    "refresh_time": int(refresh_time.total_seconds()),
+                    "refresh_time": int(refresh_time.total_seconds()),  # type: ignore
                 },
                 status=status.HTTP_200_OK,
             )

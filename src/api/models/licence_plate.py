@@ -33,7 +33,7 @@ class LicencePlate(TimeStampMixin, models.Model):
 
     @property
     def was_paid_for(self) -> bool:
-        prices: list[Price] = Price.objects.filter(garage=self.garage)
+        prices: list[Price] = Price.objects.filter(garage=self.garage)  # type: ignore
         prices = sorted(prices, key=lambda p: p.duration)
         if len(prices) == 0:
             return True
@@ -45,7 +45,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         prices = sorted(prices, key=lambda p: p.duration, reverse=True)
 
         if len(prices) == 0:
-            return []
+            return tuple()
 
         # Get time the user has to pay for
         updated_at = self.updated_at
@@ -71,7 +71,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         # Calculate time in which app has to refresh
         refresh_time = prices[-1].duration - time_to_pay
 
-        return preview_items, refresh_time
+        return preview_items, refresh_time  # type: ignore
 
     def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import Reservation

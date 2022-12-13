@@ -33,20 +33,22 @@ class SendInvoiceView(_OriginAPIView):
                     user=request.user,
                     licence_plate=checkout_serializer.validated_data["licence_plate"],  # type: ignore
                 )
-            except LicencePlate.NotFoundError:
+            except LicencePlate.NotFoundError:  # type: ignore
                 return BackendResponse(
                     ["Licence plate does not exist for this user."],
                     status=status.HTTP_404_NOT_FOUND,
                 )
             try:
                 send_invoice(request.user, licence_plate)
-            except stripe.error.InvalidRequestError as e:
+            except stripe.error.InvalidRequestError as e:  # type: ignore
                 return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
-            except stripe.error.StripeError as e:
-                return BackendResponse(['Something went wrong communicating with Stripe.', str(e)],
-                                       status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except stripe.error.StripeError as e:  # type: ignore
+                return BackendResponse(
+                    ["Something went wrong communicating with Stripe.", str(e)],
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
 
-            return BackendResponse('Sent Invoice.', status=status.HTTP_200_OK)
+            return BackendResponse("Sent Invoice.", status=status.HTTP_200_OK)
 
         return BackendResponse(
             ["Invalid licence plate entered."],

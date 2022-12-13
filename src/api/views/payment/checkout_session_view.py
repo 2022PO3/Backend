@@ -26,13 +26,13 @@ class CreateCheckoutSessionView(_OriginAPIView):
         checkout_data = JSONParser().parse(request)
         checkout_serializer = CheckoutSessionSerializer(data=checkout_data)  # type: ignore
 
-        if checkout_serializer.is_valid():  
+        if checkout_serializer.is_valid():
             try:
                 licence_plate = LicencePlate.objects.get(
                     user=request.user,
                     licence_plate=checkout_serializer.validated_data["licence_plate"],  # type: ignore
                 )
-            except LicencePlate.NotFoundError:
+            except LicencePlate.NotFoundError:  # type: ignore
                 return BackendResponse(
                     ["Licence plate does not exist for this user."],
                     status=status.HTTP_404_NOT_FOUND,
@@ -40,7 +40,7 @@ class CreateCheckoutSessionView(_OriginAPIView):
             items, _ = licence_plate.get_prices_to_pay()
             line_items = [
                 {
-                    "price": item["price"].stripe_identifier,
+                    "price": item["price"].stripe_identifier,  # type: ignore
                     "quantity": item["quantity"],
                 }
                 for item in items
