@@ -4,17 +4,15 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from rest_framework import status
 from rest_framework.request import Request
-from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 
 from src.api.serializers import GetTOTPSerializer, PostTOTPSerializer
-from src.core.utils.utils import to_snake_case
 from src.core.views import (
     _OriginAPIView,
     BackendResponse,
     GetObjectMixin,
     BaseAPIView,
-    _dict_key_to_case,
+    parse_frontend_json,
 )
 from src.users.models import User
 from src.users.permissions import IsUserDevice
@@ -38,7 +36,7 @@ class TOTPCreateView(_OriginAPIView):
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
-        data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
+        data = parse_frontend_json(request)
         serializer = PostTOTPSerializer(data=data)  # type: ignore
         user: User = request.user
         device = get_user_totp_device(user)

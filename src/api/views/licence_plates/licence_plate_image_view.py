@@ -6,10 +6,17 @@ from datetime import datetime
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
+from src.api.serializers.licence_plate_serializer import (
+    LicencePlateSerializer,
+    PostLicencePlateSerializer,
+)
 
 from src.core.settings import DEBUG
 from src.core.utils.stripe_endpoints import send_invoice
 from src.core.views import BackendResponse, _OriginAPIView
+
+from src.core.utils import to_snake_case
+from src.core.views import BackendResponse, _OriginAPIView, parse_frontend_json
 from src.api.models import Image, LicencePlate
 
 from anpr.license_plate_recognition import ANPR
@@ -18,11 +25,11 @@ from src.users.models import User
 
 
 class LicencePlateImageView(_OriginAPIView):
-    """
-    A view class to handle the incoming images in base64-format. From within this view, a image
-    processing is performed and a request is sent to the Google Vision API. The image itself
-    will NOT be stored in the database, but deleted when the function ends.
-    """
+    #     """
+    #     A view class to handle the incoming images in base64-format. From within this view, a image
+    #     processing is performed and a request is sent to the Google Vision API. The image itself
+    #     will NOT be stored in the database, but deleted when the function ends.
+    #     """
 
     permission_classes = [AllowAny]
     origins = ["rpi"]
@@ -171,3 +178,20 @@ def delete_file(debug: bool) -> None:
             Image.objects.all().delete()
         except Exception as e:
             print("Image deletion exception:", e)
+
+    # def post(self, request: Request, format=None) -> BackendResponse:
+    #     if (resp := super().post(request, format)) is not None:
+    #        return resp
+    #     data = parse_frontend_json(request)
+    #     serializer = PostLicencePlateSerializer(data=data)  # type: ignore
+    #     if serializer.is_valid():
+    #         if serializer.validated_data["licence_plate"] == "0AAA-111":  # type: ignore
+    #             return BackendResponse("OK", status=status.HTTP_200_OK)
+    #         LicencePlate.handle_licence_plate(
+    #             serializer.data,
+    #         )
+    #         return BackendResponse(serializer.data, status=status.HTTP_201_CREATED)
+    #     return BackendResponse(
+    #         [serializer.errors],  # type: ignore
+    #         status=status.HTTP_400_BAD_REQUEST,
+    #     )

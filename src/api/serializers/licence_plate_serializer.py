@@ -10,7 +10,14 @@ class LicencePlateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LicencePlate
-        fields = ["id", "updated_at", "user_id", "garage_id", "licence_plate"]
+        fields = [
+            "id",
+            "updated_at",
+            "user_id",
+            "garage_id",
+            "enabled",
+            "licence_plate",
+        ]
         read_only_field = ["updated_at", "garage_id"]
 
 
@@ -20,6 +27,7 @@ class PostLicencePlateSerializer(APIForeignKeySerializer):
     """
 
     garage_id = serializers.IntegerField()
+    licence_plate = serializers.CharField(max_length=7)
 
     class Meta:
         model = LicencePlate

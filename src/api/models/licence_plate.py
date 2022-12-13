@@ -1,4 +1,6 @@
 import datetime
+from typing import Any
+from django.db import models
 
 from django.db import models
 from django.utils import timezone
@@ -23,6 +25,7 @@ class LicencePlate(TimeStampMixin, models.Model):
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     garage = models.ForeignKey("api.Garage", on_delete=models.CASCADE, null=True)
     licence_plate = models.CharField(max_length=192, unique=True)
+    enabled = models.BooleanField(default=False)
 
     @property
     def in_garage(self) -> bool:
@@ -70,6 +73,14 @@ class LicencePlate(TimeStampMixin, models.Model):
 
         return preview_items, refresh_time
 
+    def delete(self) -> tuple[int, dict[str, int]]:
+        from src.api.models import Reservation
+
+        reservations = Reservation.objects.filter(licence_plate=self.pk)
+        for reservation in reservations:
+            reservation.delete()
+        return super().delete()
+        
 
     class Meta:
         db_table = "licence_plates"
