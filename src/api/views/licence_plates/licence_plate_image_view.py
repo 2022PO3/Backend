@@ -1,6 +1,7 @@
 import os
 import re
 import shutil
+from datetime import datetime
 
 from rest_framework import status
 from rest_framework.request import Request
@@ -11,12 +12,16 @@ from src.api.serializers.licence_plate_serializer import (
 )
 
 from src.core.settings import DEBUG
+from src.core.utils.stripe_endpoints import send_invoice
+from src.core.views import BackendResponse, _OriginAPIView
+
 from src.core.utils import to_snake_case
 from src.core.views import BackendResponse, _OriginAPIView, parse_frontend_json
 from src.api.models import Image, LicencePlate
 
 from anpr.license_plate_recognition import ANPR
 from anpr.google_vision_ocr import GoogleVisionOCR
+from src.users.models import User
 
 
 class LicencePlateImageView(_OriginAPIView):
@@ -51,15 +56,91 @@ class LicencePlateImageView(_OriginAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         stripped_lp_string = strip_special_chars(lp)
-        out_int = LicencePlate.handle_licence_plate(stripped_lp_string, garage_id)
+        response = handle_licence_plate(stripped_lp_string, garage_id)
         delete_file(DEBUG)
-        return BackendResponse(
-            {"response": f"Successfully registered licence plate {stripped_lp_string}."}
-            if out_int == 1
-            else {
-                "response": f"Successfully signed out licence plate {stripped_lp_string}."
-            },
-            status=status.HTTP_200_OK,
+
+        return response
+
+def _register_licence_plate(licence_plate: str, garage_id: int) -> BackendResponse:
+    """
+    This registers that a `LicencePlate` is entering a `Garage`. If the `LicencePlate`
+    exists in the database, the `garage_id` is updated.
+
+    If the `LicencePlate` doesn't exist in the database, a new dummy `User` with role 0
+    is created, which is linked to the given `LicencePlate`.
+    """
+    queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
+    if not queryset:
+        email = User.email_generator()
+        password = User.objects.make_random_password(
+            length=30,
+            allowed_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*();,./<>",
+        )
+        generated_user = User.objects.create_user(
+            email=email,
+            password=password,
+            role=0,
+        )
+        LicencePlate.objects.create(
+            user=generated_user,
+            licence_plate=licence_plate,
+            garage_id=garage_id,
+            updated_at=datetime.now().astimezone().isoformat(),
+        )
+    else:
+        queryset.update(
+            garage_id=garage_id,
+            updated_at=datetime.now().astimezone().isoformat(),
+        )
+    return BackendResponse(f"Successfully registered licence plate {licence_plate}.", status=status.HTTP_200_OK)
+
+def _sign_out_licence_plate(licence_plate: LicencePlate) -> BackendResponse:
+    """
+    This signs out the `LicencePlate` from a `Garage`, setting its `garage_id` to `null`
+    in the database. If the `LicencePlate` is associated with a dummy `User` of role 0,
+    the `User` is also deleted from the database.
+    """
+    user = licence_plate.user  # User.objects.get(pk=user_id)
+    if licence_plate.was_paid_for:
+        if user.is_generated_user:
+            licence_plate.delete()
+            user.delete()
+        else:
+            # Check if the user paid before trying to leave
+            licence_plate.garage = None
+            licence_plate.save()
+        return BackendResponse(f"Successfully signed out licence plate {licence_plate}.", status=status.HTTP_200_OK)
+    elif user.has_automatic_payment:
+        try:
+            send_invoice(user, licence_plate)
+            return BackendResponse(f"Sent invoice to user of {licence_plate}.", status=status.HTTP_200_OK)
+        except Exception as e:
+            return BackendResponse(f"User needs to pay for {licence_plate} before leaving the garage and failed to sent invoice.", status=status.HTTP_402_PAYMENT_REQUIRED)
+
+    return BackendResponse(f"User needs to pay for {licence_plate} before leaving the garage.", status=status.HTTP_402_PAYMENT_REQUIRED)
+
+
+def handle_licence_plate(licence_plate: str, garage_id: int) -> BackendResponse:
+    """
+    This function handles the business logic for incoming licence plates.
+
+    There are two main flows: the flow for entering vehicles and the flow for exiting
+    vehicles. The flow itself is determined by the presence of the `garage_id` field in
+    the database. If it's `null`, the `LicencePlate` is considered NOT in the garage,
+    thus the `_register_licence_plate()` is called.
+
+    The variable `params` contains the fields `garageId` and `licencePlate` from the
+    `LicencePlateSerializer`.
+    """
+    queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
+    if not queryset:
+        return _register_licence_plate(licence_plate, garage_id)
+    else:
+        lp = queryset[0]
+        return (
+            _register_licence_plate(licence_plate, garage_id)
+            if lp.in_garage
+            else _sign_out_licence_plate(lp)
         )
 
 

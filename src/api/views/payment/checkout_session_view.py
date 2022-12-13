@@ -3,10 +3,7 @@ import stripe
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
-from rest_framework.permissions import AllowAny
-
 from src.api.models import LicencePlate
-from src.api.views import _get_prices_to_pay
 from src.api.serializers import CheckoutSessionSerializer
 from src.core.views import BackendResponse, _OriginAPIView
 
@@ -21,7 +18,6 @@ class CreateCheckoutSessionView(_OriginAPIView):
     A view to create a payment session
     """
 
-    permission_classes = [AllowAny]
     origins = ["web", "app"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
@@ -36,12 +32,12 @@ class CreateCheckoutSessionView(_OriginAPIView):
                     user=request.user,
                     licence_plate=checkout_serializer.validated_data["licence_plate"],  # type: ignore
                 )
-            except:
+            except LicencePlate.NotFoundError:
                 return BackendResponse(
                     ["Licence plate does not exist for this user."],
-                    status=status.HTTP_400_BAD_REQUEST,
+                    status=status.HTTP_404_NOT_FOUND,
                 )
-            items, _ = _get_prices_to_pay(licence_plate)
+            items, _ = licence_plate.get_prices_to_pay()
             line_items = [
                 {
                     "price": item["price"].stripe_identifier,
@@ -59,11 +55,12 @@ class CreateCheckoutSessionView(_OriginAPIView):
             try:
                 # Maak betaalpagina
                 checkout_session = stripe.checkout.Session.create(
+                    # customer=request.user.stripe_identifier,  # can be added to automatically fill in some details
+                    # but the user won't be able to change their email
                     line_items=line_items,
                     mode="payment",
-                    success_url=WEBSITE_URL
-                    + "/checkout-session-succes",  # Add id to find payment intent and user
-                    cancel_url=WEBSITE_URL + "/checkout-session-canceled",
+                    success_url=WEBSITE_URL + "/checkout/succes",
+                    cancel_url=WEBSITE_URL + "/checkout/failed",
                     metadata={
                         "user_id": request.user.pk,
                         "licence_plate": licence_plate.licence_plate,

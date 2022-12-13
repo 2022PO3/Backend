@@ -40,7 +40,6 @@ from src.api.views.auth.multi_factor.totp_view import (
 
 from src.api.views.payment.checkout_preview_view import (
     CheckoutPreviewView,
-    _get_prices_to_pay,
 )
 from src.api.views.payment.checkout_session_view import CheckoutSessionSerializer
 from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView

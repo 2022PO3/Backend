@@ -46,6 +46,10 @@ from src.api.views.licence_plates.licence_plate_view import LicencePlateListView
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
 from src.api.views.payment.checkout_session_view import CreateCheckoutSessionView
 from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView
+from src.api.views.payment.invoice_webhook_view import InvoiceWebhookView
+from src.api.views.payment.send_invoice_view import SendInvoiceView
+from src.api.views.payment.user_stripe_connection_view import UserStripeConnectionView
+from src.core.settings import DEBUG
 
 handler500 = "src.core.views.server_error"
 
@@ -95,4 +99,11 @@ urlpatterns += [
     path("api/checkout/create-session", CreateCheckoutSessionView.as_view()),
     path("api/checkout/preview", CheckoutPreviewView.as_view()),
     path("api/checkout/webhook", CheckoutWebhookView.as_view()),
+    path("api/stripe-connection", UserStripeConnectionView.as_view()),
+    path("api/invoice/webhook", InvoiceWebhookView.as_view()),
 ]
+
+if DEBUG:
+    urlpatterns += [
+        path("api/send-invoice", SendInvoiceView.as_view()),
+    ]

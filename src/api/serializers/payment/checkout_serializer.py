@@ -4,7 +4,7 @@ from src.api.models import LicencePlate
 
 class CheckoutSessionSerializer(serializers.ModelSerializer):
     """
-    Serializer for serializing the login POST-requests for logging in users.
+    Serializer for serializing the POST-requests for a specific licence plate on the payment endpoints.
     """
 
     licence_plate = serializers.CharField()

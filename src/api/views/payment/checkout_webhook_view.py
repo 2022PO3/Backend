@@ -1,4 +1,4 @@
-import stripe
+from os import getenv
 
 from django.utils import timezone
 
@@ -8,23 +8,18 @@ from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate
+from src.core.utils.payment_mails import PaymentResult, send_payment_mail
 from src.core.views import BackendResponse
 from src.users.models import User
 
 
-# Set your secret key. Remember to switch to your live secret key in production.
-# See your keys here: https://dashboard.stripe.com/apikeys
-stripe.api_key = "sk_test_51Lf1SsGRh96C3wQGfjc1BuPw2AhNPQpteJ0fz3JXRiD8QzpOb5nVKeNDSOKyLpfw6qcVUZ9936duVmrylnAqWf1t00kkRqidz1"
-endpoint_secret = (
-    "whsec_cbc3c8904ec1b2bcd029776f6217f81b9d11da0c4c06b472b574b529c6cf220c"
-)
+import stripe
 
-
-def complete_order(session: stripe.checkout.Session) -> BackendResponse:
-    metadata = session.metadata
-    if "licence_plate" in metadata.keys() and "user_id" in metadata.keys():
-        licence_plate = session.metadata["licence_plate"]
-        user_id = session.metadata["user_id"]
+def complete_order(metadata: dict) -> BackendResponse:
+    metadata = metadata
+    if 'licence_plate' in metadata.keys() and 'user_id' in metadata.keys():
+        licence_plate = metadata['licence_plate']
+        user_id = metadata['user_id']
     else:
         return BackendResponse(
             [
@@ -47,6 +42,9 @@ def complete_order(session: stripe.checkout.Session) -> BackendResponse:
             ["Failed to save new updated_at time."],
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+    licence_plate.save()
+    return BackendResponse('Completed order', status=status.HTTP_200_OK)
+
 
 
 class CheckoutWebhookView(APIView):
@@ -54,7 +52,7 @@ class CheckoutWebhookView(APIView):
     A view to listen for checkout updates from the stripe servers.
     """
 
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # The post request checks if the request comes from Stripe
 
     def post(self, request: Request, format=None) -> BackendResponse:
 
@@ -68,20 +66,18 @@ class CheckoutWebhookView(APIView):
         payload = request.body
 
         try:
-            event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, getenv('STRIPE_CHECKOUT_WEBHOOK_KEY')
+            )
         except ValueError as e:
             # Invalid payload
             return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
         except stripe.error.SignatureVerificationError as e:  # type: ignore
             # Invalid signature
             return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
-
-        # Handle the checkout.session.completed event
-        if event["type"] == "checkout.session.completed":
-            session = event["data"]["object"]
-
-            # Fulfill the purchase...
-            complete_order(session)
+        except stripe.error.StripeError as e:
+            print(str(e))
+            BackendResponse(['Something went wrong communicating with Stripe.', str(e)], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Handle the checkout.session.completed event
         if event["type"] == "checkout.session.completed":
@@ -97,19 +93,22 @@ class CheckoutWebhookView(APIView):
             # account.
             if session.payment_status == "paid":
                 # Fulfill the purchase
-                complete_order(session)
+                send_payment_mail(PaymentResult.Succeeded, session.metadata['user_id'])
+                return complete_order(session.metadata)
 
         elif event["type"] == "checkout.session.async_payment_succeeded":
             session = event["data"]["object"]
 
             # Fulfill the purchase
-            complete_order(session)
+            send_payment_mail(PaymentResult.Succeeded, session.metadata['user_id'])
+            complete_order(session.metadata)
 
-        elif event["type"] == "checkout.session.async_payment_failed":
-            session = event["data"]["object"]
+        elif event['type'] == 'checkout.session.async_payment_failed':
+            session = event['data']['object']
+            send_payment_mail(PaymentResult.CheckoutFailed, session.metadata['user_id'])
+            return BackendResponse("Payment failed, notified user.", status=status.HTTP_200_OK, )
 
         # Passed signature verification
-        return BackendResponse(
-            ["Order is fulfilled."],
-            status=status.HTTP_200_OK,
-        )
+        return BackendResponse(f"Processed event: {event['type']}", status=status.HTTP_200_OK, )
+
+

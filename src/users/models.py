@@ -35,6 +35,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         "api.Garage", on_delete=models.CASCADE, null=True, related_name="fav_garage"
     )
     location = models.CharField(max_length=3, choices=ProvincesEnum.choices, null=True)
+    stripe_identifier = models.CharField(max_length=18, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["role"]
@@ -143,6 +144,10 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     @property
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
+
+    @property
+    def has_automatic_payment(self) -> bool:
+        return self.stripe_identifier is not None
 
     @staticmethod
     def email_generator() -> str:
