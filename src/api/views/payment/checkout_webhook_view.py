@@ -1,9 +1,5 @@
-import stripe
-
 from os import getenv
 
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.utils import timezone
 
 from rest_framework import status
@@ -12,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate
-from src.core.settings import EMAIL_HOST_USER
+from src.core.utils.payment_mails import PaymentResult, send_payment_mail
 from src.core.views import BackendResponse
 from src.users.models import User
 
@@ -97,43 +93,22 @@ class CheckoutWebhookView(APIView):
             # account.
             if session.payment_status == "paid":
                 # Fulfill the purchase
-                send_checkout_mail(True, session)
+                send_payment_mail(PaymentResult.Succeeded, session.metadata['user_id'])
                 return complete_order(session.metadata)
 
         elif event["type"] == "checkout.session.async_payment_succeeded":
             session = event["data"]["object"]
 
             # Fulfill the purchase
-            send_checkout_mail(True, session)
+            send_payment_mail(PaymentResult.Succeeded, session.metadata['user_id'])
             complete_order(session.metadata)
 
         elif event['type'] == 'checkout.session.async_payment_failed':
             session = event['data']['object']
-            send_checkout_mail(False, session)
+            send_payment_mail(PaymentResult.CheckoutFailed, session.metadata['user_id'])
             return BackendResponse("Payment failed, notified user.", status=status.HTTP_200_OK, )
 
         # Passed signature verification
         return BackendResponse(f"Processed event: {event['type']}", status=status.HTTP_200_OK, )
 
 
-def send_checkout_mail(succeeded: True, session: stripe.checkout.Session):
-    user = User.objects.get(pk=session.metadata['user_id'])
-
-    if succeeded:
-        msg_plain = render_to_string("payment_succeeded_template.txt", {})
-        msg_html = render_to_string("payment_succeeded_template.html", {})
-    else:
-
-        msg_plain = render_to_string(
-            "checkout_failed_template.txt", {}
-        )
-        msg_html = render_to_string(
-            "checkout_failed_template.html", {}
-        )
-    send_mail(
-        f"Parking boys payment {'succeeded' if succeeded else 'failed'}",
-        msg_plain,
-        EMAIL_HOST_USER,
-        [user.email],
-        html_message=msg_html,
-    )
