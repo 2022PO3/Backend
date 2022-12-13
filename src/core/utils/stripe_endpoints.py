@@ -8,8 +8,8 @@ from src.api.models.garages.price import Price
 from src.core.exceptions import BackendException
 from src.users.models import User
 
-stripe.api_key = getenv('STRIPE_SECRET_KEY')
-publishableKey = getenv('STRIPE_PUBLISHABLE_KEY')
+stripe.api_key = getenv("STRIPE_SECRET_KEY")
+publishableKey = getenv("STRIPE_PUBLISHABLE_KEY")
 
 
 def get_stripe_price(price_id) -> stripe.Price:
@@ -18,10 +18,10 @@ def get_stripe_price(price_id) -> stripe.Price:
 
 def update_stripe_price(price_data) -> stripe.Price:
     return stripe.Price.modify(
-        price_data['stripe_identifier'],
-        currency=price_data['valuta'],
-        unit_amount=price_data['price'] * 100,
-        nickname=price_data['price_string'],
+        price_data["stripe_identifier"],
+        currency=price_data["valuta"],
+        unit_amount=price_data["price"] * 100,
+        nickname=price_data["price_string"],
         product_data={
             "name": f'{price_data["duration"]} at {Garage.objects.get(garage_id=price_data["garage_id"]).name}'
         },
@@ -30,9 +30,9 @@ def update_stripe_price(price_data) -> stripe.Price:
 
 def create_stripe_price(price_data) -> stripe.Price:
     return stripe.Price.create(
-        currency=price_data['valuta'],
-        unit_amount=price_data['price'] * 100,
-        nickname=price_data['price_string'],
+        currency=price_data["valuta"],
+        unit_amount=price_data["price"] * 100,
+        nickname=price_data["price_string"],
         # f'price for staying {price_data["duration"]} at {price_data["garage_id"]}.'
         product_data={
             "name": f'{price_data["duration"]} at {Garage.objects.get(garage_id=price_data["garage_id"]).name}'
@@ -52,17 +52,16 @@ def create_stripe_customer(user: User, card_data: dict) -> str:
 
     try:
         payment_method: stripe.PaymentMethod = stripe.PaymentMethod.create(
-            type='card',
+            type="card",
             card=card_data,
         )
 
         payment_method.attach(customer=customer_id)
 
-        stripe.Customer.modify(customer_id,
-                               invoice_settings={
-                                   'default_payment_method': payment_method.stripe_id
-                               }
-                               )
+        stripe.Customer.modify(
+            customer_id,
+            invoice_settings={"default_payment_method": payment_method.stripe_id},
+        )
     except Exception as e:
         customer.delete()
         raise e
@@ -87,27 +86,27 @@ def send_invoice(user: User, licence_plate: LicencePlate) -> None:
         invoice = stripe.Invoice.create(
             customer=stripe_identifier,
             auto_advance=True,
-            collection_method='charge_automatically',
+            collection_method="charge_automatically",
             metadata={
-                'user_id': user.pk,
-                'licence_plate': licence_plate.licence_plate,
+                "user_id": user.pk,
+                "licence_plate": licence_plate.licence_plate,
             },
         )
 
         for item in items:
-            price: Price = item['price']
+            price: Price = item["price"]  # type: ignore
             # Create an Invoice Item with the Price and Customer you want to charge
             stripe.InvoiceItem.create(
                 customer=stripe_identifier,
-                amount=int(price.price * 100 * item['quantity']),
+                amount=int(price.price * 100 * item["quantity"]),  # type: ignore
                 description=f'{price.price_string} x{item["quantity"]}',
                 # price=item['price'].stripe_identifier,
                 invoice=invoice.id,
-                currency=price.valuta
+                currency=price.valuta,
             )
 
         # Complete invoice, this will send a request to the webhook view which then can use invoice.pay() to charge
         # the user.
         invoice.finalize_invoice()
     else:
-        raise BackendException('User is not connected to stripe')
+        raise BackendException("User is not connected to stripe")

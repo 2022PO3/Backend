@@ -6,10 +6,6 @@ from datetime import datetime
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
-from src.api.serializers.licence_plate_serializer import (
-    LicencePlateSerializer,
-    PostLicencePlateSerializer,
-)
 
 from src.core.settings import DEBUG
 from src.core.utils.stripe_endpoints import send_invoice
@@ -61,6 +57,7 @@ class LicencePlateImageView(_OriginAPIView):
 
         return response
 
+
 def _register_licence_plate(licence_plate: str, garage_id: int) -> BackendResponse:
     """
     This registers that a `LicencePlate` is entering a `Garage`. If the `LicencePlate`
@@ -87,12 +84,18 @@ def _register_licence_plate(licence_plate: str, garage_id: int) -> BackendRespon
             garage_id=garage_id,
             updated_at=datetime.now().astimezone().isoformat(),
         )
+        generated_user.generate_qr_code(password)
+        generated_user.print_qr_code()
     else:
         queryset.update(
             garage_id=garage_id,
             updated_at=datetime.now().astimezone().isoformat(),
         )
-    return BackendResponse(f"Successfully registered licence plate {licence_plate}.", status=status.HTTP_200_OK)
+    return BackendResponse(
+        f"Successfully registered licence plate {licence_plate}.",
+        status=status.HTTP_200_OK,
+    )
+
 
 def _sign_out_licence_plate(licence_plate: LicencePlate) -> BackendResponse:
     """
@@ -109,15 +112,26 @@ def _sign_out_licence_plate(licence_plate: LicencePlate) -> BackendResponse:
             # Check if the user paid before trying to leave
             licence_plate.garage = None
             licence_plate.save()
-        return BackendResponse(f"Successfully signed out licence plate {licence_plate}.", status=status.HTTP_200_OK)
+        return BackendResponse(
+            f"Successfully signed out licence plate {licence_plate}.",
+            status=status.HTTP_200_OK,
+        )
     elif user.has_automatic_payment:
         try:
             send_invoice(user, licence_plate)
-            return BackendResponse(f"Sent invoice to user of {licence_plate}.", status=status.HTTP_200_OK)
+            return BackendResponse(
+                f"Sent invoice to user of {licence_plate}.", status=status.HTTP_200_OK
+            )
         except Exception as e:
-            return BackendResponse(f"User needs to pay for {licence_plate} before leaving the garage and failed to sent invoice.", status=status.HTTP_402_PAYMENT_REQUIRED)
+            return BackendResponse(
+                f"User needs to pay for {licence_plate} before leaving the garage and failed to sent invoice.",
+                status=status.HTTP_402_PAYMENT_REQUIRED,
+            )
 
-    return BackendResponse(f"User needs to pay for {licence_plate} before leaving the garage.", status=status.HTTP_402_PAYMENT_REQUIRED)
+    return BackendResponse(
+        f"User needs to pay for {licence_plate} before leaving the garage.",
+        status=status.HTTP_402_PAYMENT_REQUIRED,
+    )
 
 
 def handle_licence_plate(licence_plate: str, garage_id: int) -> BackendResponse:
