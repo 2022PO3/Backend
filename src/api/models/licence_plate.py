@@ -39,7 +39,7 @@ class LicencePlate(TimeStampMixin, models.Model):
             return True
         return (timezone.now() - self.updated_at) > prices[0].duration
 
-    def get_prices_to_pay(self) -> (list[dict[str, str | int]], int):
+    def get_prices_to_pay(self) -> tuple[list[dict[str, str | int]], int]:
         # Fetch garage prices from database
         prices = Price.objects.filter(garage=self.garage)
         prices = sorted(prices, key=lambda p: p.duration, reverse=True)
@@ -49,7 +49,7 @@ class LicencePlate(TimeStampMixin, models.Model):
 
         # Get time the user has to pay for
         updated_at = self.updated_at
-        time_to_pay = (timezone.now() - updated_at)
+        time_to_pay = timezone.now() - updated_at
 
         # Go over each and reduce te time to pay by the largest possible amount
         preview_items = []
@@ -57,15 +57,15 @@ class LicencePlate(TimeStampMixin, models.Model):
 
             item = {
                 # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                'price': price,
-                'quantity': 0,
+                "price": price,
+                "quantity": 0,
             }
             if price.duration >= datetime.timedelta(0):  # Make sure the loop completes
                 while time_to_pay > price.duration:
                     time_to_pay -= price.duration
-                    item['quantity'] += 1
+                    item["quantity"] += 1
 
-            if item['quantity'] > 0:
+            if item["quantity"] > 0:
                 preview_items.append(item)
 
         # Calculate time in which app has to refresh
@@ -80,7 +80,6 @@ class LicencePlate(TimeStampMixin, models.Model):
         for reservation in reservations:
             reservation.delete()
         return super().delete()
-        
 
     class Meta:
         db_table = "licence_plates"
