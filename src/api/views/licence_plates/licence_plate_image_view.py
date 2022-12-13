@@ -7,8 +7,8 @@ from rest_framework.permissions import AllowAny
 
 from src.core.utils.stripe_endpoints import send_invoice
 from src.core.views import BackendResponse, _OriginAPIView
+from src.api.serializers import PostLicencePlateSerializer
 
-from src.core.utils import to_snake_case
 from src.core.views import BackendResponse, _OriginAPIView, parse_frontend_json
 from src.api.models import LicencePlate
 
