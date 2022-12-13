@@ -28,3 +28,15 @@ class GarageListView(BaseAPIView):
     serializer = {"get": GarageSerializer}
     model = Garage
     post_user_id = True
+
+class OwnedGarageListView(BaseAPIView):
+    """
+    A view class to get all the garages and to post a new garage.
+    """
+
+    origins = ["app", "web"]
+    permission_classes = [IsGarageOwner]
+    serializer = {"get": GarageSerializer}
+    model = Garage
+    get_user_id = True
+    post_user_id = True
