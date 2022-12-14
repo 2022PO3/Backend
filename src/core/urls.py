@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.urls import path, re_path
 from src.api.views import (
     GarageDetailView,
@@ -41,6 +42,8 @@ from src.api.views import (
     TOTPDeleteView,
     TOTPView,
     Disable2FA,
+    NotificationsView,
+    PkNotificationsView,
 )
 from src.api.views.licence_plates.licence_plate_view import LicencePlateListView
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
@@ -70,6 +73,8 @@ urlpatterns = [
     path("api/prices/<int:pk>", PutPricesView.as_view()),
     path("api/prices", PricesView.as_view()),
     path("api/user/change-password", ChangePasswordView.as_view()),
+    path("api/notifications", NotificationsView.as_view()),
+    path("api/notification/<int:pk>", PkNotificationsView.as_view()),
 ]
 
 # User authentication

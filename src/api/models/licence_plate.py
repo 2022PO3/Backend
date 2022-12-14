@@ -1,10 +1,10 @@
 import datetime
-from typing import Any
-from django.db import models
 
 from django.db import models
+from django.db import models
 from django.utils import timezone
-from src.api.models.garages.price import Price
+
+from src.api.models import Price
 from src.core.models import TimeStampMixin
 
 
