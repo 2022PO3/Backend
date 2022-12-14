@@ -29,7 +29,6 @@ class GetReservationSerializer(serializers.ModelSerializer):
         model = Reservation
         fields = [
             "id",
-            "user_id",
             "garage",
             "licence_plate",
             "parking_lot",
@@ -70,7 +69,6 @@ class PostReservationSerializer(APIForeignKeySerializer):
         model = Reservation
         fields = [
             "id",
-            "user_id",
             "garage_id",
             "licence_plate_id",
             "parking_lot_id",
