@@ -5,7 +5,7 @@ from src.core.views import PkAPIView, BaseAPIView
 
 class LicencePlateListView(BaseAPIView):
     """
-    Returns a list of the licence plates belonging to a user.
+    View class to get all the user's licence plates and to post new one.
     """
 
     origins = ["app", "web"]
@@ -15,9 +15,9 @@ class LicencePlateListView(BaseAPIView):
     post_user_id = True
 
 
-class LicencePlateDetailView(PkAPIView):
+class PkLicencePlateView(PkAPIView):
     """
-    Update a `LicencePlate` with the given `pk`.
+    View class to delete or update a `LicencePlate` with the given `pk`.
     """
 
     origins = ["app", "web"]

@@ -1,16 +1,16 @@
-from src.api.views.garages.garage_view import GarageDetailView, GarageListView
-from src.api.views.garages.garage_settings_view import GetGarageSettingsView
+from src.api.views.garages.garage_view import PkGarageView, ListGarageView
+from src.api.views.garages.garage_settings_view import PkGarageSettingsView
 from src.api.views.garages.opening_hours_view import (
-    GetOpeningHoursView,
+    PkOpeningHoursView,
     PostOpeningHoursView,
 )
-from src.api.views.garages.prices_view import PricesView, PutPricesView
+from src.api.views.garages.prices_view import PricesView, PkPricesView
 from src.api.views.garages.parking_lots_view import (
     ParkingLotView,
-    ParkingLotPutView,
+    PkParkingLotView,
     RPiParkingLotView,
 )
-from src.api.views.licence_plates.licence_plate_view import LicencePlateDetailView
+from src.api.views.licence_plates.licence_plate_view import PkLicencePlateView
 
 from src.api.views.users.user_view import (
     UserDetailView,
@@ -19,7 +19,7 @@ from src.api.views.users.user_view import (
 )
 from src.api.views.users.reservations_view import (
     ReservationsView,
-    PutReservationsView,
+    PkReservationsView,
     AssignReservationView,
 )
 

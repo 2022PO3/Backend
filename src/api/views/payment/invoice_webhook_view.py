@@ -14,22 +14,21 @@ import stripe
 
 class InvoiceWebhookView(APIView):
     """
-    A view to listen for invoice updates from the stripe servers.
+    View class to listen for invoice updates from the stripe servers.
     """
 
-    permission_classes = [
-        AllowAny
-    ]  # The post request checks if the request comes from Stripe
+    # The post request checks if the request comes from Stripe
+    permission_classes = [AllowAny]
+    http_method_names = ["post"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
-
         if "STRIPE_SIGNATURE" not in request.headers:
             return BackendResponse(
                 ["This endpoint is only accessible by Stripe."],
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        sig_header = request.headers["STRIPE_SIGNATURE"]
+        sig_header: str = request.headers["STRIPE_SIGNATURE"]
         payload = request.body
 
         try:

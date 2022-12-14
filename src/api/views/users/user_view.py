@@ -20,21 +20,22 @@ from src.users.backends import EmailVerificationTokenGenerator
 
 class UserDetailView(PkAPIView):
     """
-    A view class to get or update the information about the currently logged user.
+    View class to get or update the information about the currently logged user.
     """
 
     origins = ["app", "web"]
-
     serializer = UserSerializer
+    http_method_names = ["get", "put"]
 
 
 class UserActivationView(_OriginAPIView):
     """
-    A view class to handle incoming requests for user activation.
+    View class to handle incoming requests for user activation.
     """
 
     permission_classes = [AllowAny]
     origins = ["web", "app"]
+    http_method_names = ["get"]
 
     def get(self, request: Request, uid_b64: str, token: str) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
@@ -64,7 +65,12 @@ class UserActivationView(_OriginAPIView):
 
 
 class ChangePasswordView(_OriginAPIView):
+    """
+    View class to update a user's password, given it's old password.
+    """
+
     origins = ["app", "web"]
+    http_method_names = ["put"]
 
     def put(self, request: Request, format=None) -> BackendResponse | None:
         if (resp := super().put(request, format)) is not None:

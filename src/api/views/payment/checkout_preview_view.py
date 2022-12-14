@@ -15,6 +15,7 @@ class CheckoutPreviewView(_OriginAPIView):
 
     permission_classes = [AllowAny]
     origins = ["web", "app"]
+    http_method_names = ["get"]
 
     def get(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:

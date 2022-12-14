@@ -19,6 +19,7 @@ class CreateCheckoutSessionView(_OriginAPIView):
     """
 
     origins = ["web", "app"]
+    http_method_names = ["post"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:

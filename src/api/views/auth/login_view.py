@@ -20,6 +20,7 @@ class LoginView(_OriginAPIView):
 
     permission_classes = [AllowAny]
     origins = ["web", "app"]
+    http_method_names = ["post"]
 
     def get_token_limit_per_user(self):
         return knox_settings.TOKEN_LIMIT_PER_USER
