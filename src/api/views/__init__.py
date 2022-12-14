@@ -43,3 +43,8 @@ from src.api.views.payment.checkout_preview_view import (
 )
 from src.api.views.payment.checkout_session_view import CheckoutSessionSerializer
 from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView
+
+from src.api.views.users.notifications_view import (
+    NotificationsView,
+    DeleteNotificationsView,
+)

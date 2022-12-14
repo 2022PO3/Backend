@@ -39,3 +39,5 @@ from src.api.serializers.users.totp_serializer import (
 
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
 from src.api.serializers.payment.card_serializer import CreditCardSerializer
+
+from src.api.serializers.users.notification_serializer import NotificationSerializer

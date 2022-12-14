@@ -4,7 +4,7 @@ from src.api.models import ProvincesEnum
 from src.core.models import TimeStampMixin
 
 
-class Location(TimeStampMixin, models.Model):
+class Notification(TimeStampMixin, models.Model):
     country = models.CharField(max_length=192)
     province = models.CharField(max_length=3, choices=ProvincesEnum.choices)
     municipality = models.CharField(max_length=192)

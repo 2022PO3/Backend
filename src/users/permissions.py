@@ -1,7 +1,7 @@
+from rest_framework.request import Request
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-from src.api.models import Garage
-from src.api.models import Reservation
+from src.api.models import Garage, Reservation, Notification
 
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
@@ -40,7 +40,7 @@ class IsUserDevice(BasePermission):
     Assumes the Device model has an `user-id`-attribute.
     """
 
-    def has_object_permission(self, request, view, pk: int):
+    def has_object_permission(self, request: Request, view, pk: int):
         if request.method in SAFE_METHODS:
             return True
         d = TOTPDevice.objects.get(pk=pk)
@@ -53,8 +53,20 @@ class IsUserReservation(BasePermission):
     Assumes the Reservation has an `user-id`-attribute.
     """
 
-    def has_object_permission(self, request, view, pk: int):
+    def has_object_permission(self, request: Request, view, pk: int):
         if request.method in SAFE_METHODS:
             return True
         r = Reservation.objects.get(pk=pk)
         return r.licence_plate.user.pk == request.user.pk
+
+
+class IsUserNotification(BasePermission):
+    """
+    Object-level permission to only allow owners of a notification to delete it. Assumes the Notification has an `user_id`-attribute.
+    """
+
+    def has_object_permission(self, request: Request, view, pk: int):
+        if request.method in SAFE_METHODS:
+            return True
+        r = Notification.objects.get(pk=pk)
+        return r.user.pk == request.user.pk

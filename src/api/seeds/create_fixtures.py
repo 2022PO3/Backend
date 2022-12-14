@@ -229,3 +229,21 @@ if __name__ == "__main__":
         },
         9,
     )
+    create_fixtures(
+        "api.notification",
+        [
+            "user",
+            "seen",
+            "title",
+            "content",
+        ],
+        {
+            "user": [1, 1, 2, 2, 3, 4, 5, 1, 1, 2],
+            "seen": [randint(0, 1) for _ in range(10)],
+            "title": [faker.text(max_nb_chars=15) for _ in range(10)],
+            "content": [
+                faker.sentence(nb_words=15, variable_nb_words=False) for _ in range(10)
+            ],
+        },
+        10,
+    )
