@@ -30,7 +30,6 @@ class GetReservationSerializer(serializers.ModelSerializer):
         model = Reservation
         fields = [
             "id",
-            "user_id",
             "garage",
             "licence_plate",
             "parking_lot",
