@@ -43,7 +43,7 @@ from src.api.views import (
     TOTPView,
     Disable2FA,
     NotificationsView,
-    DeleteNotificationsView,
+    PkNotificationsView,
 )
 from src.api.views.licence_plates.licence_plate_view import LicencePlateListView
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
@@ -74,7 +74,7 @@ urlpatterns = [
     path("api/prices", PricesView.as_view()),
     path("api/user/change-password", ChangePasswordView.as_view()),
     path("api/notifications", NotificationsView.as_view()),
-    path("api/notification", DeleteNotificationsView.as_view()),
+    path("api/notification/<int:pk>", PkNotificationsView.as_view()),
 ]
 
 # User authentication

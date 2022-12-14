@@ -46,5 +46,5 @@ from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView
 
 from src.api.views.users.notifications_view import (
     NotificationsView,
-    DeleteNotificationsView,
+    PkNotificationsView,
 )
