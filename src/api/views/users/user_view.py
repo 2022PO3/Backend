@@ -70,7 +70,7 @@ class ChangePasswordView(_OriginAPIView):
     """
 
     origins = ["app", "web"]
-    http_method_names = ["get"]
+    http_method_names = ["put"]
 
     def put(self, request: Request, format=None) -> BackendResponse | None:
         if (resp := super().put(request, format)) is not None:
