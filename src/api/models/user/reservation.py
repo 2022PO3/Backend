@@ -1,6 +1,5 @@
 from django.db import models
 
-from src.api.models import LicencePlate
 from src.core.models import TimeStampMixin
 
 

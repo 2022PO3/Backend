@@ -231,12 +231,7 @@ if __name__ == "__main__":
     )
     create_fixtures(
         "api.notification",
-        [
-            "user",
-            "seen",
-            "title",
-            "content",
-        ],
+        ["user", "seen", "title", "content", "updated_at", "created_at"],
         {
             "user": [1, 1, 2, 2, 3, 4, 5, 1, 1, 2],
             "seen": [randint(0, 1) for _ in range(10)],
