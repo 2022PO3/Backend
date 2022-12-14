@@ -76,6 +76,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         return preview_items, refresh_time  # type: ignore
 
     def can_reserve(self, from_date: datetime, to_date: datetime) -> bool:
+        from src.api.models import Reservation
 
         user_reservations = Reservation.objects.filter(user=self.pk)
         return not any(
