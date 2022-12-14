@@ -29,7 +29,7 @@ def complete_order(metadata: dict) -> BackendResponse:
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    licence_plate: LicencePlate = LicencePlate.objects.get(
+    licence_plate = LicencePlate.objects.get(
         user=User.objects.get(pk=user_id), licence_plate=licence_plate
     )
 
@@ -49,12 +49,12 @@ def complete_order(metadata: dict) -> BackendResponse:
 
 class CheckoutWebhookView(APIView):
     """
-    A view to listen for checkout updates from the stripe servers.
+    View class to listen for checkout updates from the stripe servers.
     """
 
-    permission_classes = [
-        AllowAny
-    ]  # The post request checks if the request comes from Stripe
+    # The post request checks if the request comes from Stripe.
+    permission_classes = [AllowAny]
+    http_method_names = ["post"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
 
@@ -64,7 +64,7 @@ class CheckoutWebhookView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        sig_header = request.headers["STRIPE_SIGNATURE"]
+        sig_header: str = request.headers["STRIPE_SIGNATURE"]
         payload = request.body
 
         try:
@@ -92,19 +92,18 @@ class CheckoutWebhookView(APIView):
             # create_order(session)
 
             # Check if the order is already paid (for example, from a card payment)
-            #
             # A delayed notification payment will have an `unpaid` status, as
             # you're still waiting for funds to be transferred from the customer's
             # account.
             if session.payment_status == "paid":
-                # Fulfill the purchase
+                # Fulfil the purchase
                 send_payment_mail(PaymentResult.Succeeded, session.metadata["user_id"])  # type: ignore
                 return complete_order(session.metadata)
 
         elif event["type"] == "checkout.session.async_payment_succeeded":  # type: ignore
             session = event["data"]["object"]  # type: ignore
 
-            # Fulfill the purchase
+            # Fulfil the purchase
             send_payment_mail(PaymentResult.Succeeded, session.metadata["user_id"])  # type: ignore
             complete_order(session.metadata)
 

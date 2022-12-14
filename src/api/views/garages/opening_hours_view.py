@@ -4,21 +4,25 @@ from src.core.views import PkAPIView, BaseAPIView
 from src.users.permissions import IsGarageOwner
 
 
-class GetOpeningHoursView(PkAPIView):
+class PkOpeningHoursView(PkAPIView):
     """
-    A view class which renders all the opening hours for a given garage with `pk`.
+    View class which renders all the opening hours for a given garage with `pk`.
+    Deletion and updating is only allowed for garage owners.
     """
 
     origins = ["app", "web"]
     column = "garage_id"
     serializer = OpeningHourSerializer
     model = OpeningHour
-    list = True
+    permission_classes = [IsGarageOwner]
+    return_list = True
+    http_method_names = ["get", "put", "delete"]
 
 
 class PostOpeningHoursView(BaseAPIView):
     """
-    A view class which to add new opening hours to a garage.
+    View class which to add new opening hours to a garage.
+    Only allowed for garage owners.
     """
 
     origins = ["app", "web"]

@@ -32,6 +32,7 @@ class TOTPCreateView(_OriginAPIView):
     """
 
     origins = ["web", "app"]
+    http_method_names = ["post"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
@@ -61,6 +62,7 @@ class TOTPVerifyView(_OriginAPIView):
     """
 
     origins = ["web", "app"]
+    http_method_names = ["post"]
     permission_classes = [IsAuthenticated]
 
     def post(self, request: Request, token: str, format=None) -> BackendResponse:
@@ -84,6 +86,7 @@ class TOTPDeleteView(GetObjectMixin, _OriginAPIView):
 
     permission_classes = [IsUserDevice]
     origins = ["app", "web"]
+    http_method_names = ["delete"]
 
     def delete(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := super().delete(request, format)) is not None:
@@ -108,14 +111,24 @@ class TOTPDeleteView(GetObjectMixin, _OriginAPIView):
 
 
 class TOTPView(BaseAPIView):
+    """
+    View class to get a list of the user's TOTP devices.
+    """
+
     origins = ["web", "app"]
     serializer = {"get": GetTOTPSerializer}
     model = TOTPDevice
     get_user_id = True
+    http_method_names = ["get"]
 
 
 class Disable2FA(_OriginAPIView):
+    """
+    View class to disable 2FA for the user associated with the request.
+    """
+
     origins = ["web", "app"]
+    http_method_names = ["post"]
 
     def post(self, request: Request, format=None) -> BackendResponse | None:
         if (resp := super().post(request, format)) is not None:

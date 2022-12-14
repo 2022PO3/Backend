@@ -2,7 +2,7 @@ from collections import OrderedDict
 import os
 import json
 
-from typing import Callable, TypeVar, Any
+from typing import Callable, Iterable, TypeVar, Any
 
 from django.db import models
 from django.http import Http404, JsonResponse
@@ -16,6 +16,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
+from rest_framework.exceptions import MethodNotAllowed
 
 from src.core.utils import to_camel_case, to_snake_case, decode_jwt
 from src.core.exceptions import BackendException
@@ -66,8 +67,6 @@ class BackendResponse(Response):
                     _dict_key_to_case(data, to_camel_case)
                 )
             }
-
-
         )
 
     """                if isinstance(data, dict)
@@ -250,6 +249,7 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
     model: V = None  # type: ignore
     get_user_id = False
     post_user_id = False
+    http_method_names = ["get", "post"]
 
     def get(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
@@ -285,9 +285,10 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
     model: V = None  # type: ignore
     fk_model = None  # type: ignore
     serializer: U = None  # type: ignore
-    list = False
+    return_list = False
     column: str = ""
     user_id = False
+    http_method_names = ["put", "delete"]
 
     def get(
         self, request: Request, pk: int | None = None, format=None
@@ -298,7 +299,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
             if pk is None:
                 # Special case for the UserView
                 data = request.user  # type: ignore
-            elif self.list:
+            elif self.return_list:
                 data: list[V] = self.model.objects.filter(**{self.column: pk})  # type: ignore
             elif self.fk_model is None:
                 data: V = self.get_object(self.model, pk)  # type: ignore
@@ -311,7 +312,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
                 ],
                 status=status.HTTP_404_NOT_FOUND,
             )
-        serializer: U = self.serializer(data, many=self.list)  # type: ignore
+        serializer: U = self.serializer(data, many=self.return_list)  # type: ignore
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
     def put(
@@ -320,7 +321,6 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         if (resp := super().put(request, format)) is not None:
             return resp
         data = _dict_key_to_case(JSONParser().parse(request), to_snake_case)
-        print(data)
         # For the UserView, no model has to be defined.
         if self.model is not None:
             try:
@@ -369,7 +369,9 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)
 
 
-def _dict_key_to_case(d: str | dict[str, Any] | list[Any], f: Callable) -> dict[str, Any] | list[Any] | str:
+def _dict_key_to_case(
+    d: str | dict[str, Any] | list[Any], f: Callable
+) -> dict[str, Any] | list[Any] | str:
     if isinstance(d, dict):
         d_copy = d.copy()
         for key in d.keys():
