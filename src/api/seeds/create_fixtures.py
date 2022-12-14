@@ -93,11 +93,11 @@ if __name__ == "__main__":
             "updated_at",
         ],
         {
-            "electric_cars": [randint(2, 10) for _ in range(10)],
-            "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
-            "location": [i for i in range(1, 11)],
-            "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(10)],
-            "max_handicapped_lots": [randint(2, 10) for _ in range(10)],
+            "electric_cars": [randint(2, 10) for _ in range(11)],
+            "max_height": [round(uniform(1.8, 2.4), 1) for _ in range(11)],
+            "location": [i for i in range(1, 12)],
+            "max_width": [round(uniform(1.8, 2.4), 1) for _ in range(11)],
+            "max_handicapped_lots": [randint(2, 10) for _ in range(11)],
         },
         3,
     )

@@ -17,24 +17,26 @@ class PriceSerializer(APIForeignKeySerializer):
 
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
         """Check if the data on the Stripe server is the same as on ours"""
-        stripe_price = get_stripe_price(data["stripe_identifier"])
 
-        if data["duration"] <= datetime.timedelta(0):
-            raise serializers.ValidationError(
-                "The duration to charge for should be positive."
-            )
-        if stripe_price is None:
-            raise serializers.ValidationError(
-                "This price id doesn't exist in the Stripe database, so we can't use it for payments."
-            )
-        if stripe_price["unit_amount"] / 100 != data["price"]:
-            raise serializers.ValidationError(
-                "The price amount does not match the one in the Stripe database."
-            )
-        if stripe_price["currency"] != data["valuta"]:
-            raise serializers.ValidationError(
-                "The currency does not match the one in the Stripe database."
-            )
+        if 'stripe_identifier' in data:
+            stripe_price = get_stripe_price(data["stripe_identifier"])
+
+            if data["duration"] <= datetime.timedelta(0):
+                raise serializers.ValidationError(
+                    "The duration to charge for should be positive."
+                )
+            if stripe_price is None:
+                raise serializers.ValidationError(
+                    "This price id doesn't exist in the Stripe database, so we can't use it for payments."
+                )
+            if stripe_price["unit_amount"] / 100 != data["price"]:
+                raise serializers.ValidationError(
+                    "The price amount does not match the one in the Stripe database."
+                )
+            if stripe_price["currency"].lower() != data["valuta"].lower():
+                raise serializers.ValidationError(
+                    "The currency does not match the one in the Stripe database."
+                )
 
         return super().validate(data)
 
@@ -53,8 +55,16 @@ class PriceSerializer(APIForeignKeySerializer):
 
 class CreatePriceSerializer(APIForeignKeySerializer):
 
-    garage_id = serializers.IntegerField(source="garage_id")
+    garage_id = serializers.IntegerField()
 
     class Meta:
         model = Price
         fields = ["id", "garage_id", "price_string", "duration", "price", "valuta"]
+
+        extra_kwargs = {"id": {"required": True},
+                        "garage_id": {"required": True},
+                        "price_string": {"required": True},
+                        "duration": {"required": True},
+                        "price": {"required": True},
+                        "valuta": {"required": True},
+                        }

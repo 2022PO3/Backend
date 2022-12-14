@@ -7,5 +7,4 @@ from src.core.utils.utils import to_camel_case, to_snake_case, decode_jwt
 from src.core.utils.stripe_endpoints import (
     get_stripe_price,
     create_stripe_price,
-    update_stripe_price,
 )
