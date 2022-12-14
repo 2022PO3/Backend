@@ -50,12 +50,11 @@ class PostReservationSerializer(APIForeignKeySerializer):
         from_date: datetime = data["from_date"]
         to_date: datetime = data["to_date"]
         lp_id: int = data["licence_plate_id"]
-        lp: LicencePlate = LicencePlate.objects.get(pk=lp_id)
+        lp = LicencePlate.objects.get(pk=lp_id)
         if not lp.can_reserve(from_date, to_date):
             raise serializers.ValidationError(
                 "This licence plate already has a reservation that time."
             )
-        lp = LicencePlate.objects.get(pk=data["licence_plate_id"])
         if not lp.enabled:
             raise serializers.ValidationError("Licence plate is not confirmed.")
         if from_date > to_date:
