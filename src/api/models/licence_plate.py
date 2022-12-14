@@ -5,7 +5,7 @@ from django.db import models
 
 from django.db import models
 from django.utils import timezone
-from src.api.models import Price, Reservation
+from src.api.models import Price
 from src.core.utils import in_daterange
 from src.core.models import TimeStampMixin
 
