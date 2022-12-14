@@ -1,5 +1,6 @@
 from typing import Any
 from collections import OrderedDict
+from datetime import datetime
 
 from rest_framework import serializers
 from src.api.models import (
@@ -14,6 +15,7 @@ from src.api.serializers import (
     LicencePlateSerializer,
 )
 from src.core.serializers import APIForeignKeySerializer
+from src.users.models import User
 
 
 class GetReservationSerializer(serializers.ModelSerializer):
@@ -48,9 +50,14 @@ class PostReservationSerializer(APIForeignKeySerializer):
         """
         Check that `fromDate` is before `finish`.
         """
-        user_reservations = Reservation.objects.filter(
-            licence_plate=data["licence_plate_id"]
-        )
+        from_date: datetime = data["from_date"]
+        to_date: datetime = data["to_date"]
+        user_id: int = data["user_id"]
+        user: User = User.objects.get(pk=user_id)
+        if not user.can_reserve(from_date, to_date):
+            raise serializers.ValidationError(
+                "You already have a reservation that time."
+            )
         lp = LicencePlate.objects.get(pk=data["licence_plate_id"])
         if not lp.enabled:
             raise serializers.ValidationError("Licence plate is not confirmed.")
@@ -58,8 +65,8 @@ class PostReservationSerializer(APIForeignKeySerializer):
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
         if not parking_lot_is_available(
             ParkingLot.objects.get(id=data["parking_lot_id"]),
-            data["from_date"],
-            data["to_date"],
+            from_date,
+            to_date,
         ):
             raise serializers.ValidationError(
                 "The parking lot is already occupied on that day and time, please choose another one."

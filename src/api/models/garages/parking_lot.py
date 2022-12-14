@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 from django.db import models
+
+from src.core.utils import in_daterange
 from src.core.models import TimeStampMixin
 
 
@@ -12,7 +14,6 @@ class ParkingLotManager(models.Manager):
         for pl in (pls := super().get_queryset().filter(garage_id=pk)):
             pl.booked = pl.booked(start_time, end_time)
             pl.save()
-            print(pl.booked)
         return pls
 
 
@@ -24,7 +25,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         - `floor_number`: the floor on which the parking lot resides in the garage;
         - `occupied`: indicates if the parking lot is occupied at the given time (note that a parking lot is occupied both if it holds a car or when it's booked);
         - `disabled`: indicates if the parking lot is disabled by the garage owner;
-        - `booked`: indicates wether the parking lot is booked in a given time frame.
+        - `booked`: indicates whether the parking lot is booked in a given time frame.
     """
 
     garage = models.ForeignKey("api.Garage", on_delete=models.CASCADE)
@@ -75,12 +76,3 @@ def parking_lot_is_available(
     ):
         return False
     return True
-
-
-def in_daterange(st1: datetime, et1: datetime, st2: datetime, et2: datetime) -> bool:
-    """
-    Returns a boolean which indicates if the given date ranges overlap with each other.
-    """
-    return (
-        st1 <= st2 <= et1 or st1 <= et2 <= et1 or st2 <= st1 <= et2 or st1 <= et2 <= et1
-    )
