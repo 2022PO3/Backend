@@ -15,6 +15,7 @@ class LogoutView(_OriginAPIView):
     """
 
     origins = ["web", "app"]
+    http_method_names = ["post"]
 
     def post(self, request: Request, format=None) -> Response:
         if (resp := super().post(request, format)) is not None:

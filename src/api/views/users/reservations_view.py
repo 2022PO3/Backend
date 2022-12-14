@@ -1,4 +1,5 @@
 from random import randint
+from typing import Any
 from rest_framework import status
 from rest_framework.request import Request
 
@@ -17,7 +18,7 @@ from src.users.permissions import IsUserReservation
 
 class ReservationsView(BaseAPIView):
     """
-    A view class to get all reservations from the currently logged in user and to post new one.
+    View class to get all reservations from the currently logged in user and to post new one.
     """
 
     origins = ["app", "web"]
@@ -30,7 +31,11 @@ class ReservationsView(BaseAPIView):
     post_user_id = True
 
 
-class PutReservationsView(PkAPIView):
+class PkReservationsView(PkAPIView):
+    """
+    View class to update or delete a reservation with a given `pk`.
+    """
+
     origins = ["app", "web"]
     permission_classes = [IsUserReservation]
     serializer = PostReservationSerializer
@@ -38,7 +43,12 @@ class PutReservationsView(PkAPIView):
 
 
 class AssignReservationView(_OriginAPIView):
+    """
+    View class to assign a random free parking lot for making a reservation.
+    """
+
     origins = ["web", "app"]
+    http_method_names = ["get"]
 
     def get(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := _OriginAPIView.get(self, request, format)) is not None:
@@ -49,14 +59,16 @@ class AssignReservationView(_OriginAPIView):
         }
         assignment_serializer = AssignReservationSerializer(data=request_data)  # type: ignore
         if assignment_serializer.is_valid():
-            valid_data = assignment_serializer.validated_data
+            valid_data: dict[
+                str, Any
+            ] = assignment_serializer.validated_data  # type: ignore
             pls = list(
                 filter(
                     lambda pl: not pl.booked,
                     ParkingLot.objects.is_available(
                         int(pk),
-                        valid_data["from_date"],  # type: ignore
-                        valid_data["to_date"],  # type: ignore
+                        valid_data["from_date"],
+                        valid_data["to_date"],
                     ),
                 )
             )
