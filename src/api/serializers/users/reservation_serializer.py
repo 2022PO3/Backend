@@ -38,7 +38,6 @@ class GetReservationSerializer(serializers.ModelSerializer):
 
 
 class PostReservationSerializer(APIForeignKeySerializer):
-    user_id = serializers.IntegerField()
     garage_id = serializers.IntegerField()
     licence_plate_id = serializers.IntegerField()
     parking_lot_id = serializers.IntegerField()
