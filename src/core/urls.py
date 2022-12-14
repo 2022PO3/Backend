@@ -45,6 +45,7 @@ from src.api.views import (
     NotificationsView,
     PkNotificationsView,
 )
+from src.api.views.garages.garage_view import OwnedGarageListView
 from src.api.views.licence_plates.licence_plate_view import LicencePlateListView
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
 from src.api.views.payment.checkout_session_view import CreateCheckoutSessionView
@@ -57,8 +58,9 @@ from src.core.settings import DEBUG
 handler500 = "src.core.views.server_error"
 
 urlpatterns = [
-    path("api/garage/<int:pk>", PkGarageView.as_view()),
-    path("api/garages", ListGarageView.as_view()),
+    path("api/garage/<int:pk>", GarageDetailView.as_view()),
+    path("api/garages", GarageListView.as_view()),
+    path("api/user/garages/", OwnedGarageListView.as_view()),
     path("api/parking-lots/<int:pk>", ParkingLotView.as_view()),
     path("api/parking-lot/<int:pk>", PkParkingLotView.as_view()),
     path("api/assign-parking-lot/<int:pk>", AssignReservationView.as_view()),
