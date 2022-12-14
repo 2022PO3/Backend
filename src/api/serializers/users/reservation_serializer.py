@@ -39,7 +39,6 @@ class GetReservationSerializer(serializers.ModelSerializer):
 
 
 class PostReservationSerializer(APIForeignKeySerializer):
-    user_id = serializers.IntegerField()
     garage_id = serializers.IntegerField()
     licence_plate_id = serializers.IntegerField()
     parking_lot_id = serializers.IntegerField()
@@ -50,7 +49,6 @@ class PostReservationSerializer(APIForeignKeySerializer):
         """
         from_date: datetime = data["from_date"]
         to_date: datetime = data["to_date"]
-        user_id: int = data["user_id"]
         lp: LicencePlate = LicencePlate.objects.get(pk=user_id)
         if not lp.can_reserve(from_date, to_date):
             raise serializers.ValidationError(
@@ -75,7 +73,6 @@ class PostReservationSerializer(APIForeignKeySerializer):
         model = Reservation
         fields = [
             "id",
-            "user_id",
             "garage_id",
             "licence_plate_id",
             "parking_lot_id",
