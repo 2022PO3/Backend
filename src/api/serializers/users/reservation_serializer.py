@@ -49,7 +49,8 @@ class PostReservationSerializer(APIForeignKeySerializer):
         """
         from_date: datetime = data["from_date"]
         to_date: datetime = data["to_date"]
-        lp: LicencePlate = LicencePlate.objects.get(pk=user_id)
+        lp_id: int = data["licence_plate_id"]
+        lp: LicencePlate = LicencePlate.objects.get(pk=lp_id)
         if not lp.can_reserve(from_date, to_date):
             raise serializers.ValidationError(
                 "This licence plate already has a reservation that time."
