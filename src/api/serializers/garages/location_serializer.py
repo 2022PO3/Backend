@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from src.api.models import Notification
+from src.api.models import Location
 
 
 class LocationsSerializer(serializers.ModelSerializer):
@@ -9,7 +9,7 @@ class LocationsSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = Notification
+        model = Location
         fields = [
             "id",
             "country",

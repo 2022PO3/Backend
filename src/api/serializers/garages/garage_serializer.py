@@ -1,8 +1,6 @@
 from typing import Any
 
-from rest_framework import serializers
-
-from src.api.models import Garage, GarageSettings, Notification
+from src.api.models import Garage, GarageSettings, Location
 from src.api.serializers import GarageSettingsSerializer
 from src.core.serializers import APIForeignKeySerializer
 
@@ -23,7 +21,7 @@ class GarageSerializer(APIForeignKeySerializer):
         """
         settings_data = validated_data.pop("garage_settings")
         location_data = settings_data.pop("location")
-        location = Notification.objects.create(**location_data)
+        location = Location.objects.create(**location_data)
         garage_settings = GarageSettings.objects.create(
             location=location, **settings_data
         )

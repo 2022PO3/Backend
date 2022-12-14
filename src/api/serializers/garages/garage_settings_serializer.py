@@ -1,8 +1,6 @@
 from typing import Any
 
-from rest_framework import serializers
-
-from src.api.models import GarageSettings, Notification
+from src.api.models import GarageSettings, Location
 from src.api.serializers import LocationsSerializer
 from src.core.serializers import APIForeignKeySerializer
 
@@ -32,7 +30,7 @@ class GarageSettingsSerializer(APIForeignKeySerializer):
         `GarageSettings`-object is created with the `Locations`-object created earlier.
         """
         locationData = validated_data.pop("location")
-        location = Notification.objects.create(**locationData)
+        location = Location.objects.create(**locationData)
         return GarageSettings.objects.create(location=location, **validated_data)
 
     def update(self, validated_data: dict[str, Any]) -> GarageSettings:
@@ -42,5 +40,5 @@ class GarageSettingsSerializer(APIForeignKeySerializer):
         `GarageSettings`-object is created with the `Locations`-object created earlier.
         """
         locationData = validated_data.pop("location")
-        location = Notification.objects.create(**locationData)
+        location = Location.objects.create(**locationData)
         return GarageSettings.objects.create(location=location, **validated_data)
