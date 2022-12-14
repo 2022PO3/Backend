@@ -6,7 +6,6 @@ from django.db import models
 from django.db import models
 from django.utils import timezone
 from src.api.models import Price
-from src.core.utils import in_daterange
 from src.core.models import TimeStampMixin
 
 
@@ -77,6 +76,7 @@ class LicencePlate(TimeStampMixin, models.Model):
 
     def can_reserve(self, from_date: datetime, to_date: datetime) -> bool:
         from src.api.models import Reservation
+        from src.core.utils import in_daterange
 
         user_reservations = Reservation.objects.filter(user=self.pk)
         return not any(
