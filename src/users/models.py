@@ -1,7 +1,6 @@
 import io
 import os
 import cv2
-from datetime import datetime
 from qrcode import make, QRCode
 
 from secrets import token_hex
@@ -12,7 +11,6 @@ from django.db import models
 
 from src.users.managers import UserManager
 from src.api.models import ProvincesEnum
-from src.core.utils import in_daterange
 from src.core.models import TimeStampMixin
 from src.core.exceptions import DeletionException
 from src.core.exceptions import BackendException
@@ -125,21 +123,6 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         )
         if os.path.exists(path):
             os.remove(path)
-
-    def can_reserve(self, from_date: datetime, to_date: datetime) -> bool:
-        from src.api.models import Reservation
-
-        user_reservations = Reservation.objects.filter(user=self.pk)
-        if any(
-            map(
-                lambda reservation: in_daterange(
-                    reservation.from_date, reservation.to_date, from_date, to_date
-                ),
-                user_reservations,
-            )
-        ):
-            return False
-        return True
 
     @property
     def is_admin(self) -> bool:

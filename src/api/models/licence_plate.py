@@ -1,10 +1,12 @@
 import datetime
-from typing import Any
+
+from datetime import datetime, timedelta
 from django.db import models
 
 from django.db import models
 from django.utils import timezone
-from src.api.models.garages.price import Price
+from src.api.models import Price, Reservation
+from src.core.utils import in_daterange
 from src.core.models import TimeStampMixin
 
 
@@ -60,7 +62,7 @@ class LicencePlate(TimeStampMixin, models.Model):
                 "price": price,
                 "quantity": 0,
             }
-            if price.duration >= datetime.timedelta(0):  # Make sure the loop completes
+            if price.duration >= timedelta(0):  # Make sure the loop completes
                 while time_to_pay > price.duration:
                     time_to_pay -= price.duration
                     item["quantity"] += 1
@@ -72,6 +74,18 @@ class LicencePlate(TimeStampMixin, models.Model):
         refresh_time = prices[-1].duration - time_to_pay
 
         return preview_items, refresh_time  # type: ignore
+
+    def can_reserve(self, from_date: datetime, to_date: datetime) -> bool:
+
+        user_reservations = Reservation.objects.filter(user=self.pk)
+        return not any(
+            map(
+                lambda reservation: in_daterange(
+                    reservation.from_date, reservation.to_date, from_date, to_date
+                ),
+                user_reservations,
+            )
+        )
 
     def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import Reservation
