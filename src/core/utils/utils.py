@@ -1,5 +1,7 @@
 import jwt
 import logging
+
+from datetime import datetime
 from typing import Any
 from functools import reduce
 from os import path, getenv
@@ -42,3 +44,12 @@ def get_logger(name: str) -> logging.Logger:
         level=logging.INFO, format=log_format, filename="rpi_garage.log", filemode="w"
     )
     return logging.getLogger(name)
+
+
+def in_daterange(st1: datetime, et1: datetime, st2: datetime, et2: datetime) -> bool:
+    """
+    Returns a boolean which indicates if the given date ranges overlap with each other.
+    """
+    return (
+        st1 <= st2 <= et1 or st1 <= et2 <= et1 or st2 <= st1 <= et2 or st1 <= et2 <= et1
+    )

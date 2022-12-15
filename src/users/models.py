@@ -4,7 +4,6 @@ import cv2
 from qrcode import make, QRCode
 
 from secrets import token_hex
-from typing import Any
 from knox.models import AuthToken
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
