@@ -1,7 +1,5 @@
 from typing import Any
 
-from rest_framework import serializers
-
 from src.api.models import GarageSettings, Location
 from src.api.serializers import LocationsSerializer
 from src.core.serializers import APIForeignKeySerializer

@@ -1,10 +1,9 @@
 import datetime
 
-from datetime import datetime, timedelta
 from django.db import models
-
 from django.db import models
 from django.utils import timezone
+
 from src.api.models import Price
 from src.core.models import TimeStampMixin
 

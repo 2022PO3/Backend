@@ -3,8 +3,8 @@ from os import getenv
 import stripe
 
 from src.api.models import LicencePlate
-from src.api.models.garages.garage import Garage
-from src.api.models.garages.price import Price
+from src.api.models import Garage
+from src.api.models import Price
 from src.core.exceptions import BackendException
 from src.users.models import User
 

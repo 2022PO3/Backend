@@ -18,7 +18,7 @@ from src.users.permissions import IsGarageOwner
 
 class ParkingLotView(PkAPIView):
     """
-    A view class which renders all the parking lots for a given garage with `pk`.
+    View class which renders all the parking lots for a given garage with `pk`.
     """
 
     origins = ["app", "web"]
@@ -26,7 +26,8 @@ class ParkingLotView(PkAPIView):
     permission_classes = [IsGarageOwner]
     model = ParkingLot
     serializer = ParkingLotSerializer
-    list = True
+    return_list = True
+    http_method_names = ["get", "delete"]
 
     def get(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := _OriginAPIView.get(self, request, format)) is not None:
@@ -55,9 +56,9 @@ class ParkingLotView(PkAPIView):
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
 
-class ParkingLotPutView(PkAPIView):
+class PkParkingLotView(PkAPIView):
     """
-    A view class which handles PUT-requests with the pk of the parking lot.
+    View class which handles PUT-requests with the pk of the parking lot.
     """
 
     origins = ["app", "web"]
@@ -68,11 +69,12 @@ class ParkingLotPutView(PkAPIView):
 
 class RPiParkingLotView(_OriginAPIView):
     """
-    A view class for handling request coming from the Raspberry Pi. The request only contains the garage id and parking lot number.
+    View class for handling request coming from the Raspberry Pi. The request only contains the garage id and parking lot number.
     """
 
     permission_classes = [AllowAny]
     origins = ["rpi"]
+    http_method_names = ["put"]
 
     def put(self, request: Request, format=None) -> Response:
         if (resp := super().put(request, format)) is not None:

@@ -24,6 +24,7 @@ class UserStripeConnectionView(_OriginAPIView):
     """
 
     origins = ["web", "app"]
+    http_method_names = ["post"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
@@ -55,7 +56,6 @@ class UserStripeConnectionView(_OriginAPIView):
                         ["Something went wrong communicating with Stripe.", str(e)],
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     )
-
             return BackendResponse(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )

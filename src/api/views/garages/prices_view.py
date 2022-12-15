@@ -35,10 +35,13 @@ class PricesView(_OriginAPIView):
             # Create price on stripe servers
             try:
                 price = create_stripe_price(create_price_serializer.data)
-            except stripe.error.InvalidRequestError as e:
+            except stripe.error.InvalidRequestError as e:  # type: ignore
                 return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
-            except stripe.error.StripeError as e:
-                return BackendResponse(['Something went wrong communicating with Stripe.', str(e)], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except stripe.error.StripeError as e:  # type: ignore
+                return BackendResponse(
+                    ["Something went wrong communicating with Stripe.", str(e)],
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
 
             except Exception as e:
                 return BackendResponse(
@@ -60,10 +63,14 @@ class PricesView(_OriginAPIView):
         )
 
 
-class PutPricesView(GetObjectMixin, _OriginAPIView):
+class PkPricesView(GetObjectMixin, _OriginAPIView):
+    """
+    View class
+    """
 
     permission_classes = [IsGarageOwner]
     origins = ["web", "app"]
+    http_method_names = ["get", "put", "delete"]
 
     def get(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := super().get(request, format)) is not None:
@@ -103,10 +110,13 @@ class PutPricesView(GetObjectMixin, _OriginAPIView):
 
             try:
                 update_stripe_price(serializer.data)
-            except stripe.error.InvalidRequestError as e:
+            except stripe.error.InvalidRequestError as e:  # type: ignore
                 return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
-            except stripe.error.StripeError as e:
-                return BackendResponse(['Something went wrong communicating with Stripe.', str(e)], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except stripe.error.StripeError as e:  # type: ignore
+                return BackendResponse(
+                    ["Something went wrong communicating with Stripe.", str(e)],
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
             except Exception as e:
                 return BackendResponse(
                     [f"Failed to update price on Stripe servers: {e}"],

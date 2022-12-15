@@ -15,11 +15,12 @@ WEBSITE_URL = "https://po3backend.ddns.net/app"
 
 class SendInvoiceView(_OriginAPIView):
     """
-    A view to send an invoice for a certain licence plate. Used for testing only because real invoices will be sent
-    through the licence_plate_image_view.
+    A view to send an invoice for a certain licence plate. Used for testing only because real
+    invoices will be sent through the licence_plate_image_view.
     """
 
     origins = ["web", "app"]
+    http_method_names = ["post"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
@@ -47,7 +48,6 @@ class SendInvoiceView(_OriginAPIView):
                     ["Something went wrong communicating with Stripe.", str(e)],
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
-
             return BackendResponse("Sent Invoice.", status=status.HTTP_200_OK)
 
         return BackendResponse(
