@@ -26,7 +26,7 @@ class ListGarageView(BaseAPIView):
 
     origins = ["app", "web"]
     permission_classes = [IsGarageOwner]
-    serializer = {"get": GarageSerializer, "post": GarageSerializer}
+    serializer = {"get": GarageSerializer}
     model = Garage
     post_user_id = True
 
