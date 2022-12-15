@@ -15,6 +15,7 @@ publishableKey = getenv("STRIPE_PUBLISHABLE_KEY")
 def get_stripe_price(price_id) -> stripe.Price:
     return stripe.Price.retrieve(price_id)
 
+
 def create_stripe_price(price_data, garage_id: int) -> stripe.Price:
     return stripe.Price.create(
         currency=price_data["valuta"],
@@ -26,8 +27,9 @@ def create_stripe_price(price_data, garage_id: int) -> stripe.Price:
         },
     )
 
+
 def delete_stripe_price(price: Price) -> None:
-    return stripe.Price.modify(
+    stripe.Price.modify(
         price.stripe_identifier,
         active=False,
     )
