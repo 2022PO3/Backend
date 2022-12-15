@@ -4,7 +4,7 @@ from src.api.views.garages.opening_hours_view import (
     PkOpeningHoursView,
     PostOpeningHoursView,
 )
-from src.api.views.garages.prices_view import PricesView, PkPricesView
+from src.api.views.garages.prices_view import PkPricesView
 from src.api.views.garages.parking_lots_view import (
     ParkingLotView,
     PkParkingLotView,
