@@ -27,7 +27,7 @@ class ParkingLotView(PkAPIView):
     model = ParkingLot
     serializer = ParkingLotSerializer
     return_list = True
-    http_method_names = ["get", "delete"]
+    http_method_names = ["get"]
 
     def get(self, request: Request, pk: int, format=None) -> BackendResponse:
         if (resp := _OriginAPIView.get(self, request, format)) is not None:
