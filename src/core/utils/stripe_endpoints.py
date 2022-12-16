@@ -21,9 +21,8 @@ def create_stripe_price(price_data, garage_id: int) -> stripe.Price:
         currency=price_data["valuta"],
         unit_amount=int(price_data["price"] * 100),
         nickname=price_data["price_string"],
-        # f'price for staying {price_data["duration"]} at {price_data["garage_id"]}.'
         product_data={
-            "name": f'{price_data["duration"]} at {Garage.objects.get(pk=garage_id).name}'
+            "name": price_data['price_string']
         },
     )
 
