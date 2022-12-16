@@ -44,7 +44,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         prices = sorted(prices, key=lambda p: p.duration, reverse=True)
 
         if len(prices) == 0:
-            return tuple()
+            return [], -1
 
         # Get time the user has to pay for
         updated_at = self.updated_at
