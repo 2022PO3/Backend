@@ -50,11 +50,9 @@ class CheckoutPreviewView(_OriginAPIView):
                 for item in items
             ]
 
-            if len(preview_items) == 0:
+            if not len(preview_items):
                 # No payment is needed
-                return BackendResponse(
-                    ["No payment required"], status=status.HTTP_200_OK
-                )
+                return BackendResponse("No payment required", status=status.HTTP_200_OK)
 
             return BackendResponse(
                 {

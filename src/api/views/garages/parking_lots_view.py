@@ -18,9 +18,21 @@ from src.core.views import (
 from src.users.permissions import IsGarageOwner
 
 
+class ParkingLotDetailView(PkAPIView):
+    """
+    View class which handles PUT and DELETE-requests for a parking lot with `pk`.
+    """
+
+    origins = ["app", "web"]
+    permission_classes = [IsGarageOwner]
+    model = ParkingLot
+    serializer = ParkingLotSerializer
+
+
 class ParkingLotsGarageView(PkAPIView):
     """
-    View class which renders all the parking lots for a given garage with `pk`.
+    View class which handles GET- and POST-requests for parking lots of a garage with
+    `garage_pk`.
     """
 
     origins = ["app", "web"]
@@ -37,7 +49,7 @@ class ParkingLotsGarageView(PkAPIView):
                 "from_date": parse(str(request.query_params["fromDate"])),
                 "to_date": parse(str(request.query_params["toDate"])),
             }
-            # Used to validate the `from_dat` and `to_date`.
+            # Used to validate the `from_date` and `to_date`.
             serializer = AssignReservationSerializer(data=request_data)  # type: ignore
             if serializer.is_valid():
                 pls = ParkingLot.objects.is_available(
@@ -55,17 +67,6 @@ class ParkingLotsGarageView(PkAPIView):
                 ParkingLot.objects.filter(garage_id=garage_pk), many=True
             )
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-
-
-class ParkingLotDetailView(PkAPIView):
-    """
-    View class which handles PUT and DELETE-requests for a parking lot with `pk`.
-    """
-
-    origins = ["app", "web"]
-    permission_classes = [IsGarageOwner]
-    model = ParkingLot
-    serializer = ParkingLotSerializer
 
 
 class ParkingLotAssignView(_OriginAPIView):

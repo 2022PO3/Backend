@@ -20,7 +20,7 @@ from src.api.views.users.user_view import (
 from src.api.views.users.reservations_view import (
     ReservationsListView,
     ReservationsDetailView,
-    ReservationsRPiView
+    ReservationsRPiView,
 )
 
 from src.api.views.auth.login_view import LoginView
@@ -32,9 +32,9 @@ from src.api.views.licence_plates.licence_plate_image_view import LicencePlateIm
 from src.api.views.auth.multi_factor.totp_view import (
     TOTPCreateView,
     TOTPVerifyView,
-    TOTPDeleteView,
-    TOTPView,
-    Disable2FA,
+    TOTPDetailView,
+    TOTPListView,
+    Disable2FAView,
 )
 
 

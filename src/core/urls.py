@@ -23,9 +23,9 @@ from src.api.views import (
     LicencePlateImageView,
     TOTPVerifyView,
     TOTPCreateView,
-    TOTPDeleteView,
-    TOTPView,
-    Disable2FA,
+    TOTPDetailView,
+    TOTPListView,
+    Disable2FAView,
     NotificationsListView,
     NotificationsDetailView,
 )
@@ -117,9 +117,9 @@ urlpatterns += [
     ),
     path("api/auth/totp/create", TOTPCreateView.as_view()),
     re_path(r"^api/auth/totp/login/(?P<token>[0-9]{6})$", TOTPVerifyView.as_view()),
-    path("api/auth/totp/<int:pk>", TOTPDeleteView.as_view()),
-    path("api/auth/totp", TOTPView.as_view()),
-    path("api/auth/totp/disable", Disable2FA.as_view()),
+    path("api/auth/totp/<int:pk>", TOTPDetailView.as_view()),
+    path("api/auth/totp", TOTPListView.as_view()),
+    path("api/auth/totp/disable", Disable2FAView.as_view()),
 ]
 
 
