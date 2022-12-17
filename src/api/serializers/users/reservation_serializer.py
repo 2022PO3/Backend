@@ -5,7 +5,6 @@ from datetime import datetime
 from rest_framework import serializers
 from src.api.models import (
     Reservation,
-    parking_lot_is_available,
     ParkingLot,
     LicencePlate,
 )
@@ -59,8 +58,8 @@ class PostReservationSerializer(APIForeignKeySerializer):
             raise serializers.ValidationError("Licence plate is not confirmed.")
         if from_date > to_date:
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
-        if not parking_lot_is_available(
-            ParkingLot.objects.get(id=data["parking_lot_id"]),
+        parking_lot: ParkingLot = ParkingLot.objects.get(id=data["parking_lot_id"])
+        if not parking_lot.is_available(
             from_date,
             to_date,
         ):

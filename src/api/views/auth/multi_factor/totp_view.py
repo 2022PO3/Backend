@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated
 
-from src.api.serializers import GetTOTPSerializer, PostTOTPSerializer
+from src.api.serializers import TOTPSerializer
 from src.core.views import (
     _OriginAPIView,
     BackendResponse,
@@ -51,7 +51,7 @@ class TOTPListView(BaseAPIView):
     """
 
     origins = ["web", "app"]
-    serializer = {"get": GetTOTPSerializer}
+    serializer = {"get": TOTPSerializer}
     model = TOTPDevice
     get_user_id = True
     http_method_names = ["get", "post"]
@@ -60,7 +60,7 @@ class TOTPListView(BaseAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         data = parse_frontend_json(request)
-        serializer = PostTOTPSerializer(data=data)  # type: ignore
+        serializer = TOTPSerializer(data=data)  # type: ignore
         user: User = request.user
         if serializer.is_valid():
             device = user.totpdevice_set.create(  # type: ignore

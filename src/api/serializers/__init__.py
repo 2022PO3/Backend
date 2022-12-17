@@ -32,7 +32,7 @@ from src.api.serializers.users.reservation_serializer import (
     ReservationRPiSerializer,
 )
 from src.api.serializers.users.totp_serializer import (
-    GetTOTPSerializer,
+    TOTPSerializer,
     PostTOTPSerializer,
 )
 

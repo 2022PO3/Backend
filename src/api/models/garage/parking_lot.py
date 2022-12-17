@@ -48,31 +48,28 @@ class ParkingLot(TimeStampMixin, models.Model):
         db_table = "parking_lots"
         app_label = "api"
 
+    def is_available(self, start_time: datetime, end_time: datetime) -> bool:
+        """
+        Returns a boolean which indicates if the given parking lot with `pl_pk` is available in
+        the time range from `start_time` to `end_time`.
+        """
+        from src.api.models import Reservation
 
-def parking_lot_is_available(
-    pl: ParkingLot, start_time: datetime, end_time: datetime
-) -> bool:
-    """
-    Returns a boolean which indicates if the given parking lot with `pl_pk` is available in
-    the time range from `start_time` to `end_time`.
-    """
-    from src.api.models import Reservation
-
-    # When a ParkingLot is occupied, this offset will be added to the time when the request is
-    # made.
-    OFFSET = timedelta(hours=8)
-    pl_reservations = Reservation.objects.filter(parking_lot=pl)
-    if any(
-        map(
-            lambda reservation: in_daterange(
-                reservation.from_date, reservation.to_date, start_time, end_time
-            ),
-            pl_reservations,
-        )
-    ):
-        return False
-    elif pl.occupied and (
-        start_time.timestamp() <= (datetime.utcnow() + OFFSET).timestamp()
-    ):
-        return False
-    return True
+        # When a ParkingLot is occupied, this offset will be added to the time when the request is
+        # made.
+        OFFSET = timedelta(hours=8)
+        pl_reservations = Reservation.objects.filter(parking_lot=self)
+        if any(
+            map(
+                lambda reservation: in_daterange(
+                    reservation.from_date, reservation.to_date, start_time, end_time
+                ),
+                pl_reservations,
+            )
+        ):
+            return False
+        elif self.occupied and (
+            start_time.timestamp() <= (datetime.utcnow() + OFFSET).timestamp()
+        ):
+            return False
+        return True
