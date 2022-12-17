@@ -2,17 +2,18 @@ from django.urls import path, re_path
 from src.api.views import (
     GaragesDetailView,
     GaragesListView,
-    PkLicencePlateView,
+    LicencePlateDetailView,
     UserDetailView,
     UserActivationView,
     ReservationsListView,
+    ReservationsDetailView,
+    ReservationsRPiView,
     OpeningHoursGarageView,
     OpeningHoursDetailView,
     ParkingLotsGarageView,
     ParkingLotDetailView,
     ParkingLotRPiView,
     ParkingLotAssignView,
-    ReservationsDetailView,
     PricesDetailView,
     PricesGarageView,
     LoginView,
@@ -92,7 +93,7 @@ urlpatterns += [
 
 # Licence plates
 urlpatterns += [
-    path("api/licence-plate/<int:pk>", PkLicencePlateView.as_view()),
+    path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/licence-plates", LicencePlateListView.as_view()),
 ]
 
@@ -101,14 +102,6 @@ urlpatterns += [
     path("api/notification/<int:pk>", NotificationsDetailView.as_view()),
     path("api/notifications", NotificationsListView.as_view()),
 ]
-
-
-# urlpatterns = [
-# path("api/user/garages/", OwnedGarageListView.as_view()),
-# path("api/garage-settings/<int:pk>", PkGarageSettingsView.as_view()),
-# path("api/prices/<int:pk>", PricesDetailView.as_view()),
-# path("api/garage/prices/<int:pk>", PricesGarageView.as_view()),
-# ]
 
 
 ##################
@@ -136,6 +129,7 @@ urlpatterns += [
 urlpatterns += [
     path("api/images", LicencePlateImageView.as_view()),
     path("api/rpi-parking-lot", ParkingLotRPiView.as_view()),
+    path("api/reservations/<int:garage_pk>", ReservationsRPiView.as_view()),
 ]
 
 

@@ -11,7 +11,7 @@ from src.api.serializers.garages.opening_hour_serializer import OpeningHourSeria
 
 from src.api.serializers.licence_plate_serializer import (
     LicencePlateSerializer,
-    PostLicencePlateSerializer,
+    LicencePlateRPiSerializer,
 )
 
 from src.api.serializers.garages.parking_lot_serializer import (
@@ -29,7 +29,7 @@ from src.api.serializers.users.reservation_serializer import (
     GetReservationSerializer,
     PostReservationSerializer,
     AssignReservationSerializer,
-    ReservationRPiSerializer
+    ReservationRPiSerializer,
 )
 from src.api.serializers.users.totp_serializer import (
     GetTOTPSerializer,

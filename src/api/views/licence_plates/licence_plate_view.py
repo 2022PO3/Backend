@@ -1,5 +1,5 @@
 from src.api.models import LicencePlate
-from src.api.serializers import LicencePlateSerializer, PostLicencePlateSerializer
+from src.api.serializers import LicencePlateSerializer, LicencePlateRPiSerializer
 from src.core.views import PkAPIView, BaseAPIView
 
 
@@ -15,12 +15,12 @@ class LicencePlateListView(BaseAPIView):
     post_user_id = True
 
 
-class PkLicencePlateView(PkAPIView):
+class LicencePlateDetailView(PkAPIView):
     """
     View class to delete or update a `LicencePlate` with the given `pk`.
     """
 
     origins = ["app", "web"]
     model = LicencePlate
-    serializer = PostLicencePlateSerializer
+    serializer = LicencePlateRPiSerializer
     user_id = True

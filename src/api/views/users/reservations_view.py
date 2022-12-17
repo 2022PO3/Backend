@@ -1,18 +1,13 @@
-from random import randint
-from typing import Any
-from rest_framework import status
 from rest_framework.request import Request
 
-from src.api.models import ParkingLot, Reservation
+from src.api.models import Reservation
 from src.api.serializers import (
-    ParkingLotSerializer,
-    AssignReservationSerializer,
     GetReservationSerializer,
     PostReservationSerializer,
     ReservationRPiSerializer,
 )
 
-from src.core.views import _OriginAPIView, BackendResponse
+from src.core.views import BackendResponse
 from src.core.views import BaseAPIView, PkAPIView
 from src.users.permissions import IsUserReservation
 
@@ -51,3 +46,7 @@ class ReservationsRPiView(PkAPIView):
     origins = ["rpi"]
     serializer = ReservationRPiSerializer
     model = Reservation
+    http_method_names = ["get"]
+
+    def get(self, request: Request, garage_pk: int, format=None) -> BackendResponse:
+        return super().get(request, garage_pk, format)

@@ -381,10 +381,10 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
             serializer = self.serializer(request.user, data=data)  # type: ignore
         if serializer.is_valid():
             try:
-                self.check_object_permissions(request, object.garage)
+                self.check_object_permissions(request, object.garage) # type: ignore
             except AttributeError:
                 # When the object is a Garage.
-                self.check_object_permissions(request, pk)
+                self.check_object_permissions(request, pk) # type: ignore
             serializer.save(user=request.user) if self.user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -404,7 +404,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
                 ],
                 status=status.HTTP_404_NOT_FOUND,
             )
-        self.check_object_permissions(request, pk)
+        self.check_object_permissions(request, pk) # type: ignore
         return try_delete(data)
 
 
