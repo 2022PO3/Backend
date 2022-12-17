@@ -39,7 +39,7 @@ class ParkingLot(TimeStampMixin, models.Model):
     ) -> bool | None:
         if start_time is None and end_time is None:
             return None
-        return not parking_lot_is_available(self, start_time, end_time)  # type: ignore
+        return not self.is_available(start_time, end_time)  # type: ignore
 
     objects = ParkingLotManager()
 
