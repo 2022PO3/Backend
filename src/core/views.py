@@ -398,3 +398,11 @@ def server_error(request: Request, *args, **kwargs):
         ]
     }
     return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def not_found_error(request: Request, *args, **kwargs):
+    """
+    Custom 404 error handler.
+    """
+    data = {"errors": ["The  requested page could not be found."]}
+    return JsonResponse(data, status=status.HTTP_404_NOT_FOUND)

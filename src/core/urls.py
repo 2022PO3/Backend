@@ -55,7 +55,9 @@ from src.api.views.payment.send_invoice_view import SendInvoiceView
 from src.api.views.payment.user_stripe_connection_view import UserStripeConnectionView
 from src.core.settings import DEBUG
 
+handler404 = "src.core.views.not_found_error"
 handler500 = "src.core.views.server_error"
+
 
 urlpatterns = [
     path("api/garage/<int:pk>", PkGarageView.as_view()),

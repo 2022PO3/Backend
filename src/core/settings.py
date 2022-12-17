@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(getenv("DEBUG"))
+DEBUG = True if getenv("DEBUG") == 1 else False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -90,7 +90,7 @@ WSGI_APPLICATION = "src.core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": getenv('DATABASE_NAME'),
+        "NAME": getenv("DATABASE_NAME"),
         "USER": "root",
         "PASSWORD": getenv("DATABASE_PASSWORD"),
         "HOST": "db",
