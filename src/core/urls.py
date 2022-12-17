@@ -1,36 +1,20 @@
-"""Backend URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-
 from django.urls import path, re_path
 from src.api.views import (
-    PkGarageView,
-    ListGarageView,
+    GaragesDetailView,
+    GaragesListView,
     PkLicencePlateView,
     UserDetailView,
     UserActivationView,
-    PkGarageSettingsView,
-    ReservationsView,
-    PkOpeningHoursView,
-    PostOpeningHoursView,
-    ParkingLotView,
-    PkParkingLotView,
-    RPiParkingLotView,
-    AssignReservationView,
-    PkReservationsView,
-    PkPricesView,
+    ReservationsListView,
+    OpeningHoursGarageView,
+    OpeningHoursDetailView,
+    ParkingLotsGarageView,
+    ParkingLotDetailView,
+    ParkingLotRPiView,
+    ParkingLotAssignView,
+    ReservationsDetailView,
+    PricesDetailView,
+    PricesGarageView,
     LoginView,
     LogoutView,
     SignUpView,
@@ -41,11 +25,10 @@ from src.api.views import (
     TOTPDeleteView,
     TOTPView,
     Disable2FA,
-    NotificationsView,
-    PkNotificationsView,
+    NotificationsListView,
+    NotificationsDetailView,
 )
-from src.api.views.garages.garage_view import OwnedGarageListView
-from src.api.views.garages.prices_view import GaragePricesView
+from src.api.views.garages.prices_view import PricesGarageView
 from src.api.views.licence_plates.licence_plate_view import LicencePlateListView
 from src.api.views.payment.checkout_preview_view import CheckoutPreviewView
 from src.api.views.payment.checkout_session_view import CreateCheckoutSessionView
@@ -58,34 +41,83 @@ from src.core.settings import DEBUG
 handler404 = "src.core.views.not_found_error"
 handler500 = "src.core.views.server_error"
 
-
+"""
+By convention, the routes should be build in the following way: 
+    - routes for getting, editing or deleting a single object are of the form `api/object/<int:pk>`; note the singular form of object.
+    - routes for getting multiple objects or for posting a new one are of the form `api/objects`; note the plural form of objects.
+    - routes for getting, posting, editing or deleting an object based on the `pk` of another object (e.g. getting a location based on the `garage_pk`) are of the form `api/object/<int:other_object_pk>`; note the singular form of object.
+    - routes for getting multiple object based on the `pk` of another object or posting a new one (e.g. getting all the prices based on a `garage_pk`) are of the form `api/objects/<int:other_object_pk>`; note the plural form of objects.
+"""
+###############
+# Garage URLs #
+###############
+# Garages
 urlpatterns = [
-    path("api/garage/<int:pk>", PkGarageView.as_view()),
-    path("api/garages", ListGarageView.as_view()),
-    path("api/user/garages/", OwnedGarageListView.as_view()),
-    path("api/parking-lots/<int:pk>", ParkingLotView.as_view()),
-    path("api/parking-lot/<int:pk>", PkParkingLotView.as_view()),
-    path("api/assign-parking-lot/<int:pk>", AssignReservationView.as_view()),
-    path("api/user", UserDetailView.as_view()),
-    path("api/licence-plate/<int:pk>", PkLicencePlateView.as_view()),
-    path("api/licence-plates", LicencePlateListView.as_view()),
-    path("api/garage-settings/<int:pk>", PkGarageSettingsView.as_view()),
-    path("api/reservations", ReservationsView.as_view()),
-    path("api/reservation/<int:pk>", PkReservationsView.as_view()),
-    path("api/opening-hours/<int:pk>", PkOpeningHoursView.as_view()),
-    path("api/opening-hours", PostOpeningHoursView.as_view()),
-    path("api/prices/<int:pk>", PkPricesView.as_view()),
-    path("api/garage/prices/<int:pk>", GaragePricesView.as_view()),
-    path("api/user/change-password", ChangePasswordView.as_view()),
-    path("api/notifications", NotificationsView.as_view()),
-    path("api/notification/<int:pk>", PkNotificationsView.as_view()),
+    path("api/garage/<int:pk>", GaragesDetailView.as_view()),
+    path("api/garages", GaragesListView.as_view()),
 ]
 
-# User authentication
+# Parking lots
 urlpatterns += [
-    path("api/auth/login", LoginView.as_view()),  # type: ignore
-    path("api/auth/logout", LogoutView.as_view()),  # type: ignore
-    path("api/auth/sign-up", SignUpView.as_view()),  # type: ignore
+    path("api/parking-lot/<int:garage_pk>", ParkingLotDetailView.as_view()),  #!
+    path("api/parking-lots/<int:garage_pk>", ParkingLotsGarageView.as_view()),
+    path("api/assign-parking-lot/<int:garage_pk>", ParkingLotAssignView.as_view()),
+]
+
+# Prices
+urlpatterns += [
+    path("api/price/<int:pk>", PricesDetailView.as_view()),
+    path("api/prices/<int:garage_pk>", PricesGarageView.as_view()),  #!
+]
+
+# Opening hours
+urlpatterns += [
+    path("api/opening-hour/<int:pk>", OpeningHoursDetailView.as_view()),
+    path("api/opening-hours/<int:garage_pk>", OpeningHoursGarageView.as_view()),
+]
+
+#############
+# User URLs #
+#############
+urlpatterns += [
+    path("api/user", UserDetailView.as_view()),
+    path("api/user/change-password", ChangePasswordView.as_view()),
+]
+
+# Reservations
+urlpatterns += [
+    path("api/reservation/<int:pk>", ReservationsDetailView.as_view()),
+    path("api/reservations", ReservationsListView.as_view()),
+]
+
+# Licence plates
+urlpatterns += [
+    path("api/licence-plate/<int:pk>", PkLicencePlateView.as_view()),
+    path("api/licence-plates", LicencePlateListView.as_view()),
+]
+
+# Notifications
+urlpatterns += [
+    path("api/notification/<int:pk>", NotificationsDetailView.as_view()),
+    path("api/notifications", NotificationsListView.as_view()),
+]
+
+
+# urlpatterns = [
+# path("api/user/garages/", OwnedGarageListView.as_view()),
+# path("api/garage-settings/<int:pk>", PkGarageSettingsView.as_view()),
+# path("api/prices/<int:pk>", PricesDetailView.as_view()),
+# path("api/garage/prices/<int:pk>", PricesGarageView.as_view()),
+# ]
+
+
+##################
+# Authentication #
+##################
+urlpatterns += [
+    path("api/auth/login", LoginView.as_view()),
+    path("api/auth/logout", LogoutView.as_view()),
+    path("api/auth/sign-up", SignUpView.as_view()),
     path(
         "api/auth/activate-account/<str:uid_b64>/<str:token>",
         UserActivationView.as_view(),
@@ -97,13 +129,19 @@ urlpatterns += [
     path("api/auth/totp/disable", Disable2FA.as_view()),
 ]
 
-# Raspberry Pi
+
+################
+# Raspberry Pi #
+################
 urlpatterns += [
     path("api/images", LicencePlateImageView.as_view()),
-    path("api/rpi-parking-lot", RPiParkingLotView.as_view()),
+    path("api/rpi-parking-lot", ParkingLotRPiView.as_view()),
 ]
 
-# Payment
+
+###########
+# Payment #
+###########
 urlpatterns += [
     path("api/checkout/create-session", CreateCheckoutSessionView.as_view()),
     path("api/checkout/preview", CheckoutPreviewView.as_view()),

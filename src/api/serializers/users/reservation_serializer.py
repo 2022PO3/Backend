@@ -81,6 +81,18 @@ class PostReservationSerializer(APIForeignKeySerializer):
         ]
 
 
+class ReservationRPiSerializer:
+    """
+    Serializer for serializing GET-requests of the RPi.
+    """
+
+    parking_lot = ParkingLotSerializer()
+
+    class Meta:
+        models = Reservation
+        fields = ["parking_lot" "from_date" "to_date"]
+
+
 class AssignReservationSerializer(APIForeignKeySerializer):
     """
     Serializer class which serializes responses which assign a random free parking lot to the user. Note that the reservation will not be recorded  before they made a call to the reservations view.

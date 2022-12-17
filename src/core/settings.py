@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if getenv("DEBUG") == 1 else False
+DEBUG = True if int(getenv("DEBUG")) == 1 else False  # type: ignore
 
 ALLOWED_HOSTS = ["*"]
 

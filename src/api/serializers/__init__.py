@@ -1,6 +1,4 @@
-from src.api.serializers.garages.price_serializer import (
-    PriceSerializer,
-)
+from src.api.serializers.garages.price_serializer import PriceSerializer
 
 from src.api.serializers.garages.location_serializer import LocationsSerializer
 from src.api.serializers.garages.garage_settings_serializer import (
@@ -31,6 +29,7 @@ from src.api.serializers.users.reservation_serializer import (
     GetReservationSerializer,
     PostReservationSerializer,
     AssignReservationSerializer,
+    ReservationRPiSerializer
 )
 from src.api.serializers.users.totp_serializer import (
     GetTOTPSerializer,

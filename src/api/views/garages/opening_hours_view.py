@@ -1,13 +1,29 @@
+from rest_framework.request import Request
+
 from src.api.models import OpeningHour
 from src.api.serializers import OpeningHourSerializer
-from src.core.views import PkAPIView, BaseAPIView
+from src.core.views import BackendResponse, PkAPIView
 from src.users.permissions import IsGarageOwner
 
 
-class PkOpeningHoursView(PkAPIView):
+class OpeningHoursDetailView(PkAPIView):
     """
-    View class which renders all the opening hours for a given garage with `pk`.
-    Deletion and updating is only allowed for garage owners.
+    View class which handles GET-, PUT- and DELETE-requests for opening hours with `pk`.
+    Getting, updating and deleting is only allowed for garage owners.
+    """
+
+    origins = ["app", "web"]
+    serializer = OpeningHourSerializer
+    model = OpeningHour
+    permission_classes = [IsGarageOwner]
+    http_method_names = ["get", "put", "delete"]
+
+
+class OpeningHoursGarageView(PkAPIView):
+    """
+    View class which handles GET- and POST-requests for opening hours of garage garage with
+    `garage_pk`.
+    Posting is only allowed by garage owners.
     """
 
     origins = ["app", "web"]
@@ -16,16 +32,7 @@ class PkOpeningHoursView(PkAPIView):
     model = OpeningHour
     permission_classes = [IsGarageOwner]
     return_list = True
-    http_method_names = ["get", "put", "delete"]
+    http_method_names = ["get", "post"]
 
-
-class PostOpeningHoursView(BaseAPIView):
-    """
-    View class which to add new opening hours to a garage.
-    Only allowed for garage owners.
-    """
-
-    origins = ["app", "web"]
-    permission_classes = [IsGarageOwner]
-    model = OpeningHour
-    serializer = {"post": OpeningHourSerializer}
+    def get(self, request: Request, garage_pk: int, format=None) -> BackendResponse:
+        return super().get(request, garage_pk, format)

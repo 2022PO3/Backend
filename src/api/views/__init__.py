@@ -1,14 +1,14 @@
-from src.api.views.garages.garage_view import PkGarageView, ListGarageView
-from src.api.views.garages.garage_settings_view import PkGarageSettingsView
+from src.api.views.garages.garage_view import GaragesDetailView, GaragesListView
 from src.api.views.garages.opening_hours_view import (
-    PkOpeningHoursView,
-    PostOpeningHoursView,
+    OpeningHoursGarageView,
+    OpeningHoursDetailView,
 )
-from src.api.views.garages.prices_view import PkPricesView
+from src.api.views.garages.prices_view import PricesDetailView, PricesGarageView
 from src.api.views.garages.parking_lots_view import (
-    ParkingLotView,
-    PkParkingLotView,
-    RPiParkingLotView,
+    ParkingLotsGarageView,
+    ParkingLotDetailView,
+    ParkingLotRPiView,
+    ParkingLotAssignView,
 )
 from src.api.views.licence_plates.licence_plate_view import PkLicencePlateView
 
@@ -18,9 +18,8 @@ from src.api.views.users.user_view import (
     ChangePasswordView,
 )
 from src.api.views.users.reservations_view import (
-    ReservationsView,
-    PkReservationsView,
-    AssignReservationView,
+    ReservationsListView,
+    ReservationsDetailView,
 )
 
 from src.api.views.auth.login_view import LoginView
@@ -45,6 +44,6 @@ from src.api.views.payment.checkout_session_view import CheckoutSessionSerialize
 from src.api.views.payment.checkout_webhook_view import CheckoutWebhookView
 
 from src.api.views.users.notifications_view import (
-    NotificationsView,
-    PkNotificationsView,
+    NotificationsListView,
+    NotificationsDetailView,
 )

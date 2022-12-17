@@ -50,9 +50,7 @@ def create_stripe_customer(user: User, card_data: dict) -> str:
             type="card",
             card=card_data,
         )
-
         payment_method.attach(customer=customer_id)
-
         stripe.Customer.modify(
             customer_id,
             invoice_settings={"default_payment_method": payment_method.stripe_id},
@@ -60,7 +58,6 @@ def create_stripe_customer(user: User, card_data: dict) -> str:
     except Exception as e:
         customer.delete()
         raise e
-
     return customer_id
 
 
