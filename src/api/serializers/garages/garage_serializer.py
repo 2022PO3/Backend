@@ -2,6 +2,7 @@ from typing import Any
 
 from src.api.models import Garage, GarageSettings, Location
 from src.api.serializers import GarageSettingsSerializer
+from src.api.serializers.garages.parking_lot_serializer import ParkingLotSerializer
 from src.core.serializers import APIForeignKeySerializer
 
 
@@ -11,6 +12,7 @@ class GarageSerializer(APIForeignKeySerializer):
     """
 
     garage_settings = GarageSettingsSerializer()
+    parking_lots = ParkingLotSerializer(many=True)
 
     def create(self, validated_data: dict[str, Any]) -> Garage:
         """
@@ -43,9 +45,7 @@ class GarageSerializer(APIForeignKeySerializer):
             "id",
             "name",
             "user_id",
-            "is_full",
-            "unoccupied_lots",
             "parking_lots",
             "garage_settings",
         ]
-        read_only_fields = ["is_full", "unoccupied_lots", "parking_lots", "user_id"]
+        read_only_fields = ["parking_lots"]

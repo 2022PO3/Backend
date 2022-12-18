@@ -31,10 +31,7 @@ from src.api.serializers.users.reservation_serializer import (
     AssignReservationSerializer,
     ReservationRPiSerializer,
 )
-from src.api.serializers.users.totp_serializer import (
-    TOTPSerializer,
-    PostTOTPSerializer,
-)
+from src.api.serializers.users.totp_serializer import TOTPSerializer
 
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
 from src.api.serializers.payment.card_serializer import CreditCardSerializer

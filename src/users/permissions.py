@@ -63,6 +63,7 @@ class IsUserReservation(BasePermission):
     """
 
     def has_object_permission(self, request: Request, view, pk: int):
+        print("pk", pk)
         if request.method in SAFE_METHODS:
             return True
         r = Reservation.objects.get(pk=pk)

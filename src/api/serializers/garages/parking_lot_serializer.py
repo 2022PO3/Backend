@@ -17,7 +17,6 @@ class ParkingLotSerializer(APIForeignKeySerializer):
             "parking_lot_no",
             "booked",
         ]
-        extra_kwargs = {"booked": {"allow_null": True}}
 
 
 class RPIParkingLotSerializer(APIForeignKeySerializer):

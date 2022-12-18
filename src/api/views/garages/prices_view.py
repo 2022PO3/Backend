@@ -14,7 +14,7 @@ from src.core.views import (
     PkAPIView,
     try_delete,
 )
-from src.api.models import Price
+from src.api.models import Price, Garage
 from src.api.serializers import PriceSerializer
 from src.users.permissions import IsGarageOwner
 

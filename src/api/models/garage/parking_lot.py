@@ -36,10 +36,12 @@ class ParkingLot(TimeStampMixin, models.Model):
 
     def booked(
         self, start_time: datetime | None = None, end_time: datetime | None = None
-    ) -> bool | None:
-        if start_time is None and end_time is None:
-            return None
-        return not self.is_available(start_time, end_time)  # type: ignore
+    ) -> bool:
+        if start_time is None or end_time is None:
+            return not self.is_available(
+                datetime.now(), datetime.now() + timedelta(hours=2)
+            )
+        return not self.is_available(start_time, end_time)
 
     objects = ParkingLotManager()
 
@@ -59,17 +61,11 @@ class ParkingLot(TimeStampMixin, models.Model):
         # made.
         OFFSET = timedelta(hours=8)
         pl_reservations = Reservation.objects.filter(parking_lot=self)
-        if any(
+        return not any(
             map(
                 lambda reservation: in_daterange(
                     reservation.from_date, reservation.to_date, start_time, end_time
                 ),
                 pl_reservations,
             )
-        ):
-            return False
-        elif self.occupied and (
-            start_time.timestamp() <= (datetime.utcnow() + OFFSET).timestamp()
-        ):
-            return False
-        return True
+        )
