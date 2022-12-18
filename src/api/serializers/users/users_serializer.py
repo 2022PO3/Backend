@@ -26,6 +26,7 @@ class UserSerializer(APIForeignKeySerializer):
             "has_automatic_payment",
             "two_factor",
             "two_factor_validated",
+            "strikes",
         ]
         extra_kwargs = {
             "password": {"write_only": True},
@@ -35,6 +36,7 @@ class UserSerializer(APIForeignKeySerializer):
             "has_automatic_payment": {"read_only": True},
             "two_factor": {"read_only": True},
             "two_factor_validated": {"read_only": True},
+            "strikes": {"read_only": True},
         }
 
 

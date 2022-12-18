@@ -35,6 +35,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     )
     location = models.CharField(max_length=3, choices=ProvincesEnum.choices, null=True)
     stripe_identifier = models.CharField(max_length=18, null=True)
+    strikes = models.IntegerField()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["role"]
@@ -59,6 +60,19 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
             token.delete()
         return super().delete()
 
+    def notify(self, title: str, content: str) -> None:
+        """
+        Creates a notification for the user.
+        """
+        from src.api.models import Notification
+
+        Notification.objects.create(
+            user=self.pk,
+            seen=False,
+            title=title,
+            content=content,
+        )
+
     def enable_2fa(self) -> None:
         self.two_factor = True
         self.two_factor_validated = False
@@ -72,6 +86,21 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     def validated_2fa(self) -> None:
         self.two_factor_validated = True
         self.save()
+
+    def increase_strikes(self, reservation) -> None:
+        """
+        Increases the strike number for the current user with 1.
+        If the user gets three strikes, the user will be deactivated.
+        Will set a notification to the user to notify him that the strike number has increased.
+        """
+        self.strikes += 1
+        if self.strikes == 3:
+            self.is_active = False
+        else:
+            self.notify(
+                "Got extra strike",
+                "You did not show up for the reservation in {reservation.garage.name}, where you booked from {reservation.from_date} to {reservation.to_date}. Therefore your strikes have increased to {self.strikes}. When you receive your third strike, your account will be deactivated for one month.",
+            )
 
     def _generate_log_in_url(self, password: str) -> str:
         """
