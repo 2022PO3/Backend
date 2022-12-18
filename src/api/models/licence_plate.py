@@ -25,6 +25,8 @@ class LicencePlate(TimeStampMixin, models.Model):
     garage = models.ForeignKey("api.Garage", on_delete=models.CASCADE, null=True)
     licence_plate = models.CharField(max_length=192, unique=True)
     enabled = models.BooleanField(default=False)
+    entered_at = models.DateTimeField(null=True)
+    paid_at = models.DateTimeField(null=True)
 
     @property
     def in_garage(self) -> bool:
@@ -34,7 +36,7 @@ class LicencePlate(TimeStampMixin, models.Model):
     def was_paid_for(self) -> bool:
         prices: list[Price] = Price.objects.filter(garage=self.garage)  # type: ignore
         prices = sorted(prices, key=lambda p: p.duration)
-        if len(prices) == 0:
+        if not len(prices):
             return True
         return (timezone.now() - self.updated_at) > prices[0].duration
 
@@ -47,10 +49,15 @@ class LicencePlate(TimeStampMixin, models.Model):
             return tuple()
 
         # Get time the user has to pay for
-        updated_at = self.updated_at
-        time_to_pay = timezone.now() - updated_at
-
-        # Go over each and reduce te time to pay by the largest possible amount
+        if self.entered_at is None and self.paid_at is not None:
+            # If the user pays for the second time.
+            time_to_pay = timezone.now() - self.paid_at
+        elif self.entered_at is not None:
+            # If the user pays for the first time.
+            time_to_pay = timezone.now() - self.entered_at
+        else:
+            time_to_pay = timedelta(0)
+        # Go over each and reduce the time to pay by the largest possible amount
         preview_items = []
         for price in prices:
 

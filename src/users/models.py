@@ -1,19 +1,26 @@
 import io
 import os
 import cv2
+import stripe
 from qrcode import make, QRCode
+
 
 from secrets import token_hex
 from knox.models import AuthToken
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
+from src.api.models.licence_plate import LicencePlate
 
 from src.users.managers import UserManager
 from src.api.models import ProvincesEnum
 from src.core.models import TimeStampMixin
 from src.core.exceptions import DeletionException
 from src.core.exceptions import BackendException
+
+
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+publishableKey = os.getenv("STRIPE_PUBLISHABLE_KEY")
 
 
 class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
@@ -183,6 +190,72 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         Generates a random email address.
         """
         return f"{token_hex(8)}@generated.com"
+
+    def create_stripe_customer(self, card_data: dict) -> str:
+        customer: stripe.Customer = stripe.Customer.create(
+            email=self.email,  # Use your email address for testing purposes
+            description="",
+        )
+        # Store the customer ID in your database for future purchases
+        # CUSTOMERS.append({"stripe_id": customer.id, "email": email})
+        # Read the Customer ID from your database
+        customer_id = customer.id
+
+        try:
+            payment_method: stripe.PaymentMethod = stripe.PaymentMethod.create(
+                type="card",
+                card=card_data,
+            )
+            payment_method.attach(customer=customer_id)
+            stripe.Customer.modify(
+                customer_id,
+                invoice_settings={"default_payment_method": payment_method.stripe_id},
+            )
+        except Exception as e:
+            customer.delete()
+            raise e
+        return customer_id
+
+    def remove_stripe_customer(self):
+        if self.stripe_identifier is not None:
+            stripe.Customer.delete(self.stripe_identifier)
+
+    def send_invoice(self, licence_plate: LicencePlate) -> None:
+        # Look up a customer in your database
+
+        if self.has_automatic_payment:
+            stripe_identifier = self.stripe_identifier
+            # Get items to pay for licence plate
+            items, _ = licence_plate.get_prices_to_pay()
+
+            # Create an Invoice
+            invoice = stripe.Invoice.create(
+                customer=stripe_identifier,
+                auto_advance=True,
+                collection_method="charge_automatically",
+                metadata={
+                    "user_id": self.pk,
+                    "licence_plate": licence_plate.licence_plate,
+                },
+            )
+
+            for item in items:
+                price: Price = item["price"]  # type: ignore
+                # Create an Invoice Item with the Price and Customer you want to charge
+                stripe.InvoiceItem.create(
+                    customer=stripe_identifier,
+                    amount=int(price.price * 100 * item["quantity"]),  # type: ignore
+                    description=f'{price.price_string} x{item["quantity"]}',
+                    # price=item['price'].stripe_identifier,
+                    invoice=invoice.id,
+                    currency=price.valuta,
+                )
+
+            # Complete invoice, this will send a request to the webhook view which then can use invoice.pay() to charge
+            # the user.
+            invoice.finalize_invoice()
+        else:
+            raise BackendException("User is not connected to stripe")
 
 
 def _read_qr_code(qr_code_path: str) -> QRCode:
