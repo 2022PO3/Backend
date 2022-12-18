@@ -42,7 +42,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
     )
     location = models.CharField(max_length=3, choices=ProvincesEnum.choices, null=True)
     stripe_identifier = models.CharField(max_length=18, null=True)
-    strikes = models.IntegerField()
+    strikes = models.IntegerField(default=0)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["role"]

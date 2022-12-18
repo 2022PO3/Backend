@@ -12,7 +12,7 @@ class Reservation(TimeStampMixin, models.Model):
     parking_lot = models.ForeignKey("api.ParkingLot", on_delete=models.CASCADE)
     from_date = models.DateTimeField()
     to_date = models.DateTimeField()
-    showed = models.BooleanField()
+    showed = models.BooleanField(default=False)
 
     def set_showed(self) -> None:
         """
@@ -27,6 +27,7 @@ class Reservation(TimeStampMixin, models.Model):
         )
         if valid_before_time <= datetime.now() <= valid_between_time:
             self.showed = True
+            self.save()
 
     class Meta:
         db_table = "reservations"

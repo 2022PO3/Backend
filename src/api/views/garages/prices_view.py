@@ -2,12 +2,9 @@ import stripe
 from django.http import Http404
 from rest_framework import status
 from rest_framework.request import Request
-from rest_framework.parsers import JSONParser
 
 from src.api.serializers.garages.price_serializer import CreatePriceSerializer
-from src.core.exceptions import DeletionException
 from src.core.utils import create_stripe_price
-from src.core.utils.stripe_endpoints import delete_stripe_price
 from src.core.views import (
     BackendResponse,
     parse_frontend_json,
@@ -46,7 +43,7 @@ class PricesDetailView(PkAPIView):
             try:
                 # Stripe does not support changing values in Prices,
                 # delete the old price and create the new one
-                delete_stripe_price(price)
+                price.delete_stripe_price()
                 stripe_price = create_stripe_price(
                     serializer.validated_data, price.garage.pk
                 )
@@ -81,7 +78,7 @@ class PricesDetailView(PkAPIView):
             )
         self.check_object_permissions(request, pk, Price)
         try:
-            delete_stripe_price(price)
+            price.delete_stripe_price()
         except stripe.error.InvalidRequestError as e:  # type: ignore
             return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
         except stripe.error.StripeError as e:  # type: ignore

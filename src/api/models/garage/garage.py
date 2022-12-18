@@ -12,6 +12,27 @@ class Garage(TimeStampMixin, models.Model):
     garage_settings = models.ForeignKey("api.GarageSettings", on_delete=models.CASCADE)
     name = models.CharField(max_length=192)
     entered = models.IntegerField(default=0)
+    reservations = models.IntegerField(default=0)
+
+    @property
+    def increment_reservations(self) -> None:
+        self.reservations += 1
+        self.save()
+
+    @property
+    def decrement_reservations(self) -> None:
+        self.reservations -= 1
+        self.save()
+
+    @property
+    def increment_entered(self) -> None:
+        self.entered += 1
+        self.save()
+
+    @property
+    def decrement_entered(self) -> None:
+        self.entered -= 1
+        self.save()
 
     def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import (

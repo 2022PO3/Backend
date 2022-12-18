@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
-from src.api.models import LicencePlate
+from src.api.models import LicencePlate, ParkingLot, Garage
 from src.api.serializers import LicencePlateSerializer, LicencePlateRPiSerializer
 from src.core.views import (
     PkAPIView,
@@ -39,7 +39,7 @@ class LicencePlateListView(BaseAPIView):
     post_user_id = True
 
 
-class RPiLicencePlateView(_OriginAPIView):
+class LicencePlateRPiView(_OriginAPIView):
     """
     View class which handles POST-requests for licence plates from the Raspberry Pi.
     """
@@ -56,10 +56,7 @@ class RPiLicencePlateView(_OriginAPIView):
         if serializer.is_valid():
             if serializer.validated_data["licence_plate"] == "0AAA000":  # type: ignore
                 return BackendResponse("OK", status=status.HTTP_200_OK)
-            self.handle_licence_plate(
-                serializer.data,
-            )
-            return BackendResponse(serializer.data, status=status.HTTP_201_CREATED)
+            return self.handle_licence_plate(serializer.data)
         return BackendResponse(
             [serializer.errors],  # type: ignore
             status=status.HTTP_400_BAD_REQUEST,
@@ -75,9 +72,25 @@ class RPiLicencePlateView(_OriginAPIView):
         If the `LicencePlate` doesn't exist in the database, a new dummy `User` with role 0
         is created, which is linked to the given `LicencePlate`.
         """
+        garage = Garage.objects.get(pk=garage_id)
         queryset = LicencePlate.objects.filter(licence_plate=licence_plate)
+        pls = ParkingLot.objects.is_available(
+            garage_id,
+            datetime.now(),
+            datetime.now() + timedelta(hours=2),
+        )
         now = datetime.now().astimezone().isoformat()
-        if not queryset:
+        is_fully_occupied = _is_fully_occupied(list(pls))
+        is_full = _is_full(list(pls))
+        if is_fully_occupied:
+            return BackendResponse(
+                ["Parking garage is completely full."], status=status.HTTP_403_FORBIDDEN
+            )
+        elif not queryset and is_full:
+            return BackendResponse(
+                ["Parking garage is completely full."], status=status.HTTP_403_FORBIDDEN
+            )
+        elif not queryset and not is_full:
             email = User.email_generator()
             password = User.objects.make_random_password(
                 length=30,
@@ -91,25 +104,42 @@ class RPiLicencePlateView(_OriginAPIView):
             LicencePlate.objects.create(
                 user=generated_user,
                 licence_plate=licence_plate,
-                garage_id=garage_id,
+                garage=garage,
                 updated_at=now,
                 entered_at=now,
+                enabled=True,
             )
             generated_user.generate_qr_code(password)
             generated_user.print_qr_code()
+            garage.decrement_reservations
+            return BackendResponse(
+                f"Successfully registered licence plate {licence_plate}.",
+                status=status.HTTP_200_OK,
+            )
         else:
-            queryset.update(garage_id=garage_id, updated_at=now, entered_at=now)
-        return BackendResponse(
-            f"Successfully registered licence plate {licence_plate}.",
-            status=status.HTTP_200_OK,
-        )
+            lp = queryset[0]
+            if self.can_enter(lp, garage, list(pls)):
+                return BackendResponse(
+                    ["Parking garage is completely full."],
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+            queryset.update(garage=garage, updated_at=now, entered_at=now)
+            garage.entered += 1
+            garage.save()
+            return BackendResponse(
+                f"Successfully registered licence plate {licence_plate}.",
+                status=status.HTTP_200_OK,
+            )
 
-    def _sign_out_licence_plate(self, licence_plate: LicencePlate) -> BackendResponse:
+    def _sign_out_licence_plate(
+        self, licence_plate: LicencePlate, garage_id: int
+    ) -> BackendResponse:
         """
         This signs out the `LicencePlate` from a `Garage`, setting its `garage_id` to `null`
         in the database. If the `LicencePlate` is associated with a dummy `User` of role 0,
         the `User` is also deleted from the database.
         """
+        garage = Garage.objects.get(pk=garage_id)
         user: User = licence_plate.user  # User.objects.get(pk=user_id)
         if licence_plate.was_paid_for:
             if user.is_generated_user:
@@ -119,6 +149,8 @@ class RPiLicencePlateView(_OriginAPIView):
                 # Check if the user paid before trying to leave
                 licence_plate.garage = None
                 licence_plate.save()
+            garage.entered -= 1
+            garage.save()
             return BackendResponse(
                 f"Successfully signed out licence plate {licence_plate}.",
                 status=status.HTTP_200_OK,
@@ -126,6 +158,8 @@ class RPiLicencePlateView(_OriginAPIView):
         elif user.has_automatic_payment:
             try:
                 user.send_invoice(licence_plate)
+                garage.entered -= 1
+                garage.save()
                 return BackendResponse(
                     f"Sent invoice to user of {licence_plate}.",
                     status=status.HTTP_200_OK,
@@ -135,7 +169,6 @@ class RPiLicencePlateView(_OriginAPIView):
                     f"User needs to pay for {licence_plate} before leaving the garage and failed to sent invoice.",
                     status=status.HTTP_402_PAYMENT_REQUIRED,
                 )
-
         return BackendResponse(
             f"User needs to pay for {licence_plate} before leaving the garage.",
             status=status.HTTP_402_PAYMENT_REQUIRED,
@@ -163,5 +196,30 @@ class RPiLicencePlateView(_OriginAPIView):
             return (
                 self._register_licence_plate(licence_plate, garage_id)
                 if lp.in_garage
-                else self._sign_out_licence_plate(lp)
+                else self._sign_out_licence_plate(lp, garage_id)
             )
+
+    def can_enter(
+        self, licence_plate: LicencePlate, garage: Garage, pls: list[ParkingLot]
+    ) -> bool:
+        """
+        Determines if the licence plate can enter the garage if it's full with reservations and physical occupancies.
+        """
+        if _is_fully_occupied(list(pls)):
+            return False
+        elif _is_full(list(pls)):
+            enter = licence_plate.can_enter(garage)
+            if enter:
+                garage.decrement_reservations
+            return licence_plate.can_enter(garage)
+        return True
+
+
+def _is_fully_occupied(pls: list[ParkingLot]) -> bool:
+    return len(pls) == len(list(filter(lambda pl: pl.occupied, pls)))
+
+
+def _is_full(pls: list[ParkingLot]) -> bool:
+    booked = list(filter(lambda pl: pl.booked, pls))
+    occupied = list(filter(lambda pl: pl.occupied, pls))
+    return len(booked) + len(occupied) == len(pls)

@@ -40,6 +40,30 @@ class LicencePlate(TimeStampMixin, models.Model):
             return True
         return (timezone.now() - self.updated_at) > prices[0].duration
 
+    def can_enter(self, garage) -> bool:
+        """
+        Determines if the licence plate can enter a given garage at the time of execution.
+        """
+        from src.api.models import Reservation, Garage
+
+        lp_reservations = Reservation.objects.filter(garage=garage, licence_plate=self)
+        if not lp_reservations:
+            return False
+        lp_reservation = min(
+            lp_reservations,
+            key=lambda r: abs(datetime.now().astimezone() - r.from_date),
+        )
+        if (
+            lp_reservation.from_date - timedelta(minutes=30)
+            <= datetime.now().astimezone()
+            <= lp_reservation.from_date
+            + (lp_reservation.to_date - lp_reservation.from_date) / 2
+        ):
+            lp_reservation.set_showed()
+            return True
+        else:
+            return False
+
     def get_prices_to_pay(self) -> tuple[list[dict[str, str | int]], int]:
         # Fetch garage prices from database
         prices = Price.objects.filter(garage=self.garage)
