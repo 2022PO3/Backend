@@ -26,6 +26,13 @@ class Reservation(TimeStampMixin, models.Model):
         self.save()
 
     @property
+    def is_valid(self) -> bool:
+        return (
+            self.from_date + (self.from_date - self.to_date) / 2
+            < datetime.now().astimezone()
+        )
+
+    @property
     def set_showed(self) -> None:
         """
         Sets the `showed` attribute of the reservation if the user showed up to the

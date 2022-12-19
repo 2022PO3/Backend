@@ -69,7 +69,7 @@ class Garage(TimeStampMixin, models.Model):
             datetime.now() + OFFSET,
         )
 
-        return len(list(filter(lambda pl: pl.booked(), pls)))
+        return len(list(filter(lambda pl: pl.booked, pls)))
 
     def occupied_lots(self, from_date: datetime, to_date: datetime) -> int:
         """

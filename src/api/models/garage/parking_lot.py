@@ -41,9 +41,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         self, start_time: datetime | None = None, end_time: datetime | None = None
     ) -> bool:
         if start_time is None or end_time is None:
-            return not self.is_available(
-                datetime.now(), datetime.now() + timedelta(hours=2)
-            )
+            return not self.is_available(datetime.now(), datetime.now() + OFFSET)
         return not self.is_available(start_time, end_time)
 
     objects = ParkingLotManager()
@@ -60,15 +58,14 @@ class ParkingLot(TimeStampMixin, models.Model):
         """
         from src.api.models import Reservation
 
-        # When a ParkingLot is occupied, this offset will be added to the time when the request is
-        # made.
         pl_reservations = Reservation.objects.filter(parking_lot=self, showed=False)
+        pl_valid_reservations = filter(lambda pl: pl.is_valid, pl_reservations)
         return not any(
             map(
                 lambda reservation: in_daterange(
                     reservation.from_date, reservation.to_date, start_time, end_time
                 ),
-                pl_reservations,
+                pl_valid_reservations,
             )
         )
 
