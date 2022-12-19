@@ -14,6 +14,7 @@ class Reservation(TimeStampMixin, models.Model):
     to_date = models.DateTimeField()
     showed = models.BooleanField(default=False)
 
+    @property
     def set_showed(self) -> None:
         """
         Sets the `showed` attribute of the reservation if the user showed up to the
@@ -25,7 +26,7 @@ class Reservation(TimeStampMixin, models.Model):
         valid_between_time: datetime = (
             self.from_date + (self.to_date - self.from_date) / 2
         )
-        if valid_before_time <= datetime.now() <= valid_between_time:
+        if valid_before_time <= datetime.now().astimezone() <= valid_between_time:
             self.showed = True
             self.save()
 

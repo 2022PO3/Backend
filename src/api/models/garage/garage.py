@@ -83,7 +83,9 @@ class Garage(TimeStampMixin, models.Model):
 
     def occupied_lots(self, from_date: datetime, to_date: datetime) -> int:
         """
-        Returns the amount of free spots for a given startTime and endTime, i.e. the parking lots which are physically occupied and parking lots which are reserved.
+        Returns the amount of occupied spots for a given startTime and endTime, i.e. 
+        the parking lots which are physically occupied and parking lots which are 
+        reserved.
         """
         from src.api.models import ParkingLot
 

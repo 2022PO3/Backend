@@ -59,7 +59,7 @@ class LicencePlate(TimeStampMixin, models.Model):
             <= lp_reservation.from_date
             + (lp_reservation.to_date - lp_reservation.from_date) / 2
         ):
-            lp_reservation.set_showed()
+            lp_reservation.set_showed
             return True
         else:
             return False

@@ -27,8 +27,6 @@ class ReservationsListView(BaseAPIView):
     get_user_id = True
 
     def post(self, request: Request, format=None) -> BackendResponse | None:
-        if (resp := super().post(request, format)) is not None:
-            return resp
         data = parse_frontend_json(request)
         serializer = PostReservationSerializer(data=data)  # type: ignore
         if serializer.is_valid():
