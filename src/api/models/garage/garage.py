@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.db.models.query import QuerySet
 
+from src.core.settings import OFFSET
 from src.core.models import TimeStampMixin
 from src.core.exceptions import DeletionException
 
@@ -12,17 +13,6 @@ class Garage(TimeStampMixin, models.Model):
     garage_settings = models.ForeignKey("api.GarageSettings", on_delete=models.CASCADE)
     name = models.CharField(max_length=192)
     entered = models.IntegerField(default=0)
-    reservations = models.IntegerField(default=0)
-
-    @property
-    def increment_reservations(self) -> None:
-        self.reservations += 1
-        self.save()
-
-    @property
-    def decrement_reservations(self) -> None:
-        self.reservations -= 1
-        self.save()
 
     @property
     def increment_entered(self) -> None:
@@ -67,7 +57,7 @@ class Garage(TimeStampMixin, models.Model):
 
         return ParkingLot.objects.filter(garage_id=self.pk)
 
-    def booked_lots(self) -> int:
+    def reservations(self) -> int:
         """
         Returns the amount of booked parking lots in the garage.
         """
@@ -76,15 +66,15 @@ class Garage(TimeStampMixin, models.Model):
         pls = ParkingLot.objects.is_available(
             self.pk,
             datetime.now(),
-            datetime.now() + timedelta(hours=1),
+            datetime.now() + OFFSET,
         )
 
         return len(list(filter(lambda pl: pl.booked(), pls)))
 
     def occupied_lots(self, from_date: datetime, to_date: datetime) -> int:
         """
-        Returns the amount of occupied spots for a given startTime and endTime, i.e. 
-        the parking lots which are physically occupied and parking lots which are 
+        Returns the amount of occupied spots for a given startTime and endTime, i.e.
+        the parking lots which are physically occupied and parking lots which are
         reserved.
         """
         from src.api.models import ParkingLot

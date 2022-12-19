@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny
 
 from src.api.models import LicencePlate, ParkingLot, Garage
 from src.api.serializers import LicencePlateSerializer, LicencePlateRPiSerializer
+from src.core.settings import OFFSET
 from src.core.views import (
     PkAPIView,
     BaseAPIView,
@@ -77,11 +78,11 @@ class LicencePlateRPiView(_OriginAPIView):
         pls = ParkingLot.objects.is_available(
             garage_id,
             datetime.now(),
-            datetime.now() + timedelta(hours=2),
+            datetime.now() + OFFSET,
         )
         now = datetime.now().astimezone().isoformat()
         is_fully_occupied = _is_fully_occupied(list(pls))
-        is_full = _is_full(list(pls))
+        is_full = _is_full(list(pls), garage)
         if is_fully_occupied:
             return BackendResponse(
                 ["Parking garage is completely full."], status=status.HTTP_403_FORBIDDEN
@@ -111,14 +112,13 @@ class LicencePlateRPiView(_OriginAPIView):
             )
             generated_user.generate_qr_code(password)
             generated_user.print_qr_code()
-            garage.decrement_reservations
             return BackendResponse(
                 f"Successfully registered licence plate {licence_plate}.",
                 status=status.HTTP_200_OK,
             )
         else:
             lp = queryset[0]
-            if self.can_enter(lp, garage, list(pls)):
+            if not self.can_enter(lp, garage, list(pls)):
                 return BackendResponse(
                     ["Parking garage is completely full."],
                     status=status.HTTP_403_FORBIDDEN,
@@ -152,7 +152,7 @@ class LicencePlateRPiView(_OriginAPIView):
             garage.entered -= 1
             garage.save()
             return BackendResponse(
-                f"Successfully signed out licence plate {licence_plate}.",
+                f"Successfully signed out licence plate {licence_plate.licence_plate}.",
                 status=status.HTTP_200_OK,
             )
         elif user.has_automatic_payment:
@@ -205,13 +205,11 @@ class LicencePlateRPiView(_OriginAPIView):
         """
         Determines if the licence plate can enter the garage if it's full with reservations and physical occupancies.
         """
-        if _is_fully_occupied(list(pls)):
+        if _is_fully_occupied(pls):
             return False
-        elif _is_full(list(pls)):
+        elif _is_full(pls, garage):
             enter = licence_plate.can_enter(garage)
-            if enter:
-                garage.decrement_reservations
-            return licence_plate.can_enter(garage)
+            return enter
         return True
 
 
@@ -219,7 +217,10 @@ def _is_fully_occupied(pls: list[ParkingLot]) -> bool:
     return len(pls) == len(list(filter(lambda pl: pl.occupied, pls)))
 
 
-def _is_full(pls: list[ParkingLot]) -> bool:
+def _is_full(pls: list[ParkingLot], garage: Garage) -> bool:
+    all_pls = ParkingLot.objects.filter(garage=garage)
     booked = list(filter(lambda pl: pl.booked, pls))
+    print(f"{booked=}")
     occupied = list(filter(lambda pl: pl.occupied, pls))
-    return len(booked) + len(occupied) == len(pls)
+    print(f"{occupied=}")
+    return len(booked) + len(occupied) == len(all_pls)

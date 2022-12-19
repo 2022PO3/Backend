@@ -62,7 +62,7 @@ class ParkingLot(TimeStampMixin, models.Model):
 
         # When a ParkingLot is occupied, this offset will be added to the time when the request is
         # made.
-        pl_reservations = Reservation.objects.filter(parking_lot=self)
+        pl_reservations = Reservation.objects.filter(parking_lot=self, showed=False)
         return not any(
             map(
                 lambda reservation: in_daterange(

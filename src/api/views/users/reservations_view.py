@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
-from src.api.models import Reservation, Garage
+from src.api.models import Reservation
 from src.api.serializers import (
     GetReservationSerializer,
     PostReservationSerializer,
@@ -32,8 +32,6 @@ class ReservationsListView(BaseAPIView):
         serializer = PostReservationSerializer(data=data)  # type: ignore
         if serializer.is_valid():
             garage_id: int = serializer.validated_data["garage_id"]  # type: ignore
-            garage = Garage.objects.get(pk=garage_id)
-            garage.increment_reservations
             serializer.save(user=request.user)
             return BackendResponse(serializer.data, status=status.HTTP_201_CREATED)
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
