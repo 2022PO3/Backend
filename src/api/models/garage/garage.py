@@ -6,7 +6,6 @@ from django.db import models
 from src.core.settings import OFFSET
 from src.core.models import TimeStampMixin
 from src.core.exceptions import DeletionException
-from src.api.models.garage.parking_lot import ParkingLot
 
 
 class Garage(TimeStampMixin, models.Model):
@@ -52,10 +51,12 @@ class Garage(TimeStampMixin, models.Model):
             parking_lot.delete()
         return super().delete()
 
-    def parking_lots(self) -> list[ParkingLot]:
+    def parking_lots(self) -> list:
+        from src.api.models import ParkingLot
+
         return list(ParkingLot.objects.filter(garage=self))
 
-    def reservations(self, pls: list[ParkingLot] | None = None) -> int:
+    def reservations(self, pls: list | None = None) -> int:
         """
         Returns the amount of booked parking lots in the garage for a user with default park time.
         """
@@ -87,7 +88,7 @@ class Garage(TimeStampMixin, models.Model):
         self,
         from_date: datetime,
         end_date: datetime,
-    ) -> ParkingLot:
+    ):
         """
         Returns a random free parking lot from the garage.
         """

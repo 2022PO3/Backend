@@ -28,8 +28,8 @@ class Reservation(TimeStampMixin, models.Model):
     @property
     def is_valid(self) -> bool:
         return (
-            self.from_date + (self.from_date - self.to_date) / 2
-            < datetime.now().astimezone()
+            self.from_date + (self.to_date - self.from_date) / 2
+            >= datetime.now().astimezone()
         )
 
     @property

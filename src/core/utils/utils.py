@@ -46,13 +46,8 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
-def in_daterange(st1: datetime, et1: datetime, st2: datetime, et2: datetime) -> bool:
+def overlap(st1: datetime, et1: datetime, st2: datetime, et2: datetime) -> bool:
     """
     Returns a boolean which indicates if the given date ranges overlap with each other.
     """
-    return (
-        st1.timestamp() <= st2.timestamp() <= et1.timestamp()
-        or st1.timestamp() <= et2.timestamp() <= et1.timestamp()
-        or st2.timestamp() <= st1.timestamp() <= et2.timestamp()
-        or st1.timestamp() <= et2.timestamp() <= et1.timestamp()
-    )
+    return st1.astimezone() <= et2.astimezone() and st2.astimezone() <= et1.astimezone()

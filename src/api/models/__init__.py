@@ -9,6 +9,5 @@ from src.api.models.garage.location import Location
 from src.api.models.licence_plate import LicencePlate
 from src.api.models.garage.parking_lot import ParkingLot
 from src.api.models.user.reservation import Reservation
-from src.api.models.licence_plate_image import Image
 
 from src.api.models.user.notification import Notification

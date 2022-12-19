@@ -107,12 +107,12 @@ class LicencePlate(TimeStampMixin, models.Model):
 
     def can_reserve(self, from_date: datetime, to_date: datetime) -> bool:
         from src.api.models import Reservation
-        from src.core.utils import in_daterange
+        from src.core.utils import overlap
 
         user_reservations = Reservation.objects.filter(user=self.pk)
         return not any(
             map(
-                lambda reservation: in_daterange(
+                lambda reservation: overlap(
                     reservation.from_date, reservation.to_date, from_date, to_date
                 ),
                 user_reservations,
