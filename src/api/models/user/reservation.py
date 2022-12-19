@@ -18,6 +18,10 @@ class Reservation(TimeStampMixin, models.Model):
         from src.api.models import ParkingLot
 
         pl = ParkingLot.get_random(self.garage.pk, self.from_date, self.to_date)
+        self.user.notify(
+            "Parking lot reassignment",
+            f"Someone else parked on your reserved parking lot, thus it bas been reassigned from {self.parking_lot.parking_lot_no} to {pl.parking_lot_no}. The time of the reservation remains unchanged.",
+        )
         self.parking_lot = pl
         self.save()
 

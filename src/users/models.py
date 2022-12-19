@@ -106,7 +106,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         else:
             self.notify(
                 "Got extra strike",
-                "You did not show up for the reservation in {reservation.garage.name}, where you booked from {reservation.from_date} to {reservation.to_date}. Therefore your strikes have increased to {self.strikes}. When you receive your third strike, your account will be deactivated for one month.",
+                f"You did not show up for the reservation in {reservation.garage.name}, where you booked from {reservation.from_date} to {reservation.to_date}. Therefore your strikes have increased to {self.strikes}. When you receive your third strike, your account will be deactivated for one month.",
             )
 
     def _generate_log_in_url(self, password: str) -> str:

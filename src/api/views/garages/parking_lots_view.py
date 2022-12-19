@@ -99,7 +99,8 @@ class ParkingLotAssignView(_OriginAPIView):
 
 class ParkingLotRPiView(_OriginAPIView):
     """
-    View class for handling request coming from the Raspberry Pi. The request only contains the garage id and parking lot number.
+    View class for handling request coming from the Raspberry Pi. The request only contains the 
+    garage id and parking lot number.
     """
 
     permission_classes = [AllowAny]
