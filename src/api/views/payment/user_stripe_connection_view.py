@@ -7,10 +7,6 @@ from rest_framework.request import Request
 
 from src.api.serializers import CreditCardSerializer
 from src.core.utils import to_snake_case
-from src.core.utils.stripe_endpoints import (
-    create_stripe_customer,
-    remove_stripe_customer,
-)
 from src.core.views import _OriginAPIView, BackendResponse, _dict_key_to_case
 
 
@@ -36,8 +32,8 @@ class UserStripeConnectionView(_OriginAPIView):
             serializer = CreditCardSerializer(data=card_data)  # type: ignore
             if serializer.is_valid():
                 try:
-                    stripe_identifier = create_stripe_customer(
-                        request.user, serializer.validated_data  # type: ignore
+                    stripe_identifier = request.user.create_stripe_customer(
+                        serializer.validated_data  # type: ignore
                     )
 
                     request.user.stripe_identifier = stripe_identifier
@@ -73,7 +69,7 @@ class UserStripeConnectionView(_OriginAPIView):
 
         if request.user.has_automatic_payment:
             try:
-                remove_stripe_customer(request.user)
+                request.user.remove_stripe_customer()
                 request.user.stripe_identifier = None
                 request.user.save()
                 return BackendResponse(

@@ -12,6 +12,27 @@ class Garage(TimeStampMixin, models.Model):
     garage_settings = models.ForeignKey("api.GarageSettings", on_delete=models.CASCADE)
     name = models.CharField(max_length=192)
     entered = models.IntegerField(default=0)
+    reservations = models.IntegerField(default=0)
+
+    @property
+    def increment_reservations(self) -> None:
+        self.reservations += 1
+        self.save()
+
+    @property
+    def decrement_reservations(self) -> None:
+        self.reservations -= 1
+        self.save()
+
+    @property
+    def increment_entered(self) -> None:
+        self.entered += 1
+        self.save()
+
+    @property
+    def decrement_entered(self) -> None:
+        self.entered -= 1
+        self.save()
 
     def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import (
@@ -62,7 +83,9 @@ class Garage(TimeStampMixin, models.Model):
 
     def occupied_lots(self, from_date: datetime, to_date: datetime) -> int:
         """
-        Returns the amount of free spots for a given startTime and endTime, i.e. the parking lots which are physically occupied and parking lots which are reserved.
+        Returns the amount of occupied spots for a given startTime and endTime, i.e. 
+        the parking lots which are physically occupied and parking lots which are 
+        reserved.
         """
         from src.api.models import ParkingLot
 

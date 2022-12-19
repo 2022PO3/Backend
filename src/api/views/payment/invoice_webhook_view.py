@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 
-from src.api.views.payment.checkout_webhook_view import complete_order
+from src.api.views.payment.checkout_webhook_view import complete_payment
 from src.core.utils.payment_mails import send_payment_mail, PaymentResult
 from src.core.views import BackendResponse
 
@@ -59,7 +59,7 @@ class InvoiceWebhookView(APIView):
             except stripe.error.CardError:  # type: ignore
                 # Error gets handled by a 'invoice.payment_failed' event
                 pass
-            return complete_order(invoice.metadata)
+            return complete_payment(invoice.metadata)
 
         if event["type"] == "invoice.payment_failed":  # type: ignore
             # These events correspond to a failed automatic charge, we have to send an email with another payment option

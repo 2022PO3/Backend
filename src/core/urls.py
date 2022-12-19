@@ -3,6 +3,8 @@ from src.api.views import (
     GaragesDetailView,
     GaragesListView,
     LicencePlateDetailView,
+    LicencePlateListView,
+    LicencePlateRPiView,
     UserDetailView,
     UserActivationView,
     ReservationsListView,
@@ -20,7 +22,6 @@ from src.api.views import (
     LogoutView,
     SignUpView,
     ChangePasswordView,
-    LicencePlateImageView,
     TOTPVerifyView,
     TOTPDetailView,
     TOTPListView,
@@ -92,8 +93,8 @@ urlpatterns += [
 
 # Licence plates
 urlpatterns += [
-    path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
     path("api/licence-plates", LicencePlateListView.as_view()),
+    path("api/licence-plate/<int:pk>", LicencePlateDetailView.as_view()),
 ]
 
 # Notifications
@@ -125,9 +126,9 @@ urlpatterns += [
 # Raspberry Pi #
 ################
 urlpatterns += [
-    path("api/images", LicencePlateImageView.as_view()),
-    path("api/rpi-parking-lot", ParkingLotRPiView.as_view()),
-    path("api/reservations/<int:garage_pk>", ReservationsRPiView.as_view()),
+    path("api/rpi/licence-plates", LicencePlateRPiView.as_view()),
+    path("api/rpi/parking-lot", ParkingLotRPiView.as_view()),
+    path("api/rpi/reservations/<int:garage_pk>", ReservationsRPiView.as_view()),
 ]
 
 

@@ -5,7 +5,6 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 from src.api.models import LicencePlate
 from src.api.serializers import CheckoutSessionSerializer
-from src.core.utils.stripe_endpoints import send_invoice
 from src.core.views import BackendResponse, _OriginAPIView
 
 # Set your secret key. Remember to switch to your live secret key in production.
@@ -40,7 +39,7 @@ class SendInvoiceView(_OriginAPIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
             try:
-                send_invoice(request.user, licence_plate)
+                request.user.send_invoice(licence_plate)
             except stripe.error.InvalidRequestError as e:  # type: ignore
                 return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
             except stripe.error.StripeError as e:  # type: ignore
