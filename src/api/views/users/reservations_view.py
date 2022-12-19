@@ -55,8 +55,8 @@ class ReservationsRPiView(PkAPIView):
     View class which handles GET-requests for reservations of the garage the RPi is located in.
     """
 
-    permission_classes = [AllowAny]
     origins = ["rpi"]
+    permission_classes = [AllowAny]
     serializer = ReservationRPiSerializer
     model = Reservation
     http_method_names = ["get"]
