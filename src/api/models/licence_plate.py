@@ -18,7 +18,7 @@ class LicencePlate(TimeStampMixin, models.Model):
 
     If the `garage`-column is filled in, the `LicencePlate` is considered inside this
     parking garage.
-    The `updated_at`-column is used to calculate the time inside the parking garage.
+    The `paid_at`-column is used to calculate the time inside the parking garage.
     """
 
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
@@ -38,13 +38,13 @@ class LicencePlate(TimeStampMixin, models.Model):
         prices = sorted(prices, key=lambda p: p.duration)
         if not len(prices):
             return True
-        return (timezone.now() - self.updated_at) > prices[0].duration
+        return (timezone.now() - self.paid_at) > prices[0].duration
 
     def can_enter(self, garage) -> bool:
         """
         Determines if the licence plate can enter a given garage at the time of execution.
         """
-        from src.api.models import Reservation, Garage
+        from src.api.models import Reservation
 
         lp_reservations = Reservation.objects.filter(garage=garage, licence_plate=self)
         if not lp_reservations:
