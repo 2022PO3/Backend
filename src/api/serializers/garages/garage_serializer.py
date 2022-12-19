@@ -49,5 +49,11 @@ class GarageSerializer(APIForeignKeySerializer):
             "garage_settings",
             "reservations",
             "entered",
+            "next_free_spot",
         ]
-        read_only_fields = ["parking_lots", "reservations", "entered"]
+        read_only_fields = [
+            "parking_lots",
+            "reservations",
+            "entered",
+            "next_free_spot",
+        ]

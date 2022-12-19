@@ -13,9 +13,9 @@ class ParkingLotManager(models.Manager):
     function.
     """
 
-    def is_available(self, pk: int, start_time: datetime, end_time: datetime):
+    def is_available(self, pk: int, from_date: datetime, to_date: datetime):
         for pl in (pls := super().get_queryset().filter(garage_id=pk)):
-            pl.available = pl.available(start_time, end_time)
+            pl.available = pl.available(from_date, to_date)
             pl.save()
         return pls
 
@@ -49,12 +49,6 @@ class ParkingLot(TimeStampMixin, models.Model):
         db_table = "parking_lots"
         app_label = "api"
 
-    def booked(self) -> bool:
-        """
-        Returns if the parking lot is booked within the time frame of a default user.
-        """
-        return self._has_reservation(datetime.now(), datetime.now() + OFFSET)
-
     def available(
         self,
         from_date: datetime | None = None,
@@ -63,15 +57,25 @@ class ParkingLot(TimeStampMixin, models.Model):
         """
         Returns if the parking lot is available within the given time frame.
         """
+        if self.disabled:
+            return False
         if from_date is None or to_date is None:
             from_date = datetime.now()
             to_date = from_date + OFFSET
-        occupied_until = self._occupied_until()
+        occupied_until = self.occupied_until()
         if self._has_reservation(from_date, to_date):
             return False
         elif occupied_until is not None:
             return occupied_until < from_date  # type: ignore
         return True
+
+    def booked(self) -> bool:
+        """
+        Returns if the parking lot is booked within the time frame of a default user.
+        """
+        return self._has_reservation(
+            datetime.now(), datetime.now() + OFFSET, showed=False
+        )
 
     def reassign(self) -> None:
         """
@@ -104,21 +108,23 @@ class ParkingLot(TimeStampMixin, models.Model):
         self.licence_plate = lp
         self.save()
 
-    def _occupied_until(self) -> datetime | None:
-        if not self.occupied:
-            return None
+    def occupied_until(self) -> datetime | None:
         reservation = self._has_now_reservation()
         if reservation is not None:
             return reservation.to_date
+        if not self.occupied:
+            return None
         if self.licence_plate is None:
             return datetime.now() + OFFSET
         return self.licence_plate.entered_at + OFFSET
 
-    def _has_reservation(self, from_date: datetime, to_date: datetime) -> bool:
+    def _has_reservation(
+        self, from_date: datetime, to_date: datetime, *, showed: bool | None = None
+    ) -> bool:
         """
         Returns if the parking lot has a reservation for the given time frame.
         """
-        reservations = self._get_reservations(valid=True)
+        reservations = self._get_reservations(showed=showed, valid=True)
         return any(
             map(
                 lambda reservation: overlap(
@@ -128,7 +134,9 @@ class ParkingLot(TimeStampMixin, models.Model):
             )
         )
 
-    def _has_now_reservation(self):
+    def _has_now_reservation(
+        self,
+    ):
         """
         Returns if the parking lot has a reservation for the moment the function is called.
         """
@@ -142,13 +150,18 @@ class ParkingLot(TimeStampMixin, models.Model):
 
         return reservation_now[0] if reservation_now else None
 
-    def _get_reservations(self, *, valid=False) -> list:
+    def _get_reservations(self, *, showed: bool | None = None, valid=False) -> list:
         """
         Returns alls the reservations for the parking lot.
         """
         from src.api.models import Reservation
 
-        reservations = list(Reservation.objects.filter(parking_lot=self))
+        if showed is None:
+            reservations = list(Reservation.objects.filter(parking_lot=self))
+        else:
+            reservations = list(
+                Reservation.objects.filter(parking_lot=self, showed=showed)
+            )
         if not valid:
             return reservations
         else:

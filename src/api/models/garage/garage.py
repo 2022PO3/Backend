@@ -24,6 +24,10 @@ class Garage(TimeStampMixin, models.Model):
         self.entered -= 1
         self.save()
 
+    @property
+    def next_free_spot(self) -> datetime | None:
+        return self._get_next_free_spot()
+
     def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import (
             OpeningHour,
@@ -99,6 +103,18 @@ class Garage(TimeStampMixin, models.Model):
             )
         )
         return pls[randint(0, len(pls))]
+
+    def _get_next_free_spot(self) -> datetime | None:
+        """
+        Returns the time that a new spot will become free in the parking garage.
+        """
+        pls = self.parking_lots()
+        occupied_until: list[datetime | None] = list(
+            map(lambda pl: pl.occupied_until(), pls)
+        )
+        if None in occupied_until:
+            return None
+        return min(occupied_until, key=lambda d: d.timestamp(), default=None)  # type: ignore
 
     class Meta:
         db_table = "garages"
