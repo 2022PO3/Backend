@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.request import Request
+from rest_framework.permissions import AllowAny
 
 from src.api.models import Reservation, Garage
 from src.api.serializers import (
@@ -54,6 +55,8 @@ class ReservationsRPiView(PkAPIView):
     View class which handles GET-requests for reservations of the garage the RPi is located in.
     """
 
+    origins = ["web", "app"]
+    permission_classes = [AllowAny]
     origins = ["rpi"]
     serializer = ReservationRPiSerializer
     model = Reservation
