@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 from rest_framework import status
 from rest_framework.request import Request
@@ -220,7 +220,5 @@ def _is_fully_occupied(pls: list[ParkingLot]) -> bool:
 def _is_full(pls: list[ParkingLot], garage: Garage) -> bool:
     all_pls = ParkingLot.objects.filter(garage=garage)
     booked = list(filter(lambda pl: pl.booked, pls))
-    print(f"{booked=}")
     occupied = list(filter(lambda pl: pl.occupied, pls))
-    print(f"{occupied=}")
     return len(booked) + len(occupied) == len(all_pls)

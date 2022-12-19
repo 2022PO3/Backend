@@ -15,6 +15,7 @@ class ParkingLotSerializer(APIForeignKeySerializer):
             "occupied",
             "disabled",
             "parking_lot_no",
+            "available",
             "booked",
         ]
 

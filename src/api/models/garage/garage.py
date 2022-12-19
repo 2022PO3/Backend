@@ -1,11 +1,12 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from random import randint
 
 from django.db import models
-from django.db.models.query import QuerySet
 
 from src.core.settings import OFFSET
 from src.core.models import TimeStampMixin
 from src.core.exceptions import DeletionException
+from src.api.models.garage.parking_lot import ParkingLot
 
 
 class Garage(TimeStampMixin, models.Model):
@@ -28,7 +29,6 @@ class Garage(TimeStampMixin, models.Model):
         from src.api.models import (
             OpeningHour,
             Price,
-            ParkingLot,
             Reservation,
             LicencePlate,
         )
@@ -41,35 +41,27 @@ class Garage(TimeStampMixin, models.Model):
             raise DeletionException(
                 "Garage cannot be deleted due to existing licence plates in this garage."
             )
-        garage_prices = Price.objects.filter(garage_id=self.pk)
+        garage_prices = Price.objects.filter(garage=self)
         for price in garage_prices:
             price.delete()
-        garage_opening_hours = OpeningHour.objects.filter(garage_id=self.pk)
+        garage_opening_hours = OpeningHour.objects.filter(garage=self)
         for opening_hour in garage_opening_hours:
             opening_hour.delete()
-        garage_parking_lots = ParkingLot.objects.filter(garage_id=self.pk)
+        garage_parking_lots = self.parking_lots()
         for parking_lot in garage_parking_lots:
             parking_lot.delete()
         return super().delete()
 
-    def parking_lots(self) -> QuerySet:
-        from src.api.models import ParkingLot
+    def parking_lots(self) -> list[ParkingLot]:
+        return list(ParkingLot.objects.filter(garage=self))
 
-        return ParkingLot.objects.filter(garage_id=self.pk)
-
-    def reservations(self) -> int:
+    def reservations(self, pls: list[ParkingLot] | None = None) -> int:
         """
-        Returns the amount of booked parking lots in the garage.
+        Returns the amount of booked parking lots in the garage for a user with default park time.
         """
-        from src.api.models import ParkingLot
-
-        pls = ParkingLot.objects.is_available(
-            self.pk,
-            datetime.now(),
-            datetime.now() + OFFSET,
-        )
-
-        return len(list(filter(lambda pl: pl.booked, pls)))
+        if pls is None:
+            pls = self.parking_lots()
+        return len(list(filter(lambda pl: pl.booked(), pls)))
 
     def occupied_lots(self, from_date: datetime, to_date: datetime) -> int:
         """
@@ -77,24 +69,35 @@ class Garage(TimeStampMixin, models.Model):
         the parking lots which are physically occupied and parking lots which are
         reserved.
         """
-        from src.api.models import ParkingLot
-
-        parking_lots = ParkingLot.objects.filter(garage_id=self.pk)
-
-        occupied_lots = len(list(filter(lambda pl: pl.occupied, parking_lots)))
-        reserved_lots = len(
-            list(filter(lambda pl: pl.is_available(from_date, to_date), parking_lots))
-        )
+        pls = self.parking_lots()
+        occupied_lots = len(list(filter(lambda pl: pl.occupied, pls)))
+        reserved_lots = self.reservations(pls)
         return occupied_lots + reserved_lots
 
-    def get_last_entered(self, garage_id: int):
+    def get_last_entered(self):
         """
         Gets the last entered licence plate of a garage.
         """
         from src.api.models import LicencePlate
 
-        entered_lps = LicencePlate.objects.filter(garage_id=garage_id)
+        entered_lps = LicencePlate.objects.filter(garage=self)
         return min(entered_lps, key=lambda lp: abs(datetime.now() - lp.entered_at))  # type: ignore
+
+    def get_random(
+        self,
+        from_date: datetime,
+        end_date: datetime,
+    ) -> ParkingLot:
+        """
+        Returns a random free parking lot from the garage.
+        """
+        pls = list(
+            filter(
+                lambda pl: pl.available(from_date, end_date),
+                self.parking_lots(),
+            )
+        )
+        return pls[randint(0, len(pls))]
 
     class Meta:
         db_table = "garages"

@@ -1,4 +1,3 @@
-from random import randint
 from typing import Any
 from dateutil.parser import parse
 from rest_framework import status
@@ -6,7 +5,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
-from src.api.models import ParkingLot
+from src.api.models import ParkingLot, Garage
 from src.api.serializers import ParkingLotSerializer, RPIParkingLotSerializer
 from src.api.serializers import AssignReservationSerializer
 from src.core.views import (
@@ -87,9 +86,8 @@ class ParkingLotAssignView(_OriginAPIView):
         assignment_serializer = AssignReservationSerializer(data=request_data)  # type: ignore
         if assignment_serializer.is_valid():
             valid_data: dict[str, Any] = assignment_serializer.validated_data  # type: ignore
-            pl = ParkingLot.get_random(
-                int(garage_pk), valid_data["from_date"], valid_data["to_date"]
-            )
+            garage = Garage.objects.get(id=int(garage_pk))
+            pl = garage.get_random(valid_data["from_date"], valid_data["to_date"])
             serializer = ParkingLotSerializer(pl)
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(
@@ -99,7 +97,7 @@ class ParkingLotAssignView(_OriginAPIView):
 
 class ParkingLotRPiView(_OriginAPIView):
     """
-    View class for handling request coming from the Raspberry Pi. The request only contains the 
+    View class for handling request coming from the Raspberry Pi. The request only contains the
     garage id and parking lot number.
     """
 
@@ -113,15 +111,17 @@ class ParkingLotRPiView(_OriginAPIView):
         data = parse_frontend_json(request)
         serializer = RPIParkingLotSerializer(data=data)  # type: ignore
         if serializer.is_valid():
-            parking_lot = ParkingLot.objects.filter(
+            parking_lot: ParkingLot = ParkingLot.objects.get(
                 garage_id=serializer.validated_data["garage_id"],  # type: ignore
                 parking_lot_no=serializer.validated_data["parking_lot_no"],  # type: ignore
             )
 
-            if len(parking_lot) == 1:
-                parking_lot.update(occupied=serializer.validated_data["occupied"])  # type: ignore
-                parking_lot[0].reassign()
-                return Response(None, status=status.HTTP_204_NO_CONTENT)
-            else:
-                return Response(None, status=status.HTTP_400_BAD_REQUEST)
+            occupied: bool = serializer.validated_data["occupied"]  # type: ignore
+            if occupied:
+                parking_lot.reassign()
+                parking_lot.set_lp()
+            parking_lot.occupied = occupied
+            parking_lot.save()
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

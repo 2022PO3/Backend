@@ -5,6 +5,7 @@ from django.db import models
 from src.core.settings import OFFSET
 from src.core.utils import in_daterange
 from src.core.models import TimeStampMixin
+from src.api.models.user.reservation import Reservation
 
 
 class ParkingLotManager(models.Manager):
@@ -15,7 +16,7 @@ class ParkingLotManager(models.Manager):
 
     def is_available(self, pk: int, start_time: datetime, end_time: datetime):
         for pl in (pls := super().get_queryset().filter(garage_id=pk)):
-            pl.booked = pl.booked(start_time, end_time)
+            pl.available = pl.available(start_time, end_time)
             pl.save()
         return pls
 
@@ -35,14 +36,15 @@ class ParkingLot(TimeStampMixin, models.Model):
     parking_lot_no = models.IntegerField()
     floor_number = models.IntegerField()
     occupied = models.BooleanField()
+    licence_plate = models.ForeignKey("api.LicencePlate", on_delete=models.CASCADE)
     disabled = models.BooleanField(default=False)
 
     def booked(
         self, start_time: datetime | None = None, end_time: datetime | None = None
     ) -> bool:
         if start_time is None or end_time is None:
-            return not self.is_booked(datetime.now(), datetime.now() + OFFSET)
-        return not self.is_booked(start_time, end_time)
+            return not self._has_reservation(datetime.now(), datetime.now() + OFFSET)
+        return not self._has_reservation(start_time, end_time)
 
     objects = ParkingLotManager()
 
@@ -51,31 +53,23 @@ class ParkingLot(TimeStampMixin, models.Model):
         db_table = "parking_lots"
         app_label = "api"
 
-    def is_booked(self, start_time: datetime, end_time: datetime) -> bool:
+    def available(
+        self,
+        from_date: datetime | None = None,
+        to_date: datetime | None = None,
+    ) -> bool:
         """
-        Returns a boolean which indicates if the given parking lot with `pl_pk` is available in
-        the time range from `start_time` to `end_time`.
+        Returns if the parking lot is available within the given time frame.
         """
-        from src.api.models import Reservation
-
-        pl_reservations = Reservation.objects.filter(parking_lot=self, showed=False)
-        pl_valid_reservations = filter(lambda pl: pl.is_valid, pl_reservations)
-        return not any(
-            map(
-                lambda reservation: in_daterange(
-                    reservation.from_date, reservation.to_date, start_time, end_time
-                ),
-                pl_valid_reservations,
-            )
-        )
-
-    def get_next_reservation(self):
-        """
-        Returns the next reservation for the parking lot.
-        """
-        from src.api.models import Reservation
-
-        pl_reservations = Reservation.objects.filter(parking_lot=self, showed=False)
+        if from_date is None or to_date is None:
+            from_date = datetime.now()
+            to_date = from_date + OFFSET
+        occupied_until = self._occupied_until
+        if self._has_reservation(from_date, to_date):
+            return False
+        elif occupied_until is not None:
+            return occupied_until < from_date  # type: ignore
+        return True
 
     def reassign(self) -> None:
         """
@@ -100,21 +94,56 @@ class ParkingLot(TimeStampMixin, models.Model):
             if r.licence_plate.licence_plate != self.garage.get_last_entered():
                 r.reassign()
 
-    @classmethod
-    def get_random(
-        cls,
-        garage_id: int,
-        from_date: datetime,
-        end_date: datetime,
-    ) -> "ParkingLot":
-        pls = list(
-            filter(
-                lambda pl: not pl.booked,
-                cls.objects.is_available(
-                    garage_id,
-                    from_date,
-                    end_date,
+    def set_lp(self) -> None:
+        """
+        Sets the licence plate which entered the parking lots, based on the last car which has entered the parking lot.
+        """
+        lp = self.garage.get_last_entered()
+        self.licence_plate = lp
+        self.save()
+
+    def _occupied_until(self) -> datetime | None:
+        if not self.occupied:
+            return None
+        reservation = self._has_now_reservation()
+        if reservation is not None:
+            return reservation.to_date
+        return self.licence_plate.entered_at + OFFSET  # type: ignore
+
+    def _has_reservation(self, from_date: datetime, to_date: datetime) -> bool:
+        """
+        Returns if the parking lot has a reservation for the given time frame.
+        """
+        reservations = self._get_reservations(valid=True)
+        return not any(
+            map(
+                lambda reservation: in_daterange(
+                    reservation.from_date, reservation.to_date, from_date, to_date
                 ),
+                reservations,
             )
         )
-        return pls[randint(0, len(pls))]
+
+    def _has_now_reservation(self) -> Reservation | None:
+        """
+        Returns if the parking lot has a reservation for the moment the function is called.
+        """
+        pl_reservations = self._get_reservations()
+        reservation_now = list(
+            filter(
+                lambda r: r.from_date <= datetime.now().astimezone() <= r.to_date,
+                pl_reservations,
+            )
+        )
+
+        return reservation_now[0] if reservation_now else None
+
+    def _get_reservations(self, *, valid=False) -> list[Reservation]:
+        """
+        Returns alls the reservations for the parking lot.
+        """
+        reservations = list(Reservation.objects.filter(parking_lot=self))
+        if not valid:
+            return reservations
+        else:
+            return list(filter(lambda pl: pl.is_valid, reservations))
