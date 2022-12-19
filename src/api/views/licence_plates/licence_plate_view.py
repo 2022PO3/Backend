@@ -55,7 +55,7 @@ class LicencePlateRPiView(_OriginAPIView):
         serializer = LicencePlateRPiSerializer(data=data)  # type: ignore
         if serializer.is_valid():
             if serializer.validated_data["licence_plate"] == "0AAA000":  # type: ignore
-                return BackendResponse("OK", status=status.HTTP_200_OK)
+                return BackendResponse(None, status=status.HTTP_200_OK)
             return self.handle_licence_plate(serializer.data)
         return BackendResponse(
             [serializer.errors],  # type: ignore

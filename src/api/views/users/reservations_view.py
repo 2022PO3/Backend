@@ -58,6 +58,7 @@ class ReservationsRPiView(PkAPIView):
     origins = ["web", "app"]
     permission_classes = [AllowAny]
     origins = ["rpi"]
+    permission_classes = [AllowAny]
     serializer = ReservationRPiSerializer
     model = Reservation
     http_method_names = ["get"]
