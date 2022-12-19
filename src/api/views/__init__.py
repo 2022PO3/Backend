@@ -1,4 +1,8 @@
-from src.api.views.garages.garage_view import GaragesDetailView, GaragesListView
+from src.api.views.garages.garage_view import (
+    GaragesDetailView,
+    GaragesListView,
+    GarageRPiView,
+)
 from src.api.views.garages.opening_hours_view import (
     OpeningHoursGarageView,
     OpeningHoursDetailView,

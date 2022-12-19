@@ -2,6 +2,7 @@ from django.urls import path, re_path
 from src.api.views import (
     GaragesDetailView,
     GaragesListView,
+    GarageRPiView,
     LicencePlateDetailView,
     LicencePlateListView,
     LicencePlateRPiView,
@@ -129,6 +130,7 @@ urlpatterns += [
     path("api/rpi/licence-plates", LicencePlateRPiView.as_view()),
     path("api/rpi/parking-lot", ParkingLotRPiView.as_view()),
     path("api/rpi/reservations/<int:garage_pk>", ReservationsRPiView.as_view()),
+    path("api/rpi/garage/<int:pk>", GarageRPiView.as_view()),
 ]
 
 

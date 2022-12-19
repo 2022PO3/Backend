@@ -124,6 +124,7 @@ class ParkingLotRPiView(_OriginAPIView):
                 garage_id=serializer.validated_data["garage_id"],  # type: ignore
                 parking_lot_no=serializer.validated_data["parking_lot_no"],  # type: ignore
             )
+            
             if len(parking_lot) == 1:
                 parking_lot.update(occupied=serializer.validated_data["occupied"])  # type: ignore
                 return Response(None, status=status.HTTP_204_NO_CONTENT)
