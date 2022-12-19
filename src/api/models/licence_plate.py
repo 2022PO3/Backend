@@ -59,7 +59,7 @@ class LicencePlate(TimeStampMixin, models.Model):
                 "price": price,
                 "quantity": 0,
             }
-            if price.duration >= datetime.timedelta(0):  # Make sure the loop completes
+            if price.duration >= timedelta(0):  # Make sure the loop completes
                 while time_to_pay > price.duration:
                     time_to_pay -= price.duration
                     item["quantity"] += 1

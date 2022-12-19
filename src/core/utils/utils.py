@@ -51,5 +51,8 @@ def in_daterange(st1: datetime, et1: datetime, st2: datetime, et2: datetime) -> 
     Returns a boolean which indicates if the given date ranges overlap with each other.
     """
     return (
-        st1 <= st2 <= et1 or st1 <= et2 <= et1 or st2 <= st1 <= et2 or st1 <= et2 <= et1
+        st1.timestamp() <= st2.timestamp() <= et1.timestamp()
+        or st1.timestamp() <= et2.timestamp() <= et1.timestamp()
+        or st2.timestamp() <= st1.timestamp() <= et2.timestamp()
+        or st1.timestamp() <= et2.timestamp() <= et1.timestamp()
     )

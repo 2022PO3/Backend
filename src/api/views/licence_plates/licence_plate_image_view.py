@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny
 
 from src.core.utils.stripe_endpoints import send_invoice
 from src.core.views import BackendResponse, _OriginAPIView
-from src.api.serializers import PostLicencePlateSerializer
+from src.api.serializers import LicencePlateRPiSerializer
 
 from src.core.views import BackendResponse, _OriginAPIView, parse_frontend_json
 from src.api.models import LicencePlate
@@ -30,7 +30,7 @@ class LicencePlateImageView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         data = parse_frontend_json(request)
-        serializer = PostLicencePlateSerializer(data=data)  # type: ignore
+        serializer = LicencePlateRPiSerializer(data=data)  # type: ignore
         if serializer.is_valid():
             if serializer.validated_data["licence_plate"] == "0AAA000":  # type: ignore
                 return BackendResponse("OK", status=status.HTTP_200_OK)

@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from django.http import Http404
 from django_otp import devices_for_user
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -6,7 +8,7 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated
 
-from src.api.serializers import GetTOTPSerializer, PostTOTPSerializer
+from src.api.serializers import TOTPSerializer
 from src.core.views import (
     _OriginAPIView,
     BackendResponse,
@@ -18,39 +20,54 @@ from src.users.models import User
 from src.users.permissions import IsUserDevice
 
 
-def get_user_totp_device(user: User, confirmed=None) -> TOTPDevice | None:
-    devices = devices_for_user(user, confirmed=confirmed)  # type: ignore
-
-    for device in devices:
-        if isinstance(device, TOTPDevice):
-            return device
-
-
-class TOTPCreateView(_OriginAPIView):
+class TOTPDetailView(GetObjectMixin, _OriginAPIView):
     """
-    Use this endpoint to set up a new TOTP device
+    A view class which handles PUT- and DELETE-requests of TOTP devices with a `pk`.
+    """
+
+    permission_classes = [IsUserDevice]
+    origins = ["app", "web"]
+    http_method_names = ["delete"]
+
+    def delete(self, request: Request, pk: int, format=None) -> BackendResponse:
+        if (resp := super().delete(request, format)) is not None:
+            return resp
+        try:
+            device = self.get_object(TOTPDevice, pk)
+        except Http404:
+            return BackendResponse(
+                [f"The device with pk {pk} does not exist."],
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        self.check_object_permissions(request, int(pk))
+        device.delete()  # type: ignore
+        request.user.disable_2fa()
+        return BackendResponse(status=status.HTTP_204_NO_CONTENT)
+
+
+class TOTPListView(BaseAPIView):
+    """
+    View class which handles GET- and POST-requests for TOTPDevices.
     """
 
     origins = ["web", "app"]
-    http_method_names = ["post"]
+    serializer = {"get": TOTPSerializer}
+    model = TOTPDevice
+    get_user_id = True
+    http_method_names = ["get", "post"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:
             return resp
         data = parse_frontend_json(request)
-        serializer = PostTOTPSerializer(data=data)  # type: ignore
+        serializer = TOTPSerializer(data=data)  # type: ignore
         user: User = request.user
-        device = get_user_totp_device(user)
-        if device:
-            return BackendResponse(
-                ["You already have a 2FA device registered."],
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         if serializer.is_valid():
             device = user.totpdevice_set.create(  # type: ignore
                 name=serializer.validated_data["name"], confirmed=False  # type: ignore
             )
-            user.enable_2fa()
+            if not user.two_factor:
+                user.enable_2fa()
             url = device.config_url  # type: ignore
             return BackendResponse({"oauth_url": url}, status=status.HTTP_201_CREATED)
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -58,7 +75,8 @@ class TOTPCreateView(_OriginAPIView):
 
 class TOTPVerifyView(_OriginAPIView):
     """
-    Use this endpoint to verify/enable a TOTP device. Returns True if the code is valid and False otherwise.
+    View class which handle verifying of TOTP-device codes. Returns True if the code is valid
+    and False otherwise.
     """
 
     origins = ["web", "app"]
@@ -69,62 +87,29 @@ class TOTPVerifyView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         user: User = request.user
-        device = get_user_totp_device(user)
+        devices = self._get_totp_devices(user)
+        for device in devices:
+            if self._verify_and_confirm(user, device, token):
+                return BackendResponse({"response": True}, status=status.HTTP_200_OK)
+        return BackendResponse({"response": False}, status=status.HTTP_401_UNAUTHORIZED)
+
+    def _verify_and_confirm(self, user: User, device: TOTPDevice, token: str) -> bool:
         if not device == None and device.verify_token(token):
             if not device.confirmed:
                 device.confirmed = True
                 device.save()
             user.validated_2fa()
-            return BackendResponse({"response": True}, status=status.HTTP_200_OK)
-        return BackendResponse({"response": False}, status=status.HTTP_401_UNAUTHORIZED)
+            return True
+        return False
+
+    def _get_totp_devices(self, user: User, confirmed=None) -> Iterable[TOTPDevice]:
+        devices = devices_for_user(user, confirmed=confirmed)  # type: ignore
+        return filter(lambda d: isinstance(d, TOTPDevice), devices)
 
 
-class TOTPDeleteView(GetObjectMixin, _OriginAPIView):
+class Disable2FAView(_OriginAPIView):
     """
-    A view class to delete a TOTP device on pk.
-    """
-
-    permission_classes = [IsUserDevice]
-    origins = ["app", "web"]
-    http_method_names = ["delete"]
-
-    def delete(self, request: Request, pk: int, format=None) -> BackendResponse:
-        if (resp := super().delete(request, format)) is not None:
-            return resp
-        if not isinstance(pk, int):
-            return BackendResponse(
-                ["The value of `pk` has to be an integer."],
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        try:
-            device = self.get_object(TOTPDevice, pk)
-        except Http404:
-            return BackendResponse(
-                [f"The device with pk {pk} does not exist."],
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        self.check_object_permissions(request, int(pk))
-
-        device.delete()  # type: ignore
-        request.user.disable_2fa()
-        return BackendResponse(status=status.HTTP_204_NO_CONTENT)
-
-
-class TOTPView(BaseAPIView):
-    """
-    View class to get a list of the user's TOTP devices.
-    """
-
-    origins = ["web", "app"]
-    serializer = {"get": GetTOTPSerializer}
-    model = TOTPDevice
-    get_user_id = True
-    http_method_names = ["get"]
-
-
-class Disable2FA(_OriginAPIView):
-    """
-    View class to disable 2FA for the user associated with the request.
+    View class which handles disabling of 2FA for a user.
     """
 
     origins = ["web", "app"]

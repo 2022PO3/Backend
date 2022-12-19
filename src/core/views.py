@@ -2,7 +2,7 @@ from collections import OrderedDict
 import os
 import json
 
-from typing import Callable, Iterable, TypeVar, Any
+from typing import Callable, TypeVar, Any
 
 from django.db import models
 from django.http import Http404, JsonResponse
@@ -16,12 +16,13 @@ from rest_framework.parsers import JSONParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
-from rest_framework.exceptions import MethodNotAllowed
+from src.api.models import Garage
 
 from src.core.utils import to_camel_case, to_snake_case, decode_jwt
 from src.core.exceptions import BackendException
 from src.core.utils import to_camel_case, to_snake_case
 from src.core.exceptions import OriginValidationException, DeletionException
+from src.users.permissions import IsGarageOwner
 
 T = TypeVar("T")
 U = TypeVar("U", bound=serializers.ModelSerializer)
@@ -217,6 +218,28 @@ class _OriginAPIView(_ValidateOrigin, APIView):
     def delete(self, request: Request, format=None) -> BackendResponse | None:
         return self._validate_origins(request)
 
+    def check_object_permissions(self, request: Request, g: int | Garage, obj=None):
+        """
+        Check if the request should be permitted for a given object.
+        Raises an appropriate exception if the request is not permitted.
+        """
+        print(g, obj)
+        for permission in self.get_permissions():
+            if isinstance(permission, IsGarageOwner):
+                if not permission.has_object_permission(request, g, obj):
+                    self.permission_denied(
+                        request,
+                        message=getattr(permission, "message", None),
+                        code=getattr(permission, "code", None),
+                    )
+            else:
+                if not permission.has_object_permission(request, self, g):
+                    self.permission_denied(
+                        request,
+                        message=getattr(permission, "message", None),
+                        code=getattr(permission, "code", None),
+                    )
+
     def _validate_origins(self, request: Request) -> None | BackendResponse:
         try:
             super()._validate_origins(request)
@@ -265,6 +288,7 @@ class BaseAPIView(_OriginAPIView, GetObjectMixin):
     def post(self, request: Request, format=None) -> BackendResponse | None:
         if (resp := super().post(request, format)) is not None:
             return resp
+        print("exec")
         data = parse_frontend_json(request)
         serializer = self.serializer["post"](data=data)  # type: ignore
         if serializer.is_valid():
@@ -285,6 +309,7 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
     model: V = None  # type: ignore
     fk_model = None  # type: ignore
     serializer: U = None  # type: ignore
+    post_serializer: U | None = None  # type: ignore
     return_list = False
     column: str = ""
     user_id = False
@@ -315,6 +340,26 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
         serializer: U = self.serializer(data, many=self.return_list)  # type: ignore
         return BackendResponse(serializer.data, status=status.HTTP_200_OK)
 
+    def post(self, request: Request, garage_pk: int, format=None) -> BackendResponse:
+        if (resp := super().post(request, format)) is not None:
+            return resp
+        try:
+            garage: Garage = self.get_object(Garage, garage_pk)  # type: ignore
+        except Http404:
+            return BackendResponse(
+                [f"The {self.model.__name__} with pk `{garage_pk}` does not exist,"],  # type: ignore
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        self.check_object_permissions(request, garage)
+        data = parse_frontend_json(request)
+        if self.post_serializer is None:
+            self.post_serializer = self.serializer
+        serializer = self.post_serializer(data=data)  # type: ignore
+        if serializer.is_valid():
+            serializer.save(garage_id=garage_pk)
+            return BackendResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def put(
         self, request: Request, pk: int | None = None, format=None
     ) -> BackendResponse:
@@ -336,12 +381,10 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
             serializer = self.serializer(request.user, data=data)  # type: ignore
         if serializer.is_valid():
             try:
-                self.check_object_permissions(
-                    request, serializer.validated_data["garage_id"]
-                )
-            except KeyError:
+                self.check_object_permissions(request, object.garage)  # type: ignore
+            except AttributeError:
                 # When the object is a Garage.
-                self.check_object_permissions(request, pk)
+                self.check_object_permissions(request, pk)  # type: ignore
             serializer.save(user=request.user) if self.user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -361,12 +404,8 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
                 ],
                 status=status.HTTP_404_NOT_FOUND,
             )
-        self.check_object_permissions(request, pk)
-        try:
-            data.delete()
-        except DeletionException as e:
-            return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
-        return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)
+        self.check_object_permissions(request, pk)  # type: ignore
+        return try_delete(data)
 
 
 def _dict_key_to_case(
@@ -386,6 +425,14 @@ def _dict_key_to_case(
 
 def parse_frontend_json(request: Request) -> dict[str, Any]:
     return _dict_key_to_case(JSONParser().parse(request), to_snake_case)  # type: ignore
+
+
+def try_delete(instance) -> BackendResponse:
+    try:
+        instance.delete()
+    except DeletionException as e:
+        return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
+    return BackendResponse(None, status=status.HTTP_204_NO_CONTENT)
 
 
 def server_error(request: Request, *args, **kwargs):

@@ -14,7 +14,7 @@ class OnlyGarageOwners(BasePermission):
     def has_permission(self, request, view) -> bool:
         if request.method in SAFE_METHODS:
             return True
-        return request.user.is_garage_owner
+        return request.user.is_garage_owner or request.user.is_admin
 
 
 class IsGarageOwner(OnlyGarageOwners, BasePermission):
@@ -23,14 +23,23 @@ class IsGarageOwner(OnlyGarageOwners, BasePermission):
     Assumes the model instance has an `owner`-attribute.
     """
 
-    def has_object_permission(self, request, view, pk: int) -> bool:
+    @staticmethod
+    def has_object_permission(request: Request, g: int | Garage, obj=None) -> bool:
+        print("exec")
+        print(request, g, obj)
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in SAFE_METHODS:
             return True
 
         # Instance must have an attribute named `user`.
-        g = Garage.objects.get(pk=pk)
+        if isinstance(g, int):
+            if obj is None:
+                garage = Garage.objects.get(pk=g)
+                return garage.user == request.user
+            else:
+                obj = obj.objects.get(pk=g)
+                return obj.garage.user == request.user
         return g.user == request.user
 
 
@@ -54,6 +63,7 @@ class IsUserReservation(BasePermission):
     """
 
     def has_object_permission(self, request: Request, view, pk: int):
+        print("pk", pk)
         if request.method in SAFE_METHODS:
             return True
         r = Reservation.objects.get(pk=pk)

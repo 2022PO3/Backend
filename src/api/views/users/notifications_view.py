@@ -5,20 +5,9 @@ from src.core.views import BaseAPIView, PkAPIView
 from src.users.permissions import IsUserNotification
 
 
-class NotificationsView(BaseAPIView):
+class NotificationsDetailView(PkAPIView):
     """
-    A view class to get all notification from the currently logged in user.
-    """
-
-    origins = ["app", "web"]
-    serializer = {"get": NotificationSerializer}
-    model = Notification
-    get_user_id = True
-
-
-class PkNotificationsView(PkAPIView):
-    """
-    A view class to delete a given notification from the currently logged in user or to set it to 'seen'.
+    A view class which handles PUT- and DELETE-requests for a notification with `pk`.
     """
 
     origins = ["app", "web"]
@@ -26,3 +15,14 @@ class PkNotificationsView(PkAPIView):
     serializer = PutNotificationSerializer
     model = Notification
     user_id = True
+
+
+class NotificationsListView(BaseAPIView):
+    """
+    A view class which handles GET-requests for the user's notifications.
+    """
+
+    origins = ["app", "web"]
+    serializer = {"get": NotificationSerializer}
+    model = Notification
+    get_user_id = True
