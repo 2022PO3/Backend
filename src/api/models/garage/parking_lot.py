@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta
 from random import randint
+from datetime import datetime
 from django.db import models
 
 from src.core.settings import OFFSET
@@ -41,8 +41,8 @@ class ParkingLot(TimeStampMixin, models.Model):
         self, start_time: datetime | None = None, end_time: datetime | None = None
     ) -> bool:
         if start_time is None or end_time is None:
-            return not self.is_available(datetime.now(), datetime.now() + OFFSET)
-        return not self.is_available(start_time, end_time)
+            return not self.is_booked(datetime.now(), datetime.now() + OFFSET)
+        return not self.is_booked(start_time, end_time)
 
     objects = ParkingLotManager()
 
@@ -51,7 +51,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         db_table = "parking_lots"
         app_label = "api"
 
-    def is_available(self, start_time: datetime, end_time: datetime) -> bool:
+    def is_booked(self, start_time: datetime, end_time: datetime) -> bool:
         """
         Returns a boolean which indicates if the given parking lot with `pl_pk` is available in
         the time range from `start_time` to `end_time`.
@@ -68,6 +68,15 @@ class ParkingLot(TimeStampMixin, models.Model):
                 pl_valid_reservations,
             )
         )
+
+    def get_next_reservation(self):
+        """
+        Returns the next reservation for the parking lot.
+        """
+        from src.api.models import Reservation
+
+        pl_reservations = Reservation.objects.filter(parking_lot=self, showed=False)
+        
 
     def reassign(self) -> None:
         """

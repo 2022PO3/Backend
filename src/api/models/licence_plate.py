@@ -127,14 +127,6 @@ class LicencePlate(TimeStampMixin, models.Model):
             reservation.delete()
         return super().delete()
 
-    @classmethod
-    def get_last_entered(cls, garage_id: int) -> "LicencePlate":
-        """
-        Gets the last entered licence plate of a garage.
-        """
-        entered_lps = cls.objects.filter(garage_id=garage_id)
-        return min(entered_lps, key=lambda lp: abs(datetime.now() - lp.entered_at))  # type: ignore
-
     class Meta:
         db_table = "licence_plates"
         app_label = "api"

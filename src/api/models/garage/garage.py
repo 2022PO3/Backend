@@ -87,6 +87,15 @@ class Garage(TimeStampMixin, models.Model):
         )
         return occupied_lots + reserved_lots
 
+    def get_last_entered(self, garage_id: int):
+        """
+        Gets the last entered licence plate of a garage.
+        """
+        from src.api.models import LicencePlate
+
+        entered_lps = LicencePlate.objects.filter(garage_id=garage_id)
+        return min(entered_lps, key=lambda lp: abs(datetime.now() - lp.entered_at))  # type: ignore
+
     class Meta:
         db_table = "garages"
         app_label = "api"

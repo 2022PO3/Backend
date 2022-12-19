@@ -59,7 +59,7 @@ class PostReservationSerializer(APIForeignKeySerializer):
         if from_date > to_date:
             raise serializers.ValidationError("`fromDate` must occur before `toDate`")
         parking_lot: ParkingLot = ParkingLot.objects.get(id=data["parking_lot_id"])
-        if not parking_lot.is_available(
+        if not parking_lot.is_booked(
             from_date,
             to_date,
         ):
