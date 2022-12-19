@@ -76,17 +76,14 @@ class ParkingLot(TimeStampMixin, models.Model):
         from src.api.models import Reservation
 
         pl_reservations = Reservation.objects.filter(parking_lot=self, showed=False)
-        
 
     def reassign(self) -> None:
         """
-        Reassigns a parking lot if it is reserved and someone - who don't made the reservation -
+        Reassigns a parking lot if it is reserved and someone - who didn't made the reservation -
         parks within eight hours of the start of the reservation. The reservation's parking lot
         is reassigned.
-
-        The function automatically gets the last entered licence plate.
         """
-        from src.api.models import Reservation, LicencePlate
+        from src.api.models import Reservation
 
         pl_reservations = filter(
             lambda r: r.from_date > datetime.now(),
@@ -100,9 +97,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         )
         if pl_next_reservation:
             r = pl_next_reservation[0]
-            if r.licence_plate.licence_plate != LicencePlate.get_last_entered(
-                self.garage.pk
-            ):
+            if r.licence_plate.licence_plate != self.garage.get_last_entered():
                 r.reassign()
 
     @classmethod
