@@ -14,6 +14,13 @@ class Reservation(TimeStampMixin, models.Model):
     to_date = models.DateTimeField()
     showed = models.BooleanField(default=False)
 
+    def reassign(self) -> None:
+        from src.api.models import ParkingLot
+
+        pl = ParkingLot.get_random(self.garage.pk, self.from_date, self.to_date)
+        self.parking_lot = pl
+        self.save()
+
     @property
     def set_showed(self) -> None:
         """

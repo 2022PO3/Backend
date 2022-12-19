@@ -87,17 +87,9 @@ class ParkingLotAssignView(_OriginAPIView):
         assignment_serializer = AssignReservationSerializer(data=request_data)  # type: ignore
         if assignment_serializer.is_valid():
             valid_data: dict[str, Any] = assignment_serializer.validated_data  # type: ignore
-            pls = list(
-                filter(
-                    lambda pl: not pl.booked,
-                    ParkingLot.objects.is_available(
-                        int(garage_pk),
-                        valid_data["from_date"],
-                        valid_data["to_date"],
-                    ),
-                )
+            pl = ParkingLot.get_random(
+                int(garage_pk), valid_data["from_date"], valid_data["to_date"]
             )
-            pl = pls[randint(0, len(pls))]
             serializer = ParkingLotSerializer(pl)
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(
@@ -124,9 +116,10 @@ class ParkingLotRPiView(_OriginAPIView):
                 garage_id=serializer.validated_data["garage_id"],  # type: ignore
                 parking_lot_no=serializer.validated_data["parking_lot_no"],  # type: ignore
             )
-            
+
             if len(parking_lot) == 1:
                 parking_lot.update(occupied=serializer.validated_data["occupied"])  # type: ignore
+                parking_lot[0].reassign()
                 return Response(None, status=status.HTTP_204_NO_CONTENT)
             else:
                 return Response(None, status=status.HTTP_400_BAD_REQUEST)

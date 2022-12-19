@@ -38,7 +38,9 @@ class LicencePlate(TimeStampMixin, models.Model):
         prices = sorted(prices, key=lambda p: p.duration)
         if not len(prices):
             return True
-        return (timezone.now() - self.paid_at) > prices[0].duration
+        if self.paid_at is not None:
+            return (timezone.now() - self.paid_at) > prices[0].duration
+        return False
 
     def can_enter(self, garage) -> bool:
         """
@@ -124,6 +126,14 @@ class LicencePlate(TimeStampMixin, models.Model):
         for reservation in reservations:
             reservation.delete()
         return super().delete()
+
+    @classmethod
+    def get_last_entered(cls, garage_id: int) -> "LicencePlate":
+        """
+        Gets the last entered licence plate of a garage.
+        """
+        entered_lps = cls.objects.filter(garage_id=garage_id)
+        return min(entered_lps, key=lambda lp: abs(datetime.now() - lp.entered_at))  # type: ignore
 
     class Meta:
         db_table = "licence_plates"

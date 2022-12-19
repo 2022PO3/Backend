@@ -1,13 +1,16 @@
 from datetime import datetime, timedelta
+from random import randint
 from django.db import models
 
+from src.core.settings import OFFSET
 from src.core.utils import in_daterange
 from src.core.models import TimeStampMixin
 
 
 class ParkingLotManager(models.Manager):
     """
-    Custom manager for `ParkingLot`-class, which implements the `.is_available()`-manager function.
+    Custom manager for `ParkingLot`-class, which implements the `.is_available()`-manager
+    function.
     """
 
     def is_available(self, pk: int, start_time: datetime, end_time: datetime):
@@ -59,7 +62,6 @@ class ParkingLot(TimeStampMixin, models.Model):
 
         # When a ParkingLot is occupied, this offset will be added to the time when the request is
         # made.
-        OFFSET = timedelta(hours=8)
         pl_reservations = Reservation.objects.filter(parking_lot=self)
         return not any(
             map(
@@ -69,3 +71,49 @@ class ParkingLot(TimeStampMixin, models.Model):
                 pl_reservations,
             )
         )
+
+    def reassign(self) -> None:
+        """
+        Reassigns a parking lot if it is reserved and someone - who don't made the reservation -
+        parks within eight hours of the start of the reservation. The reservation's parking lot
+        is reassigned.
+
+        The function automatically gets the last entered licence plate.
+        """
+        from src.api.models import Reservation, LicencePlate
+
+        pl_reservations = filter(
+            lambda r: r.from_date > datetime.now(),
+            Reservation.objects.filter(parking_lot=self),
+        )
+        pl_next_reservation = list(
+            filter(
+                lambda r: (r.from_date - datetime.now()) < OFFSET,
+                pl_reservations,
+            )
+        )
+        if pl_next_reservation:
+            r = pl_next_reservation[0]
+            if r.licence_plate.licence_plate != LicencePlate.get_last_entered(
+                self.garage.pk
+            ):
+                r.reassign()
+
+    @classmethod
+    def get_random(
+        cls,
+        garage_id: int,
+        from_date: datetime,
+        end_date: datetime,
+    ) -> "ParkingLot":
+        pls = list(
+            filter(
+                lambda pl: not pl.booked,
+                cls.objects.is_available(
+                    garage_id,
+                    from_date,
+                    end_date,
+                ),
+            )
+        )
+        return pls[randint(0, len(pls))]
