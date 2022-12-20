@@ -17,6 +17,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from src.api.models import Garage
+from src.api.serializers import UserSerializer
 
 from src.core.utils import to_camel_case, to_snake_case, decode_jwt
 from src.core.exceptions import BackendException
@@ -380,11 +381,14 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
             # Special case for the UserView.
             serializer = self.serializer(request.user, data=data)  # type: ignore
         if serializer.is_valid():
-            try:
-                self.check_object_permissions(request, object.garage)  # type: ignore
-            except AttributeError:
-                # When the object is a Garage.
-                self.check_object_permissions(request, pk)  # type: ignore
+            if isinstance(serializer, UserSerializer):
+                pass
+            else:
+                try:
+                    self.check_object_permissions(request, object.garage)  # type: ignore
+                except AttributeError:
+                    # When the object is a Garage.
+                    self.check_object_permissions(request, pk)  # type: ignore
             serializer.save(user=request.user) if self.user_id else serializer.save()
             return BackendResponse(serializer.data, status=status.HTTP_200_OK)
         return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
