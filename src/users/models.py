@@ -114,7 +114,7 @@ class User(AbstractBaseUser, TimeStampMixin, PermissionsMixin):
         Generates a url for logging into the Frontend application given a generated user's email and password.
         Returns the URL.
         """
-        return f"https://po3backend.ddns.net/app/login?email={self.email}&password={password}"
+        return f"https://po3backend.ddns.net/web/login?email={self.email}&password={password}"
 
     def generate_qr_code(self, password: str) -> None:
         """

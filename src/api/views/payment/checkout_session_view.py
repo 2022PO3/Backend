@@ -10,7 +10,7 @@ from src.core.views import BackendResponse, _OriginAPIView
 
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
-WEBSITE_URL = "https://po3backend.ddns.net/app"
+WEBSITE_URL = "https://po3backend.ddns.net/web"
 
 
 class CreateCheckoutSessionView(_OriginAPIView):
