@@ -14,7 +14,10 @@ class OnlyGarageOwners(BasePermission):
     def has_permission(self, request, view) -> bool:
         if request.method in SAFE_METHODS:
             return True
-        return request.user.is_garage_owner or request.user.is_admin
+        try:
+            return request.user.is_garage_owner or request.user.is_admin
+        except AttributeError:
+            return True
 
 
 class IsGarageOwner(OnlyGarageOwners, BasePermission):

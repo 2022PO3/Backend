@@ -53,10 +53,12 @@ class LicencePlateRPiView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         data = parse_frontend_json(request)
+        print(data)
         serializer = LicencePlateRPiSerializer(data=data)  # type: ignore
         if serializer.is_valid():
             if serializer.validated_data["licence_plate"] == "0AAA000":  # type: ignore
                 return BackendResponse(None, status=status.HTTP_200_OK)
+            print(serializer.validated_data["licence_plate"])  # type: ignore
             return self.handle_licence_plate(serializer.data)
         return BackendResponse(
             [serializer.errors],  # type: ignore
