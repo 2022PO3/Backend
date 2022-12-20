@@ -12,12 +12,14 @@ class LicencePlateSerializer(serializers.ModelSerializer):
         model = LicencePlate
         fields = [
             "id",
-            "updated_at",
+            "paid_at",
+            "entered_at",
             "garage_id",
             "enabled",
             "licence_plate",
+            "can_leave"
         ]
-        read_only_field = ["updated_at", "garage_id"]
+        read_only_field = ["garage_id"]
 
 
 class LicencePlateRPiSerializer(APIForeignKeySerializer):

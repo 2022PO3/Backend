@@ -143,7 +143,7 @@ class LicencePlateRPiView(_OriginAPIView):
         """
         garage = Garage.objects.get(pk=garage_id)
         user: User = licence_plate.user  # User.objects.get(pk=user_id)
-        if licence_plate.was_paid_for:
+        if licence_plate.can_leave:
             if user.is_generated_user:
                 licence_plate.delete()
                 user.delete()
