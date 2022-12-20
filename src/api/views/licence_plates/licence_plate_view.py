@@ -53,7 +53,6 @@ class LicencePlateRPiView(_OriginAPIView):
         if (resp := super().post(request, format)) is not None:
             return resp
         data = parse_frontend_json(request)
-        print(data)
         serializer = LicencePlateRPiSerializer(data=data)  # type: ignore
         if serializer.is_valid():
             if serializer.validated_data["licence_plate"] == "0AAA000":  # type: ignore
@@ -114,6 +113,7 @@ class LicencePlateRPiView(_OriginAPIView):
             )
             generated_user.generate_qr_code(password)
             generated_user.print_qr_code()
+            garage.increment_entered
             return BackendResponse(
                 f"Successfully registered licence plate {licence_plate}.",
                 status=status.HTTP_200_OK,
@@ -126,8 +126,7 @@ class LicencePlateRPiView(_OriginAPIView):
                     status=status.HTTP_403_FORBIDDEN,
                 )
             queryset.update(garage=garage, updated_at=now, entered_at=now)
-            garage.entered += 1
-            garage.save()
+            garage.increment_entered
             return BackendResponse(
                 f"Successfully registered licence plate {licence_plate}.",
                 status=status.HTTP_200_OK,
@@ -207,6 +206,8 @@ class LicencePlateRPiView(_OriginAPIView):
         """
         Determines if the licence plate can enter the garage if it's full with reservations and physical occupancies.
         """
+        print(_is_fully_occupied(pls))
+        print(_is_full(pls, garage))
         if _is_fully_occupied(pls):
             return False
         elif _is_full(pls, garage):
@@ -220,7 +221,6 @@ def _is_fully_occupied(pls: list[ParkingLot]) -> bool:
 
 
 def _is_full(pls: list[ParkingLot], garage: Garage) -> bool:
-    all_pls = ParkingLot.objects.filter(garage=garage)
-    booked = list(filter(lambda pl: pl.booked, pls))
+    booked = list(filter(lambda pl: pl.booked(), pls))
     occupied = list(filter(lambda pl: pl.occupied, pls))
-    return len(booked) + len(occupied) == len(all_pls)
+    return len(booked) + len(occupied) == len(pls)
