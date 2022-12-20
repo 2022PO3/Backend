@@ -12,7 +12,7 @@ class IsAuthenticatedAndVerified(BasePermission):
 
     def otp_is_verified(self, request):
         user = request.user
-        if user.two_factor_validated is None:
+        if not user.two_factor_validated and user.two_factor_validated is None:
             return True
         return bool(user.two_factor_validated and user.is_authenticated)
 

@@ -67,7 +67,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         if self._has_reservation(from_date, to_date):
             return False
         elif occupied_until is not None:
-            return occupied_until < from_date  # type: ignore
+            return occupied_until.astimezone() < from_date.astimezone()  # type: ignore
         return True
 
     def booked(self) -> bool:
@@ -126,6 +126,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         """
         Returns if the parking lot has a reservation for the given time frame.
         """
+
         reservations = self._get_reservations(showed=showed, valid=True)
         return any(
             map(
