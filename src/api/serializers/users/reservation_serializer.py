@@ -80,7 +80,7 @@ class PostReservationSerializer(APIForeignKeySerializer):
         ]
 
 
-class ReservationRPiSerializer:
+class ReservationRPiSerializer(serializers.ModelSerializer):
     """
     Serializer for serializing GET-requests of the RPi.
     """

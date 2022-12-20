@@ -57,7 +57,9 @@ class ReservationsRPiView(PkAPIView):
     permission_classes = [AllowAny]
     serializer = ReservationRPiSerializer
     model = Reservation
+    return_list = True
     http_method_names = ["get"]
+    column = "garage_id"
 
     def get(self, request: Request, garage_pk: int, format=None) -> BackendResponse:
         return super().get(request, garage_pk, format)
