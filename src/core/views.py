@@ -382,8 +382,10 @@ class PkAPIView(_OriginAPIView, GetObjectMixin):
             serializer = self.serializer(request.user, data=data)  # type: ignore
         if serializer.is_valid():
             if isinstance(serializer, UserSerializer):
+                # If user
                 pass
             else:
+                # If not user, check permissions.
                 try:
                     self.check_object_permissions(request, object.garage)  # type: ignore
                 except AttributeError:
