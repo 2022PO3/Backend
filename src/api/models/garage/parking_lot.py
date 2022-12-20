@@ -37,7 +37,7 @@ class ParkingLot(TimeStampMixin, models.Model):
     occupied = models.BooleanField()
     licence_plate = models.ForeignKey(
         "api.LicencePlate",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
     )
     disabled = models.BooleanField(default=False)
