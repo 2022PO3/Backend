@@ -69,11 +69,11 @@ class LicencePlate(TimeStampMixin, models.Model):
     def get_prices_to_pay(self) -> tuple[list[dict[str, str | int]], int]:
         # Fetch garage prices from database
         prices = Price.objects.filter(garage=self.garage)
+        prices = filter(lambda p: p.duration > timedelta(0), prices)
         prices = sorted(prices, key=lambda p: p.duration, reverse=True)
 
         if len(prices) == 0:
             return tuple()
-        print(prices)
 
         # Get time the user has to pay for
         if self.entered_at is None and self.paid_at is not None:
