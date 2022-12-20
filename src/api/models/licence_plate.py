@@ -120,6 +120,30 @@ class LicencePlate(TimeStampMixin, models.Model):
             )
         )
 
+    def has_reservation(self):
+        """
+        Returns if the licence plate has a reservation.
+        Returns the reservation or None if none.
+        """
+        from src.api.models import Reservation
+
+        lp_reservations = Reservation.objects.filter(licence_plate=self)
+        if not lp_reservations:
+            return None
+        lp_reservation = min(
+            lp_reservations,
+            key=lambda r: abs(datetime.now().astimezone() - r.from_date),
+        )
+        if (
+            lp_reservation.from_date - timedelta(minutes=30)
+            <= datetime.now().astimezone()
+            <= lp_reservation.from_date
+            + (lp_reservation.to_date - lp_reservation.from_date) / 2
+        ):
+            return lp_reservation
+        else:
+            return None
+
     def delete(self) -> tuple[int, dict[str, int]]:
         from src.api.models import Reservation
 

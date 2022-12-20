@@ -149,6 +149,7 @@ class LicencePlateRPiView(_OriginAPIView):
             else:
                 # Check if the user paid before trying to leave
                 licence_plate.garage = None
+                licence_plate.entered_at = None
                 licence_plate.save()
             garage.entered -= 1
             garage.save()
@@ -206,13 +207,14 @@ class LicencePlateRPiView(_OriginAPIView):
         """
         Determines if the licence plate can enter the garage if it's full with reservations and physical occupancies.
         """
-        print(_is_fully_occupied(pls))
-        print(_is_full(pls, garage))
         if _is_fully_occupied(pls):
             return False
         elif _is_full(pls, garage):
             enter = licence_plate.can_enter(garage)
             return enter
+        r = licence_plate.has_reservation()
+        if r is not None:
+            r.set_showed  # type: ignore
         return True
 
 
