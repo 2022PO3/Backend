@@ -89,7 +89,7 @@ class ReservationRPiSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reservation
-        fields = ["parking_lot", "from_date", "to_date", "is_valid"]
+        fields = ["parking_lot", "from_date", "to_date", "is_valid", "showed"]
 
 
 class AssignReservationSerializer(APIForeignKeySerializer):

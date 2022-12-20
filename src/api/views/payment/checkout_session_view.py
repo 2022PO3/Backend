@@ -49,7 +49,9 @@ class CreateCheckoutSessionView(_OriginAPIView):
 
             if not len(line_items):
                 # No payment is needed
-                return BackendResponse("No payment required", status=status.HTTP_200_OK)
+                return BackendResponse(
+                    {"url": "No payment required"}, status=status.HTTP_200_OK
+                )
 
             try:
                 # Maak betaalpagina

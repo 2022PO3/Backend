@@ -86,7 +86,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         from src.api.models import Reservation
 
         pl_reservations = filter(
-            lambda r: r.from_date > datetime.now(),
+            lambda r: r.from_date.astimezone() > datetime.now().astimezone(),
             Reservation.objects.filter(parking_lot=self),
         )
         pl_next_reservation = list(

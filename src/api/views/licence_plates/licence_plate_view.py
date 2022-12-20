@@ -154,7 +154,9 @@ class LicencePlateRPiView(_OriginAPIView):
             garage.entered -= 1
             garage.save()
             return BackendResponse(
-                f"Successfully signed out licence plate {licence_plate.licence_plate}.",
+                [
+                    f"Successfully signed out licence plate {licence_plate.licence_plate}."
+                ],
                 status=status.HTTP_200_OK,
             )
         elif user.has_automatic_payment:
@@ -163,16 +165,18 @@ class LicencePlateRPiView(_OriginAPIView):
                 garage.entered -= 1
                 garage.save()
                 return BackendResponse(
-                    f"Sent invoice to user of {licence_plate}.",
+                    [f"Sent invoice to user of {licence_plate}."],
                     status=status.HTTP_200_OK,
                 )
             except Exception as e:
                 return BackendResponse(
-                    f"User needs to pay for {licence_plate} before leaving the garage and failed to sent invoice.",
+                    [
+                        f"User needs to pay for {licence_plate} before leaving the garage and failed to sent invoice."
+                    ],
                     status=status.HTTP_402_PAYMENT_REQUIRED,
                 )
         return BackendResponse(
-            f"User needs to pay for {licence_plate} before leaving the garage.",
+            [f"User needs to pay for {licence_plate} before leaving the garage."],
             status=status.HTTP_402_PAYMENT_REQUIRED,
         )
 
