@@ -89,7 +89,7 @@ class Garage(TimeStampMixin, models.Model):
         entered_lps = LicencePlate.objects.filter(garage=self)
         return min(
             entered_lps,
-            key=lambda lp: abs(datetime.now() - lp.entered_at),  # type: ignore
+            key=lambda lp: abs(datetime.now().astimezone() - lp.entered_at.astimezone()),  # type: ignore
             default=None,
         )
 
