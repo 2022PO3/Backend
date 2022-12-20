@@ -119,7 +119,6 @@ if __name__ == "__main__":
             "name": list(map(lambda city: f"QPark {city}", cities)),
             "garage_settings": [i for i in range(1, 11)] + [11],
             "entered": entered,
-            "entered": free_lots,
         },
         4,
     )
