@@ -1,6 +1,7 @@
 from random import randint
 from datetime import datetime
 from django.db import models
+from django.utils import timezone
 
 from src.core.settings import OFFSET
 from src.core.utils import overlap
@@ -60,7 +61,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         if self.disabled:
             return False
         if from_date is None or to_date is None:
-            from_date = datetime.now()
+            from_date = timezone.now()
             to_date = from_date + OFFSET
         occupied_until = self.occupied_until()
         if self._has_reservation(from_date, to_date):
@@ -116,7 +117,7 @@ class ParkingLot(TimeStampMixin, models.Model):
         if not self.occupied:
             return None
         if self.licence_plate is None:
-            return datetime.now() + OFFSET
+            return timezone.now() + OFFSET
         return self.licence_plate.entered_at + OFFSET
 
     def _has_reservation(
