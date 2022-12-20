@@ -51,14 +51,13 @@ class TOTPListView(BaseAPIView):
     """
 
     origins = ["web", "app"]
-    serializer = {"get": TOTPSerializer}
+    serializer = {"get": TOTPSerializer, "post": TOTPSerializer}
     model = TOTPDevice
     get_user_id = True
+    post_user_id = True
     http_method_names = ["get", "post"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
-        if (resp := super().post(request, format)) is not None:
-            return resp
         data = parse_frontend_json(request)
         serializer = TOTPSerializer(data=data)  # type: ignore
         user: User = request.user
