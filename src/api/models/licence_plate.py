@@ -33,7 +33,7 @@ class LicencePlate(TimeStampMixin, models.Model):
         return self.garage == None
 
     @property
-    def was_paid_for(self) -> bool:
+    def can_leave(self) -> bool:
         prices: list[Price] = Price.objects.filter(garage=self.garage)  # type: ignore
         prices = sorted(prices, key=lambda p: p.duration)
         if not len(prices):
@@ -73,6 +73,7 @@ class LicencePlate(TimeStampMixin, models.Model):
 
         if len(prices) == 0:
             return tuple()
+        print(prices)
 
         # Get time the user has to pay for
         if self.entered_at is None and self.paid_at is not None:
