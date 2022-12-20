@@ -82,11 +82,16 @@ class Garage(TimeStampMixin, models.Model):
     def get_last_entered(self):
         """
         Gets the last entered licence plate of a garage.
+        If no licence plates have entered the garage, none is returned.
         """
         from src.api.models import LicencePlate
 
         entered_lps = LicencePlate.objects.filter(garage=self)
-        return min(entered_lps, key=lambda lp: abs(datetime.now() - lp.entered_at))  # type: ignore
+        return min(
+            entered_lps,
+            key=lambda lp: abs(datetime.now() - lp.entered_at),  # type: ignore
+            default=None,
+        )
 
     def get_random(
         self,

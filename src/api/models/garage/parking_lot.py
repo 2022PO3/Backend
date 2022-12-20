@@ -103,6 +103,7 @@ class ParkingLot(TimeStampMixin, models.Model):
     def set_lp(self) -> None:
         """
         Sets the licence plate which entered the parking lots, based on the last car which has entered the parking lot.
+        If no licence plates have entered the garage, none is returned.
         """
         lp = self.garage.get_last_entered()
         self.licence_plate = lp

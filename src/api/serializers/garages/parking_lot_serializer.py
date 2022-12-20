@@ -1,3 +1,5 @@
+from rest_framework import serializers
+
 from src.api.models import ParkingLot
 from src.core.serializers import APIForeignKeySerializer
 
@@ -25,6 +27,8 @@ class RPIParkingLotSerializer(APIForeignKeySerializer):
     Serializer for serializing request coming from the Raspberry Pi to update a parking lot.
     """
 
+    garage_id = serializers.IntegerField()
+
     class Meta:
         model = ParkingLot
-        fields = ["id", "parking_lot_no", "occupied"]
+        fields = ["id", "parking_lot_no", "occupied", "garage_id"]
