@@ -34,13 +34,18 @@ class LicencePlate(TimeStampMixin, models.Model):
 
     @property
     def can_leave(self) -> bool:
-        prices: list[Price] = Price.objects.filter(garage=self.garage)  # type: ignore
-        prices = sorted(prices, key=lambda p: p.duration)
-        if not len(prices):
-            return True
-        if self.paid_at is not None:
-            return (timezone.now() - self.paid_at) > prices[0].duration
-        return False
+        return len(self.get_prices_to_pay()[0]) == 0
+
+        # prices: list[Price] = Price.objects.filter(garage=self.garage)  # type: ignore
+        # prices = sorted(prices, key=lambda p: p.duration)
+        # if not len(prices):
+        #     return True
+        # if self.paid_at is not None:
+        #     print(timezone.now() - self.paid_at)
+        #     return (timezone.now() - self.paid_at) > prices[0].duration
+        # if self.entered_at is not None:
+        #     return (timezone.now() - self.entered_at) > prices[0].duration
+        # return False
 
     def can_enter(self, garage) -> bool:
         """
@@ -73,10 +78,10 @@ class LicencePlate(TimeStampMixin, models.Model):
         prices = sorted(prices, key=lambda p: p.duration, reverse=True)
 
         if len(prices) == 0:
-            return tuple()
+            return [], -1
 
         # Get time the user has to pay for
-        if self.entered_at is None and self.paid_at is not None:
+        if self.paid_at is not None:
             # If the user pays for the second time.
             time_to_pay = timezone.now() - self.paid_at
         elif self.entered_at is not None:
@@ -84,6 +89,8 @@ class LicencePlate(TimeStampMixin, models.Model):
             time_to_pay = timezone.now() - self.entered_at
         else:
             time_to_pay = timedelta(0)
+        print(timezone.now(), self.paid_at)
+        print('time to pay:', time_to_pay)
         # Go over each and reduce the time to pay by the largest possible amount
         preview_items = []
         for price in prices:
