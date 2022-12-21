@@ -49,6 +49,7 @@ class PricesDetailView(PkAPIView):
                 )
                 serializer.save()
                 price.stripe_identifier = stripe_price.stripe_id
+                price.save()
             except stripe.error.InvalidRequestError as e:  # type: ignore
                 return BackendResponse([str(e)], status=status.HTTP_400_BAD_REQUEST)
             except stripe.error.StripeError as e:  # type: ignore
