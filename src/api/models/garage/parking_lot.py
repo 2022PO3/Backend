@@ -91,7 +91,8 @@ class ParkingLot(TimeStampMixin, models.Model):
         )
         pl_next_reservation = list(
             filter(
-                lambda r: (r.from_date - datetime.now()) < OFFSET,
+                lambda r: (r.from_date.astimezone() - datetime.now().astimezone())
+                < OFFSET,
                 pl_reservations,
             )
         )
