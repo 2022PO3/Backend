@@ -40,13 +40,9 @@ class Reservation(TimeStampMixin, models.Model):
         Showed attribute is set if the user showed up 30 mins in advance and before the half
         of the end of the reservation.
         """
-        valid_before_time: datetime = self.from_date - timedelta(minutes=30)
-        valid_between_time: datetime = (
-            self.from_date + (self.to_date - self.from_date) / 2
-        )
-        if valid_before_time <= datetime.now().astimezone() <= valid_between_time:
-            self.showed = True
-            self.save()
+        print("executed")
+        self.showed = True
+        self.save()
 
     class Meta:
         db_table = "reservations"

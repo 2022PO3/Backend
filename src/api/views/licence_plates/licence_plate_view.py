@@ -149,11 +149,14 @@ class LicencePlateRPiView(_OriginAPIView):
             else:
                 # Check if the user paid before trying to leave
                 licence_plate.garage = None
+                licence_plate.entered_at = None
                 licence_plate.save()
             garage.entered -= 1
             garage.save()
             return BackendResponse(
-                f"Successfully signed out licence plate {licence_plate.licence_plate}.",
+                [
+                    f"Successfully signed out licence plate {licence_plate.licence_plate}."
+                ],
                 status=status.HTTP_200_OK,
             )
         elif user.has_automatic_payment:
@@ -162,16 +165,18 @@ class LicencePlateRPiView(_OriginAPIView):
                 garage.entered -= 1
                 garage.save()
                 return BackendResponse(
-                    f"Sent invoice to user of {licence_plate}.",
+                    [f"Sent invoice to user of {licence_plate}."],
                     status=status.HTTP_200_OK,
                 )
             except Exception as e:
                 return BackendResponse(
-                    f"User needs to pay for {licence_plate} before leaving the garage and failed to sent invoice.",
+                    [
+                        f"User needs to pay for {licence_plate} before leaving the garage and failed to sent invoice."
+                    ],
                     status=status.HTTP_402_PAYMENT_REQUIRED,
                 )
         return BackendResponse(
-            f"User needs to pay for {licence_plate} before leaving the garage.",
+            [f"User needs to pay for {licence_plate} before leaving the garage."],
             status=status.HTTP_402_PAYMENT_REQUIRED,
         )
 
@@ -206,13 +211,14 @@ class LicencePlateRPiView(_OriginAPIView):
         """
         Determines if the licence plate can enter the garage if it's full with reservations and physical occupancies.
         """
-        print(_is_fully_occupied(pls))
-        print(_is_full(pls, garage))
         if _is_fully_occupied(pls):
             return False
         elif _is_full(pls, garage):
             enter = licence_plate.can_enter(garage)
             return enter
+        r = licence_plate.has_reservation()
+        if r is not None:
+            r.set_showed  # type: ignore
         return True
 
 

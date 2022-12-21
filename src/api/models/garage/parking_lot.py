@@ -38,7 +38,7 @@ class ParkingLot(TimeStampMixin, models.Model):
     occupied = models.BooleanField()
     licence_plate = models.ForeignKey(
         "api.LicencePlate",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
     )
     disabled = models.BooleanField(default=False)
@@ -87,12 +87,13 @@ class ParkingLot(TimeStampMixin, models.Model):
         from src.api.models import Reservation
 
         pl_reservations = filter(
-            lambda r: r.from_date > datetime.now(),
+            lambda r: r.from_date.astimezone() > datetime.now().astimezone(),
             Reservation.objects.filter(parking_lot=self),
         )
         pl_next_reservation = list(
             filter(
-                lambda r: (r.from_date - datetime.now()) < OFFSET,
+                lambda r: (r.from_date.astimezone() - datetime.now().astimezone())
+                < OFFSET,
                 pl_reservations,
             )
         )
