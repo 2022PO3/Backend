@@ -57,4 +57,5 @@ class GarageSerializer(APIForeignKeySerializer):
             "entered",
             "next_free_spot",
         ]
+        optional_fields = ["parking_lots"]
         extra_kwargs = {"parking_lots": {"required": False, "allow_null": True}}

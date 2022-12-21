@@ -9,7 +9,7 @@ from src.core.views import BackendResponse, _OriginAPIView
 
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
-WEBSITE_URL = "https://po3backend.ddns.net/web"
+WEBSITE_URL = "https://po3backend.ddns.net/app"
 
 
 class SendInvoiceView(_OriginAPIView):
@@ -33,7 +33,7 @@ class SendInvoiceView(_OriginAPIView):
                     user=request.user,
                     licence_plate=checkout_serializer.validated_data["licence_plate"],  # type: ignore
                 )
-            except LicencePlate.NotFoundError:  # type: ignore
+            except LicencePlate.DoesNotExist:
                 return BackendResponse(
                     ["Licence plate does not exist for this user."],
                     status=status.HTTP_404_NOT_FOUND,

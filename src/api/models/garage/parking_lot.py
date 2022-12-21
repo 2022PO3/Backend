@@ -119,7 +119,9 @@ class ParkingLot(TimeStampMixin, models.Model):
             return None
         if self.licence_plate is None:
             return timezone.now() + OFFSET
-        return self.licence_plate.entered_at + OFFSET
+        if self.licence_plate.entered_at is not None:
+            return self.licence_plate.entered_at + OFFSET
+        return None
 
     def _has_reservation(
         self, from_date: datetime, to_date: datetime, *, showed: bool | None = None

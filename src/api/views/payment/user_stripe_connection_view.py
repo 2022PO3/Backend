@@ -20,7 +20,7 @@ class UserStripeConnectionView(_OriginAPIView):
     """
 
     origins = ["web", "app"]
-    http_method_names = ["post"]
+    http_method_names = ["post", "delete"]
 
     def post(self, request: Request, format=None) -> BackendResponse:
         if (resp := super().post(request, format)) is not None:

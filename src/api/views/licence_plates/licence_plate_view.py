@@ -150,6 +150,7 @@ class LicencePlateRPiView(_OriginAPIView):
                 # Check if the user paid before trying to leave
                 licence_plate.garage = None
                 licence_plate.entered_at = None
+                licence_plate.paid_at = None
                 licence_plate.save()
             garage.entered -= 1
             garage.save()
@@ -162,6 +163,10 @@ class LicencePlateRPiView(_OriginAPIView):
         elif user.has_automatic_payment:
             try:
                 user.send_invoice(licence_plate)
+                licence_plate.garage = None
+                licence_plate.entered_at = None
+                licence_plate.paid_at = None
+                licence_plate.save()
                 garage.entered -= 1
                 garage.save()
                 return BackendResponse(

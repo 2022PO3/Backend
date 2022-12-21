@@ -59,6 +59,8 @@ class InvoiceWebhookView(APIView):
             except stripe.error.CardError:  # type: ignore
                 # Error gets handled by a 'invoice.payment_failed' event
                 pass
+            except stripe.error.InvalidRequestError:  # type: ignore
+                pass
             return complete_payment(invoice.metadata)
 
         if event["type"] == "invoice.payment_failed":  # type: ignore
