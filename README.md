@@ -1,4 +1,7 @@
-# Backend
+# Depreciation notice
+As of the 22nd of December 2022, this project is no longer actively maintained.
+
+## Backend
 
 This is the P&O3-Backend written in Python, with the Django REST framework.
 
