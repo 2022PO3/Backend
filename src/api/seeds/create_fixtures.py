@@ -101,13 +101,24 @@ if __name__ == "__main__":
         },
         3,
     )
+    parking_lots = [randint(0, 1) for _ in range(300)]
+    free_lots = [sum(parking_lots[30 * i : 30 * (i + 1)]) for i in range(10)] + [6]
+    entered = [30 - i for i in free_lots[: len(free_lots) - 1]] + [0]
     create_fixtures(
         "api.garage",
-        ["user", "name", "garage_settings", "updated_at", "created_at"],
+        [
+            "user",
+            "name",
+            "garage_settings",
+            "entered",
+            "updated_at",
+            "created_at",
+        ],
         {
             "user": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 3],
             "name": list(map(lambda city: f"QPark {city}", cities)),
             "garage_settings": [i for i in range(1, 11)] + [11],
+            "entered": entered,
         },
         4,
     )
@@ -125,7 +136,7 @@ if __name__ == "__main__":
         {
             "garage": list(map(lambda x: x // 30 + 1, list(range(300)))) + [11] * 6,
             "floor_number": [randint(-2, 2) for _ in range(300)] + [0] * 6,
-            "occupied": [randint(0, 1) for _ in range(300)] + [0] * 6,
+            "occupied": parking_lots + [0] * 6,
             "disabled": [choices([0, 1], [0.95, 0.05])[0] for _ in range(300)]
             + [0] * 6,
             "parking_lot_no": list(map(lambda x: x % 30 + 1, list(range(300))))

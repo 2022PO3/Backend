@@ -11,7 +11,8 @@
       "role": 2,
       "created_at": "2022-11-07T19:03:57.345475+00:00",
       "updated_at": "2022-11-07T19:03:57.345475+00:00",
-      "location": "LIM"
+      "location": "LIM",
+      "strikes": 1
     }
   },
   {
@@ -26,7 +27,8 @@
       "role": 3,
       "created_at": "2022-11-06T19:03:57.345475+00:00",
       "updated_at": "2022-11-06T19:03:57.345475+00:00",
-      "location": null
+      "location": null,
+      "strikes": 1
     }
   },
   {
@@ -41,7 +43,8 @@
       "role": 3,
       "created_at": "2022-11-05T19:03:57.345475+00:00",
       "updated_at": "2022-11-05T19:03:57.345475+00:00",
-      "location": "WVL"
+      "location": "WVL",
+      "strikes": 1
     }
   },
   {
@@ -56,7 +59,8 @@
       "role": 2,
       "created_at": "2022-11-07T19:03:57.345475+00:00",
       "updated_at": "2022-11-07T19:03:57.345475+00:00",
-      "location": "OVL"
+      "location": "OVL",
+      "strikes": 1
     }
   },
   {
@@ -71,7 +75,8 @@
       "role": 1,
       "created_at": "2022-11-07T19:03:57.345475+00:00",
       "updated_at": "2022-11-07T19:03:57.345475+00:00",
-      "location": "LIM"
+      "location": "LIM",
+      "strikes": 1
     }
   }
 ]

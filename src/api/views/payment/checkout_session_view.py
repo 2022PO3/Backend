@@ -47,10 +47,10 @@ class CreateCheckoutSessionView(_OriginAPIView):
                 for item in items
             ]
 
-            if len(line_items) == 0:
+            if not len(line_items):
                 # No payment is needed
                 return BackendResponse(
-                    ["No payment required"], status=status.HTTP_200_OK
+                    {"url": "No payment required"}, status=status.HTTP_200_OK
                 )
 
             try:

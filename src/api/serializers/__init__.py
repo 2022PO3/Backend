@@ -1,6 +1,4 @@
-from src.api.serializers.garages.price_serializer import (
-    PriceSerializer,
-)
+from src.api.serializers.garages.price_serializer import PriceSerializer
 
 from src.api.serializers.garages.location_serializer import LocationsSerializer
 from src.api.serializers.garages.garage_settings_serializer import (
@@ -13,7 +11,7 @@ from src.api.serializers.garages.opening_hour_serializer import OpeningHourSeria
 
 from src.api.serializers.licence_plate_serializer import (
     LicencePlateSerializer,
-    PostLicencePlateSerializer,
+    LicencePlateRPiSerializer,
 )
 
 from src.api.serializers.garages.parking_lot_serializer import (
@@ -31,11 +29,9 @@ from src.api.serializers.users.reservation_serializer import (
     GetReservationSerializer,
     PostReservationSerializer,
     AssignReservationSerializer,
+    ReservationRPiSerializer,
 )
-from src.api.serializers.users.totp_serializer import (
-    GetTOTPSerializer,
-    PostTOTPSerializer,
-)
+from src.api.serializers.users.totp_serializer import TOTPSerializer
 
 from src.api.serializers.payment.checkout_serializer import CheckoutSessionSerializer
 from src.api.serializers.payment.card_serializer import CreditCardSerializer

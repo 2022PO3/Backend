@@ -13,12 +13,12 @@ class PriceSerializer(APIForeignKeySerializer):
     Serializer for serializing requests for prices.
     """
 
-    garage_id = serializers.IntegerField()
-
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
-        """Check if the data on the Stripe server is the same as on ours"""
+        """
+        Check if the data on the Stripe server is the same as on ours
+        """
 
-        if 'stripe_identifier' in data:
+        if "stripe_identifier" in data:
             stripe_price = get_stripe_price(data["stripe_identifier"])
 
             if data["duration"] <= datetime.timedelta(0):
@@ -44,7 +44,6 @@ class PriceSerializer(APIForeignKeySerializer):
         model = Price
         fields = [
             "id",
-            "garage_id",
             "price_string",
             "duration",
             "price",
@@ -54,17 +53,11 @@ class PriceSerializer(APIForeignKeySerializer):
 
 
 class CreatePriceSerializer(APIForeignKeySerializer):
-
-    garage_id = serializers.IntegerField()
-
     class Meta:
         model = Price
-        fields = ["id", "garage_id", "price_string", "duration", "price", "valuta"]
+        fields = ["price_string", "duration", "price", "valuta"]
 
-        extra_kwargs = {"id": {"required": True},
-                        "garage_id": {"required": True},
-                        "price_string": {"required": True},
-                        "duration": {"required": True},
-                        "price": {"required": True},
-                        "valuta": {"required": True},
-                        }
+        extra_kwargs = {
+            "duration": {"required": True},
+            "valuta": {"required": True},
+        }

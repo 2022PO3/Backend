@@ -10,10 +10,8 @@ from src.core.serializers import APIForeignKeySerializer
 
 class OpeningHourSerializer(APIForeignKeySerializer):
     """
-    Serializer for serializing GET-requests of the opening hours.
+    Serializer for serializing GET-, POST-, PUT- and DELETE-requests of the opening hours.
     """
-
-    garage_id = serializers.IntegerField()
 
     def validate(self, data: OrderedDict[str, Any]) -> OrderedDict[str, Any]:
         """
@@ -36,4 +34,4 @@ class OpeningHourSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = OpeningHour
-        fields = ["id", "garage_id", "from_day", "to_day", "from_hour", "to_hour"]
+        fields = ["id", "from_day", "to_day", "from_hour", "to_hour"]

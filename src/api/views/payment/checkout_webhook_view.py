@@ -16,7 +16,7 @@ from src.users.models import User
 import stripe
 
 
-def complete_order(metadata: dict) -> BackendResponse:
+def complete_payment(metadata: dict) -> BackendResponse:
     metadata = metadata
     if "licence_plate" in metadata.keys() and "user_id" in metadata.keys():
         licence_plate = metadata["licence_plate"]
@@ -33,18 +33,10 @@ def complete_order(metadata: dict) -> BackendResponse:
         user=User.objects.get(pk=user_id), licence_plate=licence_plate
     )
 
-    licence_plate.updated_at = timezone.now()
+    licence_plate.paid_at = timezone.now()
 
-    try:
-        licence_plate.save()
-        return BackendResponse(["Completed order"], status=status.HTTP_200_OK)
-    except:
-        return BackendResponse(
-            ["Failed to save new updated_at time."],
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
     licence_plate.save()
-    return BackendResponse("Completed order", status=status.HTTP_200_OK)
+    return BackendResponse(["Completed order"], status=status.HTTP_200_OK)
 
 
 class CheckoutWebhookView(APIView):
@@ -98,14 +90,14 @@ class CheckoutWebhookView(APIView):
             if session.payment_status == "paid":
                 # Fulfil the purchase
                 send_payment_mail(PaymentResult.Succeeded, session.metadata["user_id"])  # type: ignore
-                return complete_order(session.metadata)
+                return complete_payment(session.metadata)
 
         elif event["type"] == "checkout.session.async_payment_succeeded":  # type: ignore
             session = event["data"]["object"]  # type: ignore
 
             # Fulfil the purchase
             send_payment_mail(PaymentResult.Succeeded, session.metadata["user_id"])  # type: ignore
-            complete_order(session.metadata)
+            complete_payment(session.metadata)
 
         elif event["type"] == "checkout.session.async_payment_failed":  # type: ignore
             session = event["data"]["object"]  # type: ignore

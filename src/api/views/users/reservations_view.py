@@ -1,24 +1,22 @@
-from random import randint
-from typing import Any
 from rest_framework import status
 from rest_framework.request import Request
+from rest_framework.permissions import AllowAny
 
-from src.api.models import ParkingLot, Reservation
+from src.api.models import Reservation
 from src.api.serializers import (
-    ParkingLotSerializer,
-    AssignReservationSerializer,
     GetReservationSerializer,
     PostReservationSerializer,
+    ReservationRPiSerializer,
 )
 
-from src.core.views import _OriginAPIView, BackendResponse
+from src.core.views import BackendResponse, parse_frontend_json
 from src.core.views import BaseAPIView, PkAPIView
 from src.users.permissions import IsUserReservation
 
 
-class ReservationsView(BaseAPIView):
+class ReservationsListView(BaseAPIView):
     """
-    View class to get all reservations from the currently logged in user and to post new one.
+    View class which handles GET- and POST-requests for the user's reservation..
     """
 
     origins = ["app", "web"]
@@ -28,12 +26,20 @@ class ReservationsView(BaseAPIView):
     }
     model = Reservation
     get_user_id = True
-    post_user_id = True
+
+    def post(self, request: Request, format=None) -> BackendResponse | None:
+        data = parse_frontend_json(request)
+        serializer = PostReservationSerializer(data=data)  # type: ignore
+        if serializer.is_valid():
+            garage_id: int = serializer.validated_data["garage_id"]  # type: ignore
+            serializer.save(user=request.user)
+            return BackendResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return BackendResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PkReservationsView(PkAPIView):
+class ReservationsDetailView(PkAPIView):
     """
-    View class to update or delete a reservation with a given `pk`.
+    View class which handles PUT- and DELETE-requests for a reservation with `pk`.
     """
 
     origins = ["app", "web"]
@@ -42,39 +48,18 @@ class PkReservationsView(PkAPIView):
     model = Reservation
 
 
-class AssignReservationView(_OriginAPIView):
+class ReservationsRPiView(PkAPIView):
     """
-    View class to assign a random free parking lot for making a reservation.
+    View class which handles GET-requests for reservations of the garage the RPi is located in.
     """
 
-    origins = ["web", "app"]
+    origins = ["rpi"]
+    permission_classes = [AllowAny]
+    serializer = ReservationRPiSerializer
+    model = Reservation
+    return_list = True
     http_method_names = ["get"]
+    column = "garage_id"
 
-    def get(self, request: Request, pk: int, format=None) -> BackendResponse:
-        if (resp := _OriginAPIView.get(self, request, format)) is not None:
-            return resp
-        request_data = {
-            "from_date": str(request.query_params["fromDate"]).replace(" ", "+"),
-            "to_date": str(request.query_params["toDate"]).replace(" ", "+"),
-        }
-        assignment_serializer = AssignReservationSerializer(data=request_data)  # type: ignore
-        if assignment_serializer.is_valid():
-            valid_data: dict[
-                str, Any
-            ] = assignment_serializer.validated_data  # type: ignore
-            pls = list(
-                filter(
-                    lambda pl: not pl.booked,
-                    ParkingLot.objects.is_available(
-                        int(pk),
-                        valid_data["from_date"],
-                        valid_data["to_date"],
-                    ),
-                )
-            )
-            pl = pls[randint(0, len(pls))]
-            serializer = ParkingLotSerializer(pl)
-            return BackendResponse(serializer.data, status=status.HTTP_200_OK)
-        return BackendResponse(
-            assignment_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+    def get(self, request: Request, garage_pk: int, format=None) -> BackendResponse:
+        return super().get(request, garage_pk, format)

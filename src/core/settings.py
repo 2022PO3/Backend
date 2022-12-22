@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import os
 from pathlib import Path
 from dotenv import load_dotenv
 from os import path, getenv
@@ -30,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(getenv("DEBUG"))
+DEBUG = True if int(getenv("DEBUG")) == 1 else False  # type: ignore
 
 ALLOWED_HOSTS = ["*"]
 
@@ -90,7 +89,7 @@ WSGI_APPLICATION = "src.core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": getenv('DATABASE_NAME'),
+        "NAME": getenv("DATABASE_NAME"),
         "USER": "root",
         "PASSWORD": getenv("DATABASE_PASSWORD"),
         "HOST": "db",
@@ -185,3 +184,5 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = getenv("EMAIL_HOST_PASSWORD")
+
+OFFSET = timedelta(hours=8)

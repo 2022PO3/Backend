@@ -9,20 +9,17 @@ class ParkingLotSerializer(APIForeignKeySerializer):
     Serializer for serializing requests of parking lots.
     """
 
-    garage_id = serializers.IntegerField()
-
     class Meta:
         model = ParkingLot
         fields = [
             "id",
-            "garage_id",
             "floor_number",
             "occupied",
             "disabled",
             "parking_lot_no",
+            "available",
             "booked",
         ]
-        extra_kwargs = {"booked": {"allow_null": True}}
 
 
 class RPIParkingLotSerializer(APIForeignKeySerializer):
@@ -34,4 +31,4 @@ class RPIParkingLotSerializer(APIForeignKeySerializer):
 
     class Meta:
         model = ParkingLot
-        fields = ["id", "garage_id", "parking_lot_no", "occupied"]
+        fields = ["id", "parking_lot_no", "occupied", "garage_id"]
